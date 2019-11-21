@@ -5,7 +5,7 @@ import csv
 import os
 NaN = float('NaN')
 
-# For use with Metashape Pro v.1.4, with projects saved as .psz archives.
+# For use with Photoscan Pro v.1.4, with projects saved as .psz archives.
 #
 # Python script associated with James et al (2017) - 
 # 3-D uncertainty-based topographic change detection with structure-from-motion photogrammetry: 
@@ -17,7 +17,7 @@ NaN = float('NaN')
 # covariance information. Designed for use on projects containing a single chunk, with all photos 
 # taken with the same camera.
 #
-# Precision estimates are made by carrying out repeated bundle adjustments ('optimisations' in Metashape)
+# Precision estimates are made by carrying out repeated bundle adjustments ('optimisations' in Photoscan)
 # with different pseudo-random offsets applied to the image observations and the control measurements for each.
 # The offsets are taken from normal distributions with standard deviations representative of the appropriate
 # measurement precision within the survey, as given by the following Metashape settings:
@@ -38,7 +38,7 @@ NaN = float('NaN')
 # Contact: m.james at lancaster.ac.uk
 # Updates: Check http://tinyurl.com/sfmgeoref
 # 
-# Tested and used in Metashape Pro v.1.4, with projects saved as .psz archives.
+# Tested and used in PhotoScan Pro v.1.4, with projects saved as .psz archives.
 # 15/03/18 Added scalebars into the analysis
 # 29/01/18 Removed fit_shutter for compatibility with v.1.4
 # 28/01/18 Added export of initial sparse point cloud ('sparse_pts_reference.ply') for use as a reference in sfm_georef.
