@@ -1,11 +1,11 @@
-import PhotoScan
+import Metashape
 import random
 import math
 import csv
 import os
 NaN = float('NaN')
 
-# For use with PhotoScan Pro v.1.4, with projects saved as .psz archives.
+# For use with Metashape Pro v.1.4, with projects saved as .psz archives.
 #
 # Python script associated with James et al (2017) - 
 # 3-D uncertainty-based topographic change detection with structure-from-motion photogrammetry: 
@@ -17,10 +17,10 @@ NaN = float('NaN')
 # covariance information. Designed for use on projects containing a single chunk, with all photos 
 # taken with the same camera.
 #
-# Precision estimates are made by carrying out repeated bundle adjustments ('optimisations' in PhotoScan)
+# Precision estimates are made by carrying out repeated bundle adjustments ('optimisations' in Metashape)
 # with different pseudo-random offsets applied to the image observations and the control measurements for each.
 # The offsets are taken from normal distributions with standard deviations representative of the appropriate
-# measurement precision within the survey, as given by the following PhotoScan settings:
+# measurement precision within the survey, as given by the following Metashape settings:
 #	Image coordinates:
 # 		'Tie point accuracy' - defines the image measurement precision for tie points (in pixels)
 #		'Marker accuracy' (or 'Projection accuracy' in older versions) - defines the image measurement precision for markers (in pixels)
@@ -29,7 +29,7 @@ NaN = float('NaN')
 #		'Marker accuracy' -	defines precision of ground control points positions (can be set individually for each marker)
 #
 # Estimated point precisions will not be correct unless the values of these settings have been appropriately 
-# set within PhotoScan (e.g. 'tie point accuracy' should be set to the actual precision of the measurements
+# set within Metashape (e.g. 'tie point accuracy' should be set to the actual precision of the measurements
 # as given by the RMS reprojection error in pixels - see James et al. 2017; doi: 10.1016/j.geomorph.2016.11.021).
 # Note that use of camera angles or scalebars as control measurements have not been implemented in the script. The 
 # script has only been used with Local or Projected coordinate systems (i.e. not with a GCS system). 
@@ -38,15 +38,15 @@ NaN = float('NaN')
 # Contact: m.james at lancaster.ac.uk
 # Updates: Check http://tinyurl.com/sfmgeoref
 # 
-# Tested and used in PhotoScan Pro v.1.4, with projects saved as .psz archives.
+# Tested and used in Metashape Pro v.1.4, with projects saved as .psz archives.
 # 15/03/18 Added scalebars into the analysis
 # 29/01/18 Removed fit_shutter for compatibility with v.1.4
 # 28/01/18 Added export of initial sparse point cloud ('sparse_pts_reference.ply') for use as a reference in sfm_georef.
 # 28/05/17 Fixed bug in calculation of observation distances, which only affected global relative precision estimates (ratios) made in sfm_georef.
 # 25/02/17 Updated the camera parameter optimisation options to exploit the greater flexibility now offered.
-# 25/02/17 Added a required test for non-None marker locations (PhotoScan now sets them to none if unselected). 
-# 25/02/17 Multiple name changes to accommodate PhotoScan updates of chunk accuracy attributes (e.g. tie_point_accuracy).
-# 25/02/17 Multiple changes to export function parameters to accommodate PhotoScan updates.
+# 25/02/17 Added a required test for non-None marker locations (Metashape now sets them to none if unselected). 
+# 25/02/17 Multiple name changes to accommodate Metashape updates of chunk accuracy attributes (e.g. tie_point_accuracy).
+# 25/02/17 Multiple changes to export function parameters to accommodate Metashape updates.
 
 ########################################################################################
 ######################################   SETUP    ######################################
@@ -60,12 +60,12 @@ NaN = float('NaN')
 dir_path = 'D:/Test/'
 act_ctrl_file = 'active_ctrl_indices.txt'
 
-# Define how many times bundle adjustment (PhotoScan 'optimisation') will be carried out.
+# Define how many times bundle adjustment (Metashape 'optimisation') will be carried out.
 # 4000 used in original work, as a reasonable starting point.
 num_randomisations = 1
 
 # Define the camera parameter set to optimise in the bundle adjustment.
-# v.1.3 of PhotoScan enables individual selection/deselection of all parameters.
+# v.1.3 of Metashape enables individual selection/deselection of all parameters.
 # Note - b1 was previously 'aspect ratio' (i.e. the difference between fx and fy)
 #        b2 was previously 'skew'
 optimise_f=True
@@ -87,19 +87,19 @@ optimise_p4=False
 # precision is not lost when coordinates are saved as floats. The offset will be subtracted from point coordinates.
 # [RECOMMENDED] - Leave as NaN; the script will automatically calculate and apply a suitable offset, which will be saved
 # as a text file for further processing, OR edit the line to impose a specific offset of your choice - 
-# e.g.  pts_offset = PhotoScan.Vector( [266000, 4702000, 0] )
-pts_offset = PhotoScan.Vector( [NaN, NaN, NaN] )
+# e.g.  pts_offset = Metashape.Vector( [266000, 4702000, 0] )
+pts_offset = Metashape.Vector( [NaN, NaN, NaN] )
 
 ###################################   END OF SETUP   ###################################
 ########################################################################################
 # Initialisation
-chunk = PhotoScan.app.document.chunk
+chunk = Metashape.app.document.chunk
 point_proj = chunk.point_cloud.projections
 
 # Need CoordinateSystem object, but PS only returns 'None' if an arbitrary coordinate system is being used
 # thus need to set manually in this case; otherwise use the Chunk coordinate system.
 if chunk.crs == None:
-	crs = PhotoScan.CoordinateSystem('LOCAL_CS["Local CS",LOCAL_DATUM["Local Datum",0],UNIT["metre",1]]')
+	crs = Metashape.CoordinateSystem('LOCAL_CS["Local CS",LOCAL_DATUM["Local Datum",0],UNIT["metre",1]]')
 	chunk.crs = crs
 else:
 	crs = chunk.crs	
@@ -134,7 +134,7 @@ chunk.optimizeCameras(fit_f=optimise_f, fit_cx=optimise_cx, fit_cy=optimise_cy, 
 if math.isnan(pts_offset[0]):
 	points = chunk.point_cloud.points
 	npoints = 0
-	pts_offset = PhotoScan.Vector( [0, 0, 0] )
+	pts_offset = Metashape.Vector( [0, 0, 0] )
 	for point in points:
 		if not point.valid:
 			continue
@@ -181,7 +181,7 @@ with open(dir_path + '_observation_distances.txt', "w") as f:
 			if point_index < npoints and points[point_index].track_id == track_id:
 				if not points[point_index].valid:
 					continue
-				dist = (chunk.transform.matrix.mulp(camera.center) - chunk.transform.matrix.mulp(PhotoScan.Vector( [points[point_index].coord[0], points[point_index].coord[1], points[point_index].coord[2]]))).norm()
+				dist = (chunk.transform.matrix.mulp(camera.center) - chunk.transform.matrix.mulp(Metashape.Vector( [points[point_index].coord[0], points[point_index].coord[1], points[point_index].coord[2]]))).norm()
 				fwriter.writerow( [camera_index, '{0:.4f}'.format(dist/fx), '{0:.2f}'.format(dist)] )
 
 	f.close()
@@ -243,14 +243,14 @@ temp_chunk = original_chunk.copy()
 temp_chunk.optimizeCameras(fit_f=False, fit_cx=False, fit_cy=False, fit_b1=False, fit_b2=False, fit_k1=False, fit_k2=False, fit_k3=False, fit_k4=False, fit_p1=False, fit_p2=False, fit_p3=False, fit_p4=False)
  
 # Export the sparse point cloud 
-temp_chunk.exportPoints(dir_path + 'sparse_pts_reference.ply', normals=False, colors=False, format=PhotoScan.PointsFormatPLY, projection=crs, shift=pts_offset)			
+temp_chunk.exportPoints(dir_path + 'sparse_pts_reference.ply', normals=False, colors=False, format=Metashape.PointsFormatPLY, projection=crs, shift=pts_offset)			
 
 # Delete this chunk
-PhotoScan.app.document.remove([temp_chunk])
+Metashape.app.document.remove([temp_chunk])
 
 # Counter for the number of bundle adjustments carried out, to prepend to files
 file_idx = 1  	
-PhotoScan.app.document.chunk = chunk
+Metashape.app.document.chunk = chunk
 
 # Make the ouput directory if it doesn't exist
 dir_path = dir_path + 'Monte_Carlo_output/'
@@ -264,19 +264,19 @@ for line_ID in range(0, num_randomisations ):
 		for camIDx, cam in enumerate(chunk.cameras):
 			if not cam.reference.accuracy:
 				cam.reference.location = ( original_chunk.cameras[camIDx].reference.location +
-				PhotoScan.Vector( [random.gauss(0, chunk.camera_location_accuracy[0]), random.gauss(0, chunk.camera_location_accuracy[1]), random.gauss(0, chunk.camera_location_accuracy[2])] ) )
+				Metashape.Vector( [random.gauss(0, chunk.camera_location_accuracy[0]), random.gauss(0, chunk.camera_location_accuracy[1]), random.gauss(0, chunk.camera_location_accuracy[2])] ) )
 			else:
 				cam.reference.location = ( original_chunk.cameras[camIDx].reference.location +
-				PhotoScan.Vector( [random.gauss(0, cam.reference.accuracy[0]), random.gauss(0, cam.reference.accuracy[1]), random.gauss(0, cam.reference.accuracy[2])] ) )
+				Metashape.Vector( [random.gauss(0, cam.reference.accuracy[0]), random.gauss(0, cam.reference.accuracy[1]), random.gauss(0, cam.reference.accuracy[2])] ) )
 
 	# Reset the marker coordinates and add noise
 	for markerIDx, marker in enumerate(chunk.markers):
 		if not marker.reference.accuracy:
 			marker.reference.location = ( original_chunk.markers[markerIDx].reference.location +
-			PhotoScan.Vector( [random.gauss(0, chunk.marker_location_accuracy[0]), random.gauss(0, chunk.marker_location_accuracy[1]), random.gauss(0, chunk.marker_location_accuracy[2])] ) )
+			Metashape.Vector( [random.gauss(0, chunk.marker_location_accuracy[0]), random.gauss(0, chunk.marker_location_accuracy[1]), random.gauss(0, chunk.marker_location_accuracy[2])] ) )
 		else:
 			marker.reference.location = ( original_chunk.markers[markerIDx].reference.location +
-			PhotoScan.Vector( [random.gauss(0, marker.reference.accuracy[0]), random.gauss(0, marker.reference.accuracy[1]), random.gauss(0, marker.reference.accuracy[2])] ) )
+			Metashape.Vector( [random.gauss(0, marker.reference.accuracy[0]), random.gauss(0, marker.reference.accuracy[1]), random.gauss(0, marker.reference.accuracy[2])] ) )
 
 	# Reset the scalebar lengths and add noise
 	for scalebarIDx, scalebar in enumerate(chunk.scalebars):
@@ -299,14 +299,14 @@ for line_ID in range(0, num_randomisations ):
 		original_matches = original_point_proj[original_camera]
 		for matchIDx in range(0, len(matches)):	
 			matches[matchIDx].coord = ( original_matches[matchIDx].coord + 
-			PhotoScan.Vector( [random.gauss(0, tie_proj_x_stdev), random.gauss(0, tie_proj_y_stdev)] ) )
+			Metashape.Vector( [random.gauss(0, tie_proj_x_stdev), random.gauss(0, tie_proj_y_stdev)] ) )
 	
 		# Markers
 		for markerIDx, marker in enumerate(chunk.markers):
 			if not marker.projections[camera]:
 				continue			
 			marker.projections[camera].coord = ( original_chunk.markers[markerIDx].projections[original_camera].coord	+	
-			PhotoScan.Vector([random.gauss(0, marker_proj_x_stdev), random.gauss(0, marker_proj_y_stdev)]) )
+			Metashape.Vector([random.gauss(0, marker_proj_x_stdev), random.gauss(0, marker_proj_y_stdev)]) )
 	
 
 	# Construct the output file names
@@ -323,13 +323,13 @@ for line_ID in range(0, num_randomisations ):
 
 	# Export the control (catch and deal with legacy syntax)
 	try:
-		chunk.saveReference(dir_path + out_gc_file, PhotoScan.ReferenceFormatCSV, items=PhotoScan.ReferenceItemsMarkers,)
-		chunk.saveReference(dir_path + out_cams_c_file, PhotoScan.ReferenceFormatCSV, items=PhotoScan.ReferenceItemsCameras)
+		chunk.saveReference(dir_path + out_gc_file, Metashape.ReferenceFormatCSV, items=Metashape.ReferenceItemsMarkers,)
+		chunk.saveReference(dir_path + out_cams_c_file, Metashape.ReferenceFormatCSV, items=Metashape.ReferenceItemsCameras)
 	except:
 		chunk.saveReference(dir_path + out_gc_file, 'csv')
 		
 	# Export the cameras
-	chunk.exportCameras(dir_path + out_cam_file, format=PhotoScan.CamerasFormatXML, projection=crs, rotation_order=PhotoScan.RotationOrderXYZ)
+	chunk.exportCameras(dir_path + out_cam_file, format=Metashape.CamerasFormatXML, projection=crs, rotation_order=Metashape.RotationOrderXYZ)
 	
 	# Export the calibrations [NOTE - only one camera implemented in export here]
 	for sensorIDx, sensor in enumerate(chunk.sensors):
@@ -337,9 +337,9 @@ for line_ID in range(0, num_randomisations ):
 
 	
 	# Export the sparse point cloud
-	chunk.exportPoints(dir_path + out_file + '_pts.ply', normals=False, colors=False, format=PhotoScan.PointsFormatPLY, projection=crs, shift=pts_offset)			
+	chunk.exportPoints(dir_path + out_file + '_pts.ply', normals=False, colors=False, format=Metashape.PointsFormatPLY, projection=crs, shift=pts_offset)			
 	
 	# Increment the file counter
 	file_idx = file_idx+1
 
-# PhotoScan.app.document.remove([original_chunk])
+# Metashape.app.document.remove([original_chunk])
