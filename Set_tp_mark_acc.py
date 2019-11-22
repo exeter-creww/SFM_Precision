@@ -1,12 +1,13 @@
 import Metashape
 import math
-# import os
+import os
 # import csv
 # import inspect
 # from datetime import datetime
-
+# filename = os.path.abspath("C:/HG_Projects/CWC_Drone_work/17_02_15_Danes_Mill/17_02_15_DanesCroft.psz")
 def main():
     doc = Metashape.app.document
+    # doc.open(filename, read_only=False)
     chunk = doc.chunk
     point_cloud = chunk.point_cloud
     points = point_cloud.points
@@ -51,7 +52,6 @@ def calc_reprojection_error(chunk, points, projections):
         photo_avg.append(math.sqrt(photo_err / photo_num))  # get root mean square error for each camera
 
     return photo_avg  # returns list of rmse values for each camera
-
 
 if __name__ == '__main__':
     main()

@@ -3,6 +3,11 @@ import random
 import math
 import csv
 import os
+from datetime import datetime
+
+startTime = datetime.now()
+print ("Script start time: " + str(startTime))
+
 NaN = float('NaN')
 
 # For use with Photoscan Pro v.1.4, with projects saved as .psz archives.
@@ -57,12 +62,12 @@ NaN = float('NaN')
 # Note use of '/' in the path (not '\'); end the path with '/'
 # The files will be generated in a sub-folder named "Monte_Carlo_output"
 # Change the path to the one you want, but there's no need to change act_ctrl_file.
-dir_path = 'D:/Test/'
+dir_path = 'C:/HG_Projects/CWC_Drone_work/Prec_test_outs_v2/'
 act_ctrl_file = 'active_ctrl_indices.txt'
 
 # Define how many times bundle adjustment (Metashape 'optimisation') will be carried out.
 # 4000 used in original work, as a reasonable starting point.
-num_randomisations = 1
+num_randomisations = 100
 
 # Define the camera parameter set to optimise in the bundle adjustment.
 # v.1.3 of Metashape enables individual selection/deselection of all parameters.
@@ -93,7 +98,12 @@ pts_offset = Metashape.Vector( [NaN, NaN, NaN] )
 ###################################   END OF SETUP   ###################################
 ########################################################################################
 # Initialisation
-chunk = Metashape.app.document.chunk
+filename = os.path.abspath("C:/HG_Projects/CWC_Drone_work/17_02_15_Danes_Mill/17_02_15_DanesCroft_Vprc.psx")
+
+doc = Metashape.app.document
+doc.open(filename, read_only=False)
+chunk = doc.chunk
+# chunk = Metashape.app.document.chunk
 point_proj = chunk.point_cloud.projections
 
 # Need CoordinateSystem object, but PS only returns 'None' if an arbitrary coordinate system is being used
@@ -256,6 +266,7 @@ Metashape.app.document.chunk = chunk
 dir_path = dir_path + 'Monte_Carlo_output/'
 os.makedirs(dir_path, exist_ok=True)
 
+print ("Pre Loop Time: " + str(datetime.now() - startTime))
 ########################################################################################
 # Main set of nested loops which control the repeated bundle adjustment
 for line_ID in range(0, num_randomisations ):
@@ -342,4 +353,5 @@ for line_ID in range(0, num_randomisations ):
 	# Increment the file counter
 	file_idx = file_idx+1
 
+print("Total Time: " + str(datetime.now() - startTime))
 # Metashape.app.document.remove([original_chunk])
