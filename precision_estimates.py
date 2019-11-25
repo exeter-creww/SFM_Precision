@@ -65,9 +65,7 @@ act_ctrl_file = 'active_ctrl_indices.txt'
 num_randomisations = 1
 
 # Define the camera parameter set to optimise in the bundle adjustment.
-# v.1.3 of PhotoScan enables individual selection/deselection of all parameters.
-# Note - b1 was previously 'aspect ratio' (i.e. the difference between fx and fy)
-#        b2 was previously 'skew'
+# WE NEED TO CHANGE THIS TO USE THE PARAMETERS OF THE PROJECT. WE ALSO NEED TO DOUBLE CHECK WHERE IN OUR WORKFLOW THE PARAMETERS ARE SET? (IF SCRIPT 1 OK, IF SCRIPT 2 WE NEED TO MAKE A CHANGE TO INCLUDE THE SETTING IN SCRIPT 1).
 optimise_f=True
 optimise_cx=True
 optimise_cy=True
@@ -110,7 +108,7 @@ for marker in chunk.markers:
 	act_marker_flags.append(marker.reference.enabled)
 num_act_markers = sum(act_marker_flags)
 
-# Write the active marker flags to a text file - one line per BA iteration
+# Write the active marker flags to a text file - one line per BA iteration.
 # This is actually relict code and not strictly needed.		
 with open(dir_path + act_ctrl_file, 'w') as f:
 	fwriter = csv.writer(f, delimiter=' ', lineterminator='\n')
