@@ -21,7 +21,7 @@ def main():
 
     tiepoint_acc = (round(reproj_error, 2))
     chunk.tiepoint_accuracy = tiepoint_acc
-    chunk.marker_projection_accuracy = tiepoint_acc
+    chunk.marker_projection_accuracy = tiepoint_acc  # This is what the James pdf says but we reckon it's wrong.
     doc.save()
 
 def calc_reprojection_error(chunk, points, projections):

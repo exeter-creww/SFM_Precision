@@ -70,7 +70,7 @@ act_ctrl_file = 'active_ctrl_indices.txt'
 num_randomisations = 100
 
 # Define the camera parameter set to optimise in the bundle adjustment.
-# v.1.3 of Metashape enables individual selection/deselection of all parameters.
+# v.1.3 of Photoscan enables individual selection/deselection of all parameters.
 # Note - b1 was previously 'aspect ratio' (i.e. the difference between fx and fy)
 #        b2 was previously 'skew'
 optimise_f=True
@@ -120,7 +120,7 @@ for marker in chunk.markers:
 	act_marker_flags.append(marker.reference.enabled)
 num_act_markers = sum(act_marker_flags)
 
-# Write the active marker flags to a text file - one line per BA iteration
+# Write the active marker flags to a text file - one line per bundle adjustment iteration
 # This is actually relict code and not strictly needed.		
 with open(dir_path + act_ctrl_file, 'w') as f:
 	fwriter = csv.writer(f, delimiter=' ', lineterminator='\n')
