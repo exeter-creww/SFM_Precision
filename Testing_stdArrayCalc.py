@@ -1,9 +1,8 @@
 # Based on http://www.johndcook.com/standard_deviation.html
 # from https://github.com/liyanage/python-modules/blob/master/running_stats.py
 
-import math
 import numpy as np
-import random
+
 
 
 class RunningStats:
@@ -61,7 +60,7 @@ Arr_List = RandArray(x, y, n)
 # Get array dimensions
 dimen = Arr_List[0].shape
 
-# provide dimensions to class
+# provide dimensions for class
 rs = RunningStats(dimen)
 
 # push array to function
