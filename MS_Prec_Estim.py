@@ -17,13 +17,14 @@ def setup():
     # Change the path to the one you want, but there's no need to change act_ctrl_file.
     dir_path = os.path.abspath('C:/HG_Projects/CWC_Drone_work/NEW_Prec_test_outs_v1')
 
-    filename = None #os.path.abspath("C:/HG_Projects/CWC_Drone_work/pia_plots/P3E1.psz")
+    filename = os.path.abspath("C:/HG_Projects/CWC_Drone_work/17_02_15_Danes_Mill/17_02_15_DanesCroft_Vprc.psx")
+    # filename = os.path.abspath("C:/HG_Projects/CWC_Drone_work/pia_plots/P3E1.psz")
 
     outfolder = os.path.join(dir_path, "MonteCarlo_Export")
 
     # Define how many times bundle adjustment (Metashape 'optimisation') will be carried out.
     # 4000 used in original work, as a reasonable starting point.
-    num_randomisations = 50
+    num_randomisations = 5
 
     # These are now set to what Andy and I use - perhaps just set it up to retrieve from project?
     optimise_f = True
@@ -260,9 +261,9 @@ def main(dir_path, filename, outfolder, num_randomisations, optimise_f,
                                ('z', 'f8'), ('xerr', 'f8'), ('yerr', 'f8'),
                                ('zerr', 'f8')])
 
-    el = PlyElement.describe(comb_arr, 'some_name')
+    el = PlyElement.describe(comb_arr, 'vertex')
 
-    PlyData([el]).write(os.path.join(outfolder, 'MonteCarloResult_v4.ply'))
+    PlyData([el]).write(os.path.join(outfolder, 'MonteCarloResult_v6.ply'))
 
     print("ply file created")
     doc.remove(chunk)
