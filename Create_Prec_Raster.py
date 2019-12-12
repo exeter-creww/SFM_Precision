@@ -1,4 +1,4 @@
-###  Script to convert the Precision point cloud from MS_Prec_Estim.py into a Raster.
+# Script to convert the Precision point cloud from MS_Prec_Estim.py into a Raster.
 
 import pdal
 import rasterio
