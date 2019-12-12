@@ -16,6 +16,21 @@ import pandas as pd # Pandas section is currently commented out.
 
 startTime = datetime.now()
 
+# Set project directory
+home = os.path.abspath("C:/HG_Projects/CWC_Drone_work/NEW_Prec_test_outs_v1/Rasters")
+# export_loc = home + "/exports"   # export folder (needs to be created before script run)
+
+# pc_filename = "C:/HG_Projects/CWC_Drone_work/NEW_Prec_test_outs_v1/MonteCarlo_Export/MonteCarloResult_v6.ply" # point cloud file
+# pc_filename = "C:/HG_Projects/CWC_Drone_work/NEW_Prec_test_outs_v1/MonteCarlo_Export/MonteCarloResult_v5.ply"
+# pc_filename = "C:/HG_Projects/CWC_Drone_work/NEW_Prec_test_outs_v1/MonteCarlo_Export_pia/MonteCarloResult_New_it_1000V2.txt"
+# pc_filename = os.path.abspath("C:/HG_Projects/CWC_Drone_work/HG_Retest_CWC_10it/Monte_Carlo_output/Final_PointCloud.txt")
+pc_filename = os.path.abspath("C:/HG_Projects/CWC_Drone_work/HG_Retest_Pia_1000_it/Monte_Carlo_output/Final_PointCloud.txt")
+out_dem = os.path.join(home, "Prec_test_CWC.tif")  # name of output
+
+img_path = os.path.join(home, "Prec_Pia_NEW1000it.png")
+
+gcp_file = os.path.abspath("C:/HG_Projects/CWC_Drone_work/GCP_locs/shp_file/Danes_Croft_GCPsV2.shp")
+
 
 def readPLY_xyerr(ply):
     plydata = np.loadtxt(ply, delimiter=' ', skiprows=1,
@@ -35,30 +50,17 @@ def readPLY_xyerr(ply):
     return mean_add_std
 
 
-# Set project directory
-home = os.path.abspath("C:/HG_Projects/CWC_Drone_work/NEW_Prec_test_outs_v1/Rasters")
-# export_loc = home + "/exports"   # export folder (needs to be created before script run)
 
-# pc_filename = "C:/HG_Projects/CWC_Drone_work/NEW_Prec_test_outs_v1/MonteCarlo_Export/MonteCarloResult_v6.ply" # point cloud file
-# pc_filename = "C:/HG_Projects/CWC_Drone_work/NEW_Prec_test_outs_v1/MonteCarlo_Export/MonteCarloResult_v5.ply"
-# pc_filename = "C:/HG_Projects/CWC_Drone_work/NEW_Prec_test_outs_v1/MonteCarlo_Export_pia/MonteCarloResult_New_it_1000V2.txt"
-# pc_filename = os.path.abspath("C:/HG_Projects/CWC_Drone_work/HG_Retest_CWC_10it/Monte_Carlo_output/Final_PointCloud.txt")
-pc_filename = os.path.abspath("C:/HG_Projects/CWC_Drone_work/HG_Retest_Pia_1000_it/Monte_Carlo_output/Final_PointCloud.txt")
-out_dem = os.path.join(home, "Prec_test_CWC.tif")  # name of output
-
-img_path = os.path.join(home, "Prec_Pia_NEW1000it.png")
-
-gcp_file = os.path.abspath("C:/HG_Projects/CWC_Drone_work/GCP_locs/shp_file/Danes_Croft_GCPsV2.shp")
 print("starting pipeline")
 
 
 res = readPLY_xyerr(pc_filename)
 
 if res < 0.005:
-    print("maimum xy error is < 1m, setting Raster resolution to 1m")
+    print("maximum xy error is < 1m, setting Raster resolution to 1 m")
     res = 0.005
 # if res < 1:
-#     print("maimum xy error is < 1m, setting Raster resolution to 1m")
+#     print("maximum xy error is < 1m, setting Raster resolution to  1m")
 #     res = 1
 
 dtm_gen = {
