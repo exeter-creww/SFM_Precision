@@ -12,20 +12,31 @@ import sys
 startTime = datetime.now()
 print("Script start time: " + str(startTime))
 
+# def it_list():
+#     i_list = [1000, 2500, 6000, 10000]
+#
+#     for i in i_list:
+#         print("running script for {0} iterations".format(i))
+#
+#         setup(i)
+
 def setup():
+
     # The files will be generated in a sub-folder named "Monte_Carlo_Export"
     # Change the path to the one you want, but there's no need to change act_ctrl_file.
     dir_path = os.path.abspath('C:/HG_Projects/CWC_Drone_work/NEW_Prec_test_outs_v1')
 
-    filename = os.path.abspath("C:/HG_Projects/CWC_Drone_work/17_02_15_Danes_Mill/17_02_15_DanesCroft_Vprc.psx")
-    # filename = os.path.abspath("C:/HG_Projects/CWC_Drone_work/pia_plots/P3E1.psz")
+    # filename = os.path.abspath("C:/HG_Projects/CWC_Drone_work/17_02_15_Danes_Mill/17_02_15_DanesCroft_Vprc.psx")
+    filename = os.path.abspath("C:/HG_Projects/CWC_Drone_work/pia_plots/P3E1_HG.psz")
 
-    outfolder = os.path.join(dir_path, "MonteCarlo_Export")
+    outfolder = os.path.join(dir_path, "MonteCarlo_Export_pia")
+
+    out_cloud_path = os.path.join(outfolder, ('MonteCarloResult_New_it_{0}V2.txt').format(1000))
 
     # Define how many times bundle adjustment (Metashape 'optimisation') will be carried out.
     # 4000 used in original work, as a reasonable starting point.
-    num_randomisations = 5
-
+    num_randomisations = 1000
+    print("Running for {0} iterations...".format(num_randomisations))
     # These are now set to what Andy and I use - perhaps just set it up to retrieve from project?
     optimise_f = True
     optimise_cx = True
@@ -44,14 +55,14 @@ def setup():
     main(dir_path, filename, outfolder, num_randomisations, optimise_f,
          optimise_cx, optimise_cy, optimise_b1, optimise_b2, optimise_k1,
          optimise_k2, optimise_k3, optimise_k4, optimise_p1, optimise_p2,
-         optimise_p3, optimise_p4)
+         optimise_p3, optimise_p4, out_cloud_path)
 ###################################   END OF SETUP   ###################################
 ########################################################################################
 
 def main(dir_path, filename, outfolder, num_randomisations, optimise_f,
          optimise_cx, optimise_cy, optimise_b1, optimise_b2, optimise_k1,
          optimise_k2, optimise_k3, optimise_k4, optimise_p1, optimise_p2,
-         optimise_p3, optimise_p4):
+         optimise_p3, optimise_p4, out_cloud_path):
 
     # Create scratch file
     if not os.path.exists(dir_path):
@@ -103,6 +114,9 @@ def main(dir_path, filename, outfolder, num_randomisations, optimise_f,
                           fit_k1=optimise_k1, fit_k2=optimise_k2, fit_k3=optimise_k3, fit_k4=optimise_k4,
                           fit_p1=optimise_p1, fit_p2=optimise_p2, fit_p3=optimise_p3, fit_p4=optimise_p4)
 
+    start_file = os.path.join(scratch, 'monte_carlo_SP.txt')
+    chunk.exportPoints(start_file, normals=False, colors=False, format=Metashape.PointsFormatXYZ,
+                       projection=crs, binary=False, precision=8)
 
     # Set the original_marker locations be zero error, from which we can add simulated error
     print("set marker locs to be zero error:")
@@ -144,17 +158,26 @@ def main(dir_path, filename, outfolder, num_randomisations, optimise_f,
     marker_proj_x_stdev = chunk.marker_projection_accuracy / math.sqrt(2)
     marker_proj_y_stdev = chunk.marker_projection_accuracy / math.sqrt(2)
 
-    file_idx = 0
-
-    # get point cloud dimensions and set up stats calculator
-    dimen = (len([p for p in chunk.point_cloud.points if p.valid]), 3)
-    rs = RunningStats(dimen)
-
     chunk.resetRegion()  # reset bounding region
     region = chunk.region
-    region.size = 1.5 * region.size  # increase bounding region
+    region.size = 10 * region.size  # increase bounding region
     chunk.region = region
 
+    prec_val = 100000000
+
+    # call the continous stats calculator...
+    print("pushing point cloud array to stats calculator")
+
+    sp_arr = readPC(start_file)
+    # print(sp_arr)
+
+    dimen = sp_arr.shape
+
+    start_arr = np.zeros(dimen)
+
+    Agg = (0, start_arr, sp_arr*prec_val, sp_arr*prec_val)
+
+    file_idx = 0
 
     print("starting Monte Carlo optimisation loop")
     print("Pre Loop Time: " + str(datetime.now() - startTime))
@@ -227,32 +250,38 @@ def main(dir_path, filename, outfolder, num_randomisations, optimise_f,
                               fit_k4=optimise_k4, fit_p1=optimise_p1, fit_p2=optimise_p2, fit_p3=optimise_p3,
                               fit_p4=optimise_p4)
 
-        mc_file = os.path.join(scratch, 'monte_carlo_TP.ply')
+        mc_file = os.path.join(scratch, 'monte_carlo_TP.txt')
         # Export the sparse point cloud
-        chunk.exportPoints(mc_file, normals=False, colors=False, format=Metashape. PointsFormatPLY,
-                           projection=crs)
+        chunk.exportPoints(mc_file, normals=False, colors=False, format=Metashape.PointsFormatXYZ,
+                           projection=crs, binary=False, precision=8)
 
         # call the continous stats calculator...
         print("pushing point cloud array to stats calculator")
 
-        ply_arr = readPLY(mc_file)
-
+        pc_arr = readPC(mc_file)
+        # print(pc_arr)
         # push array to function
-        rs.push(ply_arr)
+        # rs.push(ply_arr)
+        check_dim = np.shape(pc_arr)
+        if check_dim != dimen:
+            print("size issue!!!!!!!!!!!!!!!!!!")
+            continue
 
         # Increment the file counter
         file_idx += 1
+        int_arr = np.asarray(pc_arr * prec_val, dtype=np.float64)
 
-
-        # print("MC iteration {0}/{1} completed...".format(file_idx, num_randomisations))
+        Agg = update(Agg, int_arr)
 
 
     print("Monte Carlo iterations complete\n"
           "retrieve stats and convert to ply...")
+    mean, variance, sampleVariance = finalize(Agg)
 
-    mean_arr = rs.mean()
 
-    stdev_arr = rs.standard_deviation()
+    mean_arr = mean/prec_val
+
+    stdev_arr = np.sqrt(variance)/prec_val
 
     combined = np.concatenate((mean_arr, stdev_arr), axis=1)
     nested_lst_of_tuples = [tuple(l) for l in combined]
@@ -261,9 +290,13 @@ def main(dir_path, filename, outfolder, num_randomisations, optimise_f,
                                ('z', 'f8'), ('xerr', 'f8'), ('yerr', 'f8'),
                                ('zerr', 'f8')])
 
-    el = PlyElement.describe(comb_arr, 'vertex')
 
-    PlyData([el]).write(os.path.join(outfolder, 'MonteCarloResult_v6.ply'))
+    np.savetxt(out_cloud_path, comb_arr, delimiter=" ",
+               header="x y z xerr yerr zerr", comments='')
+
+    # el = PlyElement.describe(comb_arr, 'vertex')
+    #
+    # PlyData([el]).write(os.path.join(outfolder, 'MonteCarloResult_v13.ply'))
 
     print("ply file created")
     doc.remove(chunk)
@@ -273,50 +306,42 @@ def main(dir_path, filename, outfolder, num_randomisations, optimise_f,
     print("script completed!")
     print("Total Time: " + str(datetime.now() - startTime))
 
-def readPLY(ply):
-    plydata = PlyData.read(ply)
-    ply_arr = np.vstack([plydata.elements[0].data['x'],
-                         plydata.elements[0].data['y'],
-                         plydata.elements[0].data['z']]).transpose()
-    return ply_arr
+def update(existingAggregate, newValue):
+    (n, count, mean, M2) = existingAggregate
+    n += 1
+    count = count.__iadd__(1)
+    delta = np.subtract(newValue, mean)
+    # print(delta)
+    mean = mean.__iadd__(np.divide(delta, count))
+    print(mean)
+    # mean += np.divide(delta, count)
+    delta2 = np.subtract(newValue, mean)
+    M2 = M2.__iadd__(np.multiply(delta, delta2))
+
+    return (n, count, mean, M2)
+
+# Retrieve the mean, variance and sample variance from an aggregate
+def finalize(existingAggregate):
+    (n, count, mean, M2) = existingAggregate
+    (mean, variance, sampleVariance) = (mean, M2 / count, M2 / (count - 1))
+    if n < 2:
+        return float('nan')
+    else:
+        return (mean, variance, sampleVariance)
 
 
-class RunningStats:
+def readPC(pc):
+    pcdata = np.loadtxt(pc, dtype={'names': ('x', 'y', 'z'), 'formats': ('f8', 'f8', 'f8')})
+    pc_arr = np.vstack([pcdata['x'],
+                         pcdata['y'],
+                         pcdata['z']]).transpose()
 
-    def __init__(self, dims):
-        self.zeroArr = np.zeros(dims)
-        self.n = 0
-        self.old_m = np.zeros(dims)
-        self.new_m = np.zeros(dims)
-        self.old_s = np.zeros(dims)
-        self.new_s = np.zeros(dims)
 
-    def clear(self):
-        self.n = 0
-
-    def push(self, x):
-        self.n += 1
-
-        if self.n == 1:
-            self.old_m = self.new_m = x
-            self.old_s = self.zeroArr
-        else:
-            self.new_m = self.old_m + (x - self.old_m) / self.n
-            self.new_s = self.old_s + (x - self.old_m) * (x - self.new_m)
-
-            self.old_m = self.new_m
-            self.old_s = self.new_s
-
-    def mean(self):
-        return self.new_m if self.n else self.zeroArr
-
-    def variance(self):
-        return self.new_s / (self.n - 1) if self.n > 1 else self.zeroArr
-
-    def standard_deviation(self):
-        return np.sqrt(self.variance())
-
+    # print(int_arr)
+    return pc_arr
 
 
 if __name__ == '__main__':
+    # it_list()
     setup()
+
