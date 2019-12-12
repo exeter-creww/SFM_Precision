@@ -62,12 +62,17 @@ NaN = float('NaN')
 # Note use of '/' in the path (not '\'); end the path with '/'
 # The files will be generated in a sub-folder named "Monte_Carlo_output"
 # Change the path to the one you want, but there's no need to change act_ctrl_file.
-dir_path = 'C:/HG_Projects/CWC_Drone_work/Prec_test_outs_v2/'
+dir_path = 'C:/HG_Projects/CWC_Drone_work/HG_Retest_Pia/'
+if os._exists(dir_path):
+    pass
+else:
+    os.mkdir(dir_path)
+
 act_ctrl_file = 'active_ctrl_indices.txt'
 
 # Define how many times bundle adjustment (Metashape 'optimisation') will be carried out.
 # 4000 used in original work, as a reasonable starting point.
-num_randomisations = 100
+num_randomisations = 1000
 
 # Define the camera parameter set to optimise in the bundle adjustment.
 
@@ -102,7 +107,7 @@ pts_offset = Metashape.Vector([NaN, NaN, NaN])
 ###################################   END OF SETUP   ###################################
 ########################################################################################
 # Initialisation
-filename = os.path.abspath("C:/HG_Projects/CWC_Drone_work/17_02_15_Danes_Mill/17_02_15_DanesCroft_Vprc.psx")
+filename = os.path.abspath("C:/HG_Projects/CWC_Drone_work/pia_plots/P3E1.psz")
 
 doc = Metashape.app.document
 doc.open(filename, read_only=False)
