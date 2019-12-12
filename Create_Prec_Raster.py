@@ -11,10 +11,11 @@ import os
 from matplotlib import pyplot as plt
 import geopandas as gpd
 import fiona
-
+import pandas as pd # Pandas section is currently commented out.
 
 
 startTime = datetime.now()
+
 
 def readPLY_xyerr(ply):
     plydata = np.loadtxt(ply, delimiter=' ', skiprows=1,
@@ -24,7 +25,7 @@ def readPLY_xyerr(ply):
     mean_err = max([np.mean(plydata['xerr']),
                     np.mean(plydata['yerr'])])
     std_err = max([np.std(plydata['xerr']),
-                    np.std(plydata['yerr'])])
+                   np.std(plydata['yerr'])])
     # mean_add_std = math.ceil((mean_err + std_err)*10)/10
     mean_add_std = math.ceil((mean_err + std_err) * 10000) / 10000
     # print(max_err)
@@ -32,11 +33,10 @@ def readPLY_xyerr(ply):
     print(np.mean(plydata['zerr']))
 
     return mean_add_std
-# import pandas as pd # Pandas section is currently commented out.
 
 
-
-home = os.path.abspath("C:/HG_Projects/CWC_Drone_work/NEW_Prec_test_outs_v1/Rasters") # provide project directory
+# Set project directory
+home = os.path.abspath("C:/HG_Projects/CWC_Drone_work/NEW_Prec_test_outs_v1/Rasters")
 # export_loc = home + "/exports"   # export folder (needs to be created before script run)
 
 # pc_filename = "C:/HG_Projects/CWC_Drone_work/NEW_Prec_test_outs_v1/MonteCarlo_Export/MonteCarloResult_v6.ply" # point cloud file
@@ -44,7 +44,7 @@ home = os.path.abspath("C:/HG_Projects/CWC_Drone_work/NEW_Prec_test_outs_v1/Rast
 # pc_filename = "C:/HG_Projects/CWC_Drone_work/NEW_Prec_test_outs_v1/MonteCarlo_Export_pia/MonteCarloResult_New_it_1000V2.txt"
 # pc_filename = os.path.abspath("C:/HG_Projects/CWC_Drone_work/HG_Retest_CWC_10it/Monte_Carlo_output/Final_PointCloud.txt")
 pc_filename = os.path.abspath("C:/HG_Projects/CWC_Drone_work/HG_Retest_Pia_1000_it/Monte_Carlo_output/Final_PointCloud.txt")
-out_dem = os.path.join(home, "Prec_test_CWC.tif") #  name of output
+out_dem = os.path.join(home, "Prec_test_CWC.tif")  # name of output
 
 img_path = os.path.join(home, "Prec_Pia_NEW1000it.png")
 
@@ -62,30 +62,28 @@ if res < 0.005:
 #     res = 1
 
 dtm_gen = {
-    "pipeline":[
+    "pipeline": [
         {
             "type": "readers.text",
             "filename":  pc_filename
         },
-
         {
-            "type":"writers.gdal",
+            "type": "writers.gdal",
             "filename": out_dem,  # output file name
             "resolution": res,
             "dimension": "zerr",  # raster resolution
             # "radius": res*2,  # radius in which to search for other points
             "output_type": "all",  # creates a multiband raster with: min, max, mean, idw, count, stdev
             # "output_type": "stdev",  # use this if you just want a single band output for e.g. stdev
-            "window_size": 20 # changes the search area around an empty cell - second stage of algorithm
-
+            "window_size": 20  # changes the search area around an empty cell - second stage of algorithm
         },                       # may want this value to be a bit smaller than at present...
 
     ]
 }
 
-pipeline = pdal.Pipeline(json.dumps(dtm_gen)) # define the pdal pipeline
+pipeline = pdal.Pipeline(json.dumps(dtm_gen))  # define the PDAL pipeline
 pipeline.validate()  # validate the pipeline
-pipeline.execute()   #  run the pipeline
+pipeline.execute()   # run the pipeline
 
 
 dataset = rasterio.open(out_dem)
@@ -96,28 +94,26 @@ dataset = rasterio.open(out_dem)
 # plt.draw()
 # fig.savefig(fname = img_path, dpi = 300, format = 'png')
 
+
 def zero_to_nan(arr):
     """Replace every -999 with 'nan' and return a copy."""
     arr[arr < 0] = np.nan
     return arr
 
-plot_arr = zero_to_nan(dataset.read(1))
 
+plot_arr = zero_to_nan(dataset.read(1))
 
 fig, ax = plt.subplots(figsize=(8, 8))
 img = ax.imshow(plot_arr, cmap='twilight_shifted')
 fig.colorbar(img, ax=ax)
 ax.set_axis_off()
 plt.show()
-fig.savefig(fname = img_path, dpi = 300, format = 'png')
-
-
+fig.savefig(fname=img_path, dpi=300, format='png')
 
 # gcps = gpd.read_file(gcp_file)
-#
-#
-fig, ax = plt.subplots(figsize=(10,10))
-rasterio.plot.show(dataset, ax=ax, cmap ='twilight_shifted')
+
+fig, ax = plt.subplots(figsize=(10, 10))
+rasterio.plot.show(dataset, ax=ax, cmap='twilight_shifted')
 # gcps.plot(ax=ax, column='type', cmap='gist_gray', markersize=50, legend=True)
 plt.show()
 # fig.savefig(fname = img_path, dpi = 300, format = 'png')
