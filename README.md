@@ -9,6 +9,6 @@ A python workflow to create precision maps with Agisoft MetaShape.
 
 **Set_tp_mark_acc.py** sets the project tie point and marker accuracies to the mean of the tie point marker RMSE values. This is specified in the James et al. documentation. Need to confirm that marker accuracy should also be changed (as it is now). Also may want to consider importing and running in the Prec_Point.py script to save this preprocessing step.
 
-**Create_Prec_Raster.py** is a specific example of creating a precision map (raster) from the precision point cloud produced in Prec_Point_Cloud.py. Other techniques could be used and most scenes will require a different approach for creating raster (i.e. diferent resolutions etc.).
+**Create_Prec_Raster.py** is a specific example of creating a precision map (raster) from the precision point cloud produced in Prec_Point_Cloud.py. NB. this cannot be combined into the MetaShape script because the required modules cannot be imported into the metashape environment. Other techniques could be used and most scenes will require a different approach for creating raster (i.e. diferent resolutions etc.).
 
 
