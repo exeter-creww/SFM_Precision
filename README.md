@@ -3,6 +3,9 @@ A python workflow to create precision maps with Agisoft MetaShape.
 
 (Developed after: James, M., Robson, S., and Smith M (2017) ‘3-D Uncertainty-Based Topographic Change Detection with Structure-from-Motion Photogrammetry: Precision Maps for Ground Control and Directly Georeferenced Surveys’. Earth Surface Processes and Landforms 42(12):1769–88. https://doi.org/10.1002/esp.4125).
 
+before running Prec_Point_Cloud.py run the falling (in cmd.exe) to install dependencies in Metashape:
+"C:\Program Files\Agisoft\Metashape Pro\python\python.exe" -m pip install numpy tqdm plyfile
+
 **Prec_Point_Cloud.py** is the new 'all in one' version of James et al. which produces a point cloud of mean location and an x, y and z precision estimate for each point.
 
 **precision_estimates.py** is the original python script published by James et al. (with some minor changes for running from cmd and testing). Produces a folder with all montecarlo outputs and additional output info (some of which is not relevant here...).

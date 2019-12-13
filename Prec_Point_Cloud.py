@@ -30,7 +30,7 @@ else:
 # 4000 recommended by James et al. as a reasonable starting point.
 num_iterations = 1000
 
-retrieve_shape_vals = False
+retrieve_shape_only_Prec = False
 
 # Set desired optimisation params here:
 
@@ -48,13 +48,9 @@ optimise_p2 = False
 optimise_p3 = False
 optimise_p4 = False
 
-# Points are exported as floats in binary ply files for speed and size, and thus cannot represent very small changes
-# in large geographic coordinates. Thus, the offset below can be set to form a local origin and ensure numerical
-# precision is not lost when coordinates are saved as floats. The offset will be subtracted from point coordinates.
-# [RECOMMENDED] - Leave as NaN; the script will automatically calculate and apply a suitable offset, which will be saved
-# as a text file for further processing, OR edit the line to impose a specific offset of your choice - 
-# e.g.  pts_offset = Metashape.Vector( [266000, 4702000, 0] )
-
+# For efficiency of read and write, we have maintained the original handling of intermediate MonteCarlo files.
+# An offset is calculated and applied to all points whic are then  written in .ply format.
+# The final result is then re projected using the saved offsets.
 
 ###################################   END OF SETUP   ###################################
 ########################################################################################
@@ -152,7 +148,7 @@ def KickOff():
     npoints = len(points)
     camera_index = 0
 
-    if retrieve_shape_vals is True:
+    if retrieve_shape_only_Prec is True:
         retrieve_shape_precision(chunk, camera_index, npoints, points)
     else:
         print("Shape Precision values not requested... Skipping export")
