@@ -382,11 +382,13 @@ def retrieve_shape_precision(chunk, camera_index, npoints, points):
             if not camera.transform:
                 continue
 
+            fx = camera.sensor.calibration.fx
+
             # Accommodate change in attribute name in v.1.2.5
-            try:
-                fx = camera.sensor.calibration.fx
-            except AttributeError:
-                fx = camera.sensor.calibration.f
+            # try:
+            #    fx = camera.sensor.calibration.fx
+            # except AttributeError:
+            #     fx = camera.sensor.calibration.f
 
             point_index = 0
             for proj in chunk.point_cloud.projections[camera]:
