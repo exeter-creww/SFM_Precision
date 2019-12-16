@@ -12,6 +12,6 @@ Before running SFM_precision_analysis.py, run the falling (in cmd.exe) to instal
 
 **original_precision_estimates.py** is the original python script published by James et al. (with some minor changes for running from cmd and testing). Produces a folder with all montecarlo outputs and additional output info (some of which is not relevant here...).
 
-**Create_Prec_Raster.py** is a specific example of creating a precision map (raster) from the precision point cloud produced in Prec_Point_Cloud.py. NB. this cannot be combined into the MetaShape script because the required modules cannot be imported into the metashape environment. Other techniques could be used and most scenes will require a different approach for creating raster (i.e. diferent resolutions etc.).
+**Create_Prec_Raster.py** is an example of creating a precision map (raster) from the precision point cloud. NB. this cannot be combined into the MetaShape script because the required modules cannot be imported into the metashape environment. Other point2grid approaches could be used for this, and it is essential for users to specify the parameters used (e.g. spatial resolution etc.) depending on their application.
 
 
