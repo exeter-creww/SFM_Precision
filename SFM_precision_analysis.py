@@ -1,12 +1,12 @@
-import Metashape
-import random
-import math
-import csv
-import os
-from datetime import datetime
-import numpy as np
-from plyfile import PlyData
-from tqdm import tqdm
+import Metashape  # V1.5.0
+import random  #
+import math  #
+import csv  #
+import os  #
+from datetime import datetime  #
+import numpy as np  #
+from plyfile import PlyData  #
+from tqdm import tqdm  #
 
 
 startTime = datetime.now()
