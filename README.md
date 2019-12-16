@@ -3,7 +3,8 @@ A python workflow to create precision maps with Agisoft MetaShape.
 
 (Developed after: James, M., Robson, S., and Smith M (2017) ‘3-D Uncertainty-Based Topographic Change Detection with Structure-from-Motion Photogrammetry: Precision Maps for Ground Control and Directly Georeferenced Surveys’. Earth Surface Processes and Landforms 42(12):1769–88. https://doi.org/10.1002/esp.4125).
 
-before running Prec_Point_Cloud.py run the falling (in cmd.exe) to install dependencies in Metashape:
+Before running SFM_precision_analysis.py, run the falling (in cmd.exe) to install dependencies in the Metashape environment:
+
 "C:\Program Files\Agisoft\Metashape Pro\python\python.exe" -m pip install numpy tqdm plyfile
 
 **SFM_precision_analysis.py** is the new version of the original SfM precision code published by James et al. 2017, which produces a sparse point cloud of mean location and x, y and z precision estimate for each tie point.
