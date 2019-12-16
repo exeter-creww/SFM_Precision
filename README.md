@@ -8,7 +8,7 @@ before running Prec_Point_Cloud.py run the falling (in cmd.exe) to install depen
 
 **Prec_Point_Cloud.py** is the new 'all in one' version of James et al. which produces a point cloud of mean location and an x, y and z precision estimate for each point.
 
-**precision_estimates.py** is the original python script published by James et al. (with some minor changes for running from cmd and testing). Produces a folder with all montecarlo outputs and additional output info (some of which is not relevant here...).
+**original_precision_estimates.py** is the original python script published by James et al. (with some minor changes for running from cmd and testing). Produces a folder with all montecarlo outputs and additional output info (some of which is not relevant here...).
 
 **Set_tp_mark_acc.py** sets the project tie point and marker accuracies to the mean of the tie point marker RMSE values. This is specified in the James et al. documentation. Need to confirm that marker accuracy should also be changed (as it is now). Also may want to consider importing and running in the Prec_Point.py script to save this preprocessing step.
 
