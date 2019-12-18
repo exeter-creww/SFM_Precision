@@ -8,46 +8,8 @@ import numpy as np  #
 from plyfile import PlyData  #
 from tqdm import tqdm  #
 
-
-startTime = datetime.now()
-print("Script start time: " + str(startTime))
-
-### Specify parameters
-# Specify file path to project. Tested with .psz, need to verify with .psx?
-filename = os.path.abspath("C:/HG_Projects/CWC_Drone_work/pia_plots/P3E1.psz")
-# filename = os.path.abspath("C:/HG_Projects/CWC_Drone_work/pia_plots/P3E1.psz")
-# filename = os.path.abspath("C:/HG_Projects/CWC_Drone_work/17_02_15_Danes_Mill/17_02_15_DanesCroft_Vprc.psx")
-fold_path = os.path.abspath("C:/HG_Projects/CWC_Drone_work/HG_Retest_Pia_1000_it")
-# fold_path = os.path.abspath("C:/HG_Projects/CWC_Drone_work/HG_Retest_CWC_10it")
-if os.path.exists(fold_path):
-    print("output folder exists")
-else:
-    print("creating output folder")
-    os.mkdir(fold_path)
-# dir_path = os.path.abspath('C:/HG_Projects/CWC_Drone_work/HG_Retest_Pia')
-# act_ctrl_file = 'active_ctrl_indices.txt'
-
 # Define how many times bundle adjustment (MetaShape 'optimisation') will be carried out.
 # 4000 recommended by James et al. as a reasonable starting point.
-num_iterations = 1000
-
-retrieve_shape_only_Prec = False
-
-# Set desired optimisation params here:
-# Need to update this to use whatever parameters are currently enabled in the chunk.
-optimise_f = True
-optimise_cx = True
-optimise_cy = True
-optimise_b1 = False
-optimise_b2 = False
-optimise_k1 = True
-optimise_k2 = True
-optimise_k3 = True
-optimise_k4 = False
-optimise_p1 = False
-optimise_p2 = False
-optimise_p3 = False
-optimise_p4 = False
 
 # For efficiency of read and write, we have maintained the original handling of intermediate MonteCarlo files.
 # An offset is calculated and applied to all points whic are then  written in .ply format.
@@ -56,14 +18,117 @@ optimise_p4 = False
 ###################################   END OF SETUP   ###################################
 ########################################################################################
 
-def KickOff():
-    dir_path = os.path.join(fold_path, 'Monte_Carlo_output')
-    os.makedirs(dir_path, exist_ok=True)
-    NaN = float('NaN')
+def Proj_SetUp():
+    print("setting up folder structure")
+
+    docu = Metashape.app.document
+
+    file_name = os.path.basename(docu.path)[:-4]
+    home = os.path.dirname(docu.path)
+
+    direc_path = os.path.join(home, file_name + '_SFM_PREC')
+    if os.path.exists(direc_path):
+        pass
+    else:
+        os.makedirs(direc_path)
+
+    return docu, direc_path, file_name
+
+def Set_Camera_Params(p_list):
+
+    if 'fit_f' in p_list:
+        optimise_f = True
+    else:
+        optimise_f = False
+
+    if 'fit_cx' in p_list:
+        optimise_cx = True
+    else:
+        optimise_cx = False
+    if 'fit_cy' in p_list:
+        optimise_cy = True
+    else:
+        optimise_cy = False
+    if 'fit_b1' in p_list:
+        optimise_b1 = True
+    else:
+        optimise_b1 = False
+    if 'fit_b2' in p_list:
+        optimise_b2 = True
+    else:
+        optimise_b2 = False
+    if 'fit_k1' in p_list:
+        optimise_k1 = True
+    else:
+        optimise_k1 = False
+    if 'fit_k2' in p_list:
+        optimise_k2 = True
+    else:
+        optimise_k2 = False
+    if 'fit_k3' in p_list:
+        optimise_k3 = True
+    else:
+        optimise_k3 = False
+    if 'fit_k4' in p_list:
+        optimise_k4 = True
+    else:
+        optimise_k4 = False
+    if 'fit_p1' in p_list:
+        optimise_p1 = True
+    else:
+        optimise_p1 = False
+    if 'fit_p2' in p_list:
+        optimise_p2 = True
+    else:
+        optimise_p2 = False
+    if 'fit_p3' in p_list:
+        optimise_p3 = True
+    else:
+        optimise_p3 = False
+    if 'fit_p4' in p_list:
+        optimise_p4 = True
+    else:
+        optimise_p4 = False
+
+    return optimise_f, optimise_cx, optimise_cy, optimise_b1,\
+           optimise_b2, optimise_k1, optimise_k2, optimise_k3,\
+           optimise_k4, optimise_p1, optimise_p2, optimise_p3,\
+           optimise_p4
+
+
+def Run(num_iterations, *args, **kwargs):
+    startTime = datetime.now()
+
+    doc, dir_path, file_name = Proj_SetUp()
+
+    retrieve_shape_only_Prec = kwargs.get('shape_only_Prec', False)
+    params_list = kwargs.get('params_list', [])
+
+    # retrieve_shape_only_Prec = False
+    if len(params_list) > 0:
+        optimise_f, optimise_cx, optimise_cy, optimise_b1, \
+        optimise_b2, optimise_k1, optimise_k2, optimise_k3, \
+        optimise_k4, optimise_p1, optimise_p2, optimise_p3, \
+        optimise_p4 = Set_Camera_Params(params_list)
+    else:
+        print("no params provided - using default optimization params")
+        # these are the params described in James, et al. 2017 paper... use as defaults when no preference given.
+        optimise_f = True
+        optimise_cx = True
+        optimise_cy = True
+        optimise_b1 = True
+        optimise_b2 = True
+        optimise_k1 = True
+        optimise_k2 = True
+        optimise_k3 = False
+        optimise_k4 = False
+        optimise_p1 = True
+        optimise_p2 = True
+        optimise_p3 = False
+        optimise_p4 = False
+
+    NaN = float('NaN') # Recomend that these are not chnged - enforces the calculation of offsets automatically
     pts_offset = Metashape.Vector([NaN, NaN, NaN])
-    # Initialisation
-    doc = Metashape.app.document
-    doc.open(filename, read_only=False)
 
     chunk_orig = doc.chunk
     chunk = chunk_orig.copy()
@@ -88,45 +153,11 @@ def KickOff():
 
     tiepoint_acc = (round(reproj_error, 2))
     chunk.tiepoint_accuracy = tiepoint_acc
-    chunk.marker_projection_accuracy = tiepoint_acc
-    doc.save()
+    # chunk.marker_projection_accuracy = tiepoint_acc # leave the project setting for now.
 
-
-def calc_reprojection_error(chunk, points, projections):
-
-    npoints = len(points)
-
-    photo_avg = []
-
-    for camera in chunk.cameras:
-        if not camera.transform:
-            continue
-        point_index = 0
-        photo_num = 0
-        photo_err = 0
-        for proj in projections[camera]:
-            track_id = proj.track_id
-            while point_index < npoints and points[point_index].track_id < track_id:
-                point_index += 1
-            if point_index < npoints and points[point_index].track_id == track_id:
-                if not points[point_index].valid:
-                    continue
-
-                dist = camera.error(points[point_index].coord, proj.coord).norm() ** 2  # get the square error for each point in camera
-
-                photo_num += 1  # counts number of points per camera
-                photo_err += dist  # creates list of square point errors
-
-        photo_avg.append(math.sqrt(photo_err / photo_num))  # get root mean square error for each camera
-
-    return photo_avg  # returns list of rmse values for each camera
-
-
-    main()
-        
     point_proj = chunk.point_cloud.projections
 
-    # Need CoordinateSystem object, but PS only returns 'None' if an arbitrary coordinate system is being used
+    # Need CoordinateSystem object, but MS only returns 'None' if an arbitrary coordinate system is being used
     # thus need to set manually in this case; otherwise use the Chunk coordinate system.
 
     if chunk.crs is None:
@@ -134,12 +165,6 @@ def calc_reprojection_error(chunk, points, projections):
         chunk.crs = crs
     else:
         crs = chunk.crs
-
-    # Find which markers are enabled for use as control points in the bundle adjustment
-    act_marker_flags = []
-    for marker in chunk.markers:
-        act_marker_flags.append(marker.reference.enabled)
-    num_act_markers = sum(act_marker_flags)
 
     # Find which camera orientations are enabled for use as control in the bundle adjustment
     act_cam_orient_flags = []
@@ -189,21 +214,15 @@ def calc_reprojection_error(chunk, points, projections):
         pts_offset[1] = round(pts_offset[1], -2)
         pts_offset[2] = round(pts_offset[2], -2)
 
-    # Save the used offset to text file
-    # with open(os.path.join(fold_path, '_coordinate_local_origin.txt'), "w") as f:
-    #     fwriter = csv.writer(f, dialect='excel-tab', lineterminator='\n')
-    #     fwriter.writerow(pts_offset)
-    #     f.close()
-
-    # Export a text file of observation distances and ground dimensions of pixels from which relative precisions can be calculated
-    # File will have one row for each observation, and three columns:
+    # Export a text file of observation distances and ground dimensions of pixels from which
+    # relative precisions can be calculated. File will have one row for each observation, and three columns:
     # cameraID      ground pixel dimension (m)   observation distance (m)
     points = chunk.point_cloud.points
     npoints = len(points)
     camera_index = 0
 
     if retrieve_shape_only_Prec is True:
-        retrieve_shape_precision(chunk, camera_index, npoints, points)
+        retrieve_shape_precision(chunk, camera_index, npoints, points, dir_path)
     else:
         print("Shape Precision values not requested... Skipping export")
 
@@ -215,6 +234,7 @@ def calc_reprojection_error(chunk, points, projections):
 
     # Make a copy of the chunk to use as a zero-error reference chunk
     original_chunk = chunk.copy()
+    original_chunk.label = 'MC copy'
 
     # Set the original_marker locations be zero error, from which we can add simulated error
     print("iterating markers - setting zero error")
@@ -260,20 +280,45 @@ def calc_reprojection_error(chunk, points, projections):
     # Run the monteCarlo Stuff
     MonteCarloJam(num_act_cam_orients, chunk, original_chunk, point_proj,
                   original_point_proj, tie_proj_x_stdev, tie_proj_y_stdev,
-                  marker_proj_x_stdev, marker_proj_y_stdev, num_act_markers,
-                  crs, pts_offset, dir_path, dimen)
+                  marker_proj_x_stdev, marker_proj_y_stdev, file_name,
+                  crs, pts_offset, dir_path, dimen, num_iterations,
+                  optimise_f, optimise_cx, optimise_cy, optimise_b1,
+                  optimise_b2, optimise_k1, optimise_k2, optimise_k3,
+                  optimise_k4, optimise_p1, optimise_p2, optimise_p3,
+                  optimise_p4)
+
+    # Tidying up - deleting temp chunks.
+    rem_chunks = ['Monte Carlo chunk', 'MC copy']
+    c_list = []
+
+    for c in doc.chunks:
+        if c.label in rem_chunks:
+            pass
+        else:
+            c_list.append(c)
+
+    doc.chunks = c_list
+
+    TotTime = datetime.now() - startTime
+    print("Precision Analysis Run time: " + str(TotTime))
 
 
+#########################################################################################
+######### Main set of nested loops which control the repeated bundle adjustment #########
+#########################################################################################
 def MonteCarloJam(num_act_cam_orients, chunk, original_chunk, point_proj,
                   original_point_proj, tie_proj_x_stdev, tie_proj_y_stdev,
-                  marker_proj_x_stdev, marker_proj_y_stdev, num_act_markers,
-                  crs, pts_offset, dir_path, dimen):
+                  marker_proj_x_stdev, marker_proj_y_stdev, file_name,
+                  crs, pts_offset, dir_path, dimen, num_iterations,
+                  optimise_f, optimise_cx, optimise_cy, optimise_b1,
+                  optimise_b2, optimise_k1, optimise_k2, optimise_k3,
+                  optimise_k4, optimise_p1, optimise_p2, optimise_p3,
+                  optimise_p4):
 
-    print("Pre Loop Time: " + str(datetime.now() - startTime))
     file_idx = 0
+    n_size_err = 0
     prec_val = 100000000
-    ########################################################################################
-    # Main set of nested loops which control the repeated bundle adjustment
+
     for line_ID in tqdm(range(0, num_iterations)):
         file_idx += 1
         # Reset the camera coordinates if they are used for georeferencing
@@ -359,6 +404,7 @@ def MonteCarloJam(num_act_cam_orients, chunk, original_chunk, point_proj,
 
         if check_dim != dimen:
             print("size issue!!!!!!!!!!!!!!!!!!!")
+            n_size_err += 1
             del plydata, ply_arr
             continue
 
@@ -368,8 +414,8 @@ def MonteCarloJam(num_act_cam_orients, chunk, original_chunk, point_proj,
             dimen = np.shape(ply_arr)
             start_arr = np.zeros(dimen)
 
-            Agg = (0, start_arr, ply_arr * prec_val, ply_arr * prec_val)
-
+            # Agg = (0, start_arr, ply_arr * prec_val, ply_arr * prec_val)
+            Agg = (0, ply_arr * prec_val, ply_arr * prec_val)
 
         Agg = update(Agg, int_arr)
 
@@ -380,15 +426,15 @@ def MonteCarloJam(num_act_cam_orients, chunk, original_chunk, point_proj,
     stdev_arr = np.sqrt(variance) / prec_val
     mean_arr = mean / prec_val
     # sv_std = np.sqrt(sampleVariance)
-    print(np.mean(stdev_arr))
 
-    out_cloud_path = os.path.join(dir_path, 'Final_PointCloud.txt')
+    out_cloud_path = os.path.join(dir_path, file_name +'_Prec_Cloud.txt')
 
     combined = np.concatenate((mean_arr, stdev_arr), axis=1)
     nested_lst_of_tuples = [tuple(l) for l in combined]
     comb_arr = np.array(nested_lst_of_tuples,
                         dtype=[('x', 'f8'), ('y', 'f8'),
-                               ('z', 'f8'), ('xerr', 'f8'), ('yerr', 'f8'),
+                               ('z', 'f8'), ('x'
+                                             'err', 'f8'), ('yerr', 'f8'),
                                ('zerr', 'f8')])
 
     comb_arr['x'] = comb_arr['x'] + pts_offset[0]
@@ -401,44 +447,73 @@ def MonteCarloJam(num_act_cam_orients, chunk, original_chunk, point_proj,
     if os.path.exists(os.path.join(dir_path, 'Temp_PointCloud.ply')):
         os.remove(os.path.join(dir_path, 'Temp_PointCloud.ply'))
 
+    if n_size_err > 0:
+        print("############   WARNING   ############")
+        print("{0} out of {1} iterations skipped...".format(n_size_err, num_iterations))
+        print("Results based on {0} iterations.".format(num_iterations-n_size_err))
+
 
 def update(existingAggregate, newValue):
-    (n, count, mean, M2) = existingAggregate
-    n += 1
-    count = count.__iadd__(1)
-    delta = np.subtract(newValue, mean)
-    mean = mean.__iadd__(np.divide(delta, count))
-    # mean += np.divide(delta, count)
-    delta2 = np.subtract(newValue, mean)
-    M2 = M2.__iadd__(np.multiply(delta, delta2))
-    # M2 += delta * delta2
 
-    return (n, count, mean, M2)
+    (count, mean, M2) = existingAggregate
+
+    count += 1
+    delta = newValue - mean
+    mean += np.divide(delta, count)
+    delta2 = newValue - mean
+    M2 += delta * delta2
+
+    return count, mean, M2
+
 
 # Retrieve the mean, variance and sample variance from an aggregate
 def finalize(existingAggregate):
-    (n, count, mean, M2) = existingAggregate
+    (count, mean, M2) = existingAggregate
     (mean, variance, sampleVariance) = (mean, M2 / count, M2 / (count - 1))
-    if n < 2:
+    if count < 2:
         return float('nan')
     else:
-        return (mean, variance, sampleVariance)
+        return mean, variance, sampleVariance
 
-def retrieve_shape_precision(chunk, camera_index, npoints, points):
-    with open(os.path.join(fold_path,'_observation_distances.txt'), "w") as f:
+
+def calc_reprojection_error(chunk, points, projections):
+
+    npoints = len(points)
+
+    photo_avg = []
+
+    for camera in chunk.cameras:
+        if not camera.transform:
+            continue
+        point_index = 0
+        photo_num = 0
+        photo_err = 0
+        for proj in projections[camera]:
+            track_id = proj.track_id
+            while point_index < npoints and points[point_index].track_id < track_id:
+                point_index += 1
+            if point_index < npoints and points[point_index].track_id == track_id:
+                if not points[point_index].valid:
+                    continue
+
+                dist = camera.error(points[point_index].coord, proj.coord).norm() ** 2  # get the square error for each point in camera
+
+                photo_num += 1  # counts number of points per camera
+                photo_err += dist  # creates list of square point errors
+
+        photo_avg.append(math.sqrt(photo_err / photo_num))  # get root mean square error for each camera
+
+    return photo_avg  # returns list of rmse values for each camera
+
+def retrieve_shape_precision(chunk, camera_index, npoints, points, dir_path):
+    with open(os.path.join(dir_path,'observation_distances.txt'), "w") as f:
         fwriter = csv.writer(f, dialect='excel-tab', lineterminator='\n')
         for camera in chunk.cameras:
             camera_index += 1
             if not camera.transform:
                 continue
 
-            fx = camera.sensor.calibration.fx
-
-            # Accommodate change in attribute name in v.1.2.5
-            # try:
-            #    fx = camera.sensor.calibration.fx
-            # except AttributeError:
-            #     fx = camera.sensor.calibration.f
+            fx = camera.sensor.calibration.f
 
             point_index = 0
             for proj in chunk.point_cloud.projections[camera]:
@@ -453,10 +528,3 @@ def retrieve_shape_precision(chunk, camera_index, npoints, points):
                     fwriter.writerow([camera_index, '{0:.4f}'.format(dist / fx), '{0:.2f}'.format(dist)])
 
         f.close()
-
-# Metashape.app.document.remove([original_chunk])
-
-
-if __name__ == '__main__':
-    KickOff()
-    print("Total Time: " + str(datetime.now() - startTime))
