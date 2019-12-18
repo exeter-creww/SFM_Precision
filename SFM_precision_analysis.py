@@ -88,7 +88,7 @@ def KickOff():
 
     tiepoint_acc = (round(reproj_error, 2))
     chunk.tiepoint_accuracy = tiepoint_acc
-    chunk.marker_projection_accuracy = tiepoint_acc
+    # chunk.marker_projection_accuracy = tiepoint_acc
     doc.save()
 
 
