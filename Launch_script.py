@@ -1,4 +1,4 @@
-import SFM_precision_analysis
+import SFM_precision
 import Metashape
 import os
 
@@ -16,7 +16,7 @@ def main():
     doc.open(filename, read_only=False)
 
     # SFM_precision_analysis.Run(num_iterations=n_its, shape_only_Prec=True, params_list=params) # full options
-    SFM_precision_analysis.Run(num_iterations=n_its)  # what we really need...
+    SFM_precision.Run(num_iterations=n_its)  # what we really need...
 
     doc.save()
 
