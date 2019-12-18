@@ -1,7 +1,7 @@
 # SFM_Precision
 A python workflow to create precision maps with Agisoft MetaShape.
 
-(Developed after: James, M., Robson, S., and Smith M (2017) ‘3-D Uncertainty-Based Topographic Change Detection with Structure-from-Motion Photogrammetry: Precision Maps for Ground Control and Directly Georeferenced Surveys’. Earth Surface Processes and Landforms 42(12):1769–88. https://doi.org/10.1002/esp.4125).
+(Developed as a more scaleable implementation after: James, M., Robson, S., and Smith M (2017) ‘3-D Uncertainty-Based Topographic Change Detection with Structure-from-Motion Photogrammetry: Precision Maps for Ground Control and Directly Georeferenced Surveys’. Earth Surface Processes and Landforms 42(12):1769–88. https://doi.org/10.1002/esp.4125).
 
 Before running SFM_precision_analysis.py, run the falling (in cmd.exe) to install dependencies in the Metashape environment:
 
