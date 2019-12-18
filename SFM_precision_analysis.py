@@ -27,9 +27,9 @@ else:
 # dir_path = os.path.abspath('C:/HG_Projects/CWC_Drone_work/HG_Retest_Pia')
 # act_ctrl_file = 'active_ctrl_indices.txt'
 
-# Define how many times bundle adjustment (MetaShape 'optimisation') will be carried out.
-# 4000 recommended by James et al. as a reasonable starting point.
-num_iterations = 1000
+# Specify number of iterations for Monte Carlo (i.e. bundle adjustment using MetaShape's 'optimisation').
+# James et al. 2017 recommended 4000 iterations as a reasonable starting point.
+num_iterations = 4000
 
 retrieve_shape_only_Prec = False
 
