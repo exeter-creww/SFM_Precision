@@ -10,6 +10,7 @@ Before running SFM_precision_analysis.py, run the falling (in cmd.exe) to instal
 Then if you want to add this as a module in the Metashape python distribution just copy SFM_precision_analysis.py into 
 this folder: "C:\Program Files\Agisoft\Metashape Pro\python\Lib\site-packages". Then the module can be used in custom 
 scripts or called directly from the metashape console with:
+
 import SFM_precision_analysis
 SFM_precision_analysis.Run()
 
@@ -23,10 +24,11 @@ as False. Enter desired params in list as follows:
 'fit_k2', 'fit_k3', 'fit_k4','fit_p1', 'fit_p2', 'fit_p3', 'fit_p4']
 If no arg is provided then default parameters are selected based on James, et al. 2017.
 
-**SFM_precision_analysis.py** is the new version of the original SfM precision code published by James et al. 2017, which produces a sparse point cloud of mean location and x, y and z precision estimate for each tie point, based on Monte Carlo analysis in Metashape.
+**SFM_precision_analysis.py** is the new version of the original SfM precision code published by James et al. 2017, which is a module that produces a sparse point cloud of mean location and x, y and z precision estimate for each tie point, based on Monte Carlo analysis in Metashape.
 
-**original_precision_estimates.py** is the original python script published by James et al. (with some minor changes for running from cmd and testing). Produces a folder with all montecarlo outputs and additional output info (some of which is not relevant here...).
+**SS/original_precision_estimates.py** is the original python script published by James et al. (with some minor changes for running from cmd and testing). Produces a folder with all montecarlo outputs and additional output info (some of which is not relevant here...).
 
 **Create_Prec_Raster.py** is an example of creating a precision map (raster) from the precision point cloud. NB. this cannot be combined into the MetaShape script because the required modules cannot be imported into the metashape environment. Other point2grid approaches could be used for this, and it is essential for users to specify the parameters used (e.g. spatial resolution etc.) depending on their application.
 
+**Launch_script.py** is an example launch script for the SFM_precision_analysis module
 
