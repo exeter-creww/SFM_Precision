@@ -1,20 +1,21 @@
-import Metashape
-import random
-import math
-import csv
-import os
-from datetime import datetime
-import numpy as np
-from plyfile import PlyData
-from tqdm import tqdm
+import Metashape  # V1.5.0
+import random  #
+import math  #
+import csv  #
+import os  #
+from datetime import datetime  #
+import numpy as np  #
+from plyfile import PlyData  #
+from tqdm import tqdm  #
 
 
 startTime = datetime.now()
 print("Script start time: " + str(startTime))
 
-
+### Specify parameters
 # Specify file path to project. Tested with .psz, need to verify with .psx?
 filename = os.path.abspath("C:/HG_Projects/CWC_Drone_work/pia_plots/P3E1.psz")
+# filename = os.path.abspath("C:/HG_Projects/CWC_Drone_work/pia_plots/P3E1.psz")
 # filename = os.path.abspath("C:/HG_Projects/CWC_Drone_work/17_02_15_Danes_Mill/17_02_15_DanesCroft_Vprc.psx")
 fold_path = os.path.abspath("C:/HG_Projects/CWC_Drone_work/HG_Retest_Pia_1000_it")
 # fold_path = os.path.abspath("C:/HG_Projects/CWC_Drone_work/HG_Retest_CWC_10it")
@@ -30,10 +31,10 @@ else:
 # 4000 recommended by James et al. as a reasonable starting point.
 num_iterations = 1000
 
-retrieve_shape_vals = False
+retrieve_shape_only_Prec = False
 
 # Set desired optimisation params here:
-
+# Need to update this to use whatever parameters are currently enabled in the chunk.
 optimise_f = True
 optimise_cx = True
 optimise_cy = True
@@ -48,16 +49,13 @@ optimise_p2 = False
 optimise_p3 = False
 optimise_p4 = False
 
-# Points are exported as floats in binary ply files for speed and size, and thus cannot represent very small changes
-# in large geographic coordinates. Thus, the offset below can be set to form a local origin and ensure numerical
-# precision is not lost when coordinates are saved as floats. The offset will be subtracted from point coordinates.
-# [RECOMMENDED] - Leave as NaN; the script will automatically calculate and apply a suitable offset, which will be saved
-# as a text file for further processing, OR edit the line to impose a specific offset of your choice - 
-# e.g.  pts_offset = Metashape.Vector( [266000, 4702000, 0] )
-
+# For efficiency of read and write, we have maintained the original handling of intermediate MonteCarlo files.
+# An offset is calculated and applied to all points whic are then  written in .ply format.
+# The final result is then re-projected using the saved offsets.
 
 ###################################   END OF SETUP   ###################################
 ########################################################################################
+
 def KickOff():
     dir_path = os.path.join(fold_path, 'Monte_Carlo_output')
     os.makedirs(dir_path, exist_ok=True)
@@ -73,7 +71,59 @@ def KickOff():
 
     if chunk.dense_cloud is not None:
         chunk.dense_cloud = None
+    
+    # Functions to set the tie point and marker accuracies to the mean of the tie point marker RMSE values. (SOME MORE INTEGRATION MIGHT BE NEEDED!)
+    # This is specified in the James et al. documentation, but we still want to double check setting marker accuracy in this way is also 
+    # correct (as it is now).
+    
+    point_cloud = chunk.point_cloud
+    points = point_cloud.points
+    projections = chunk.point_cloud.projections
+    total_error = calc_reprojection_error(chunk, points, projections)  # calculate reprojection error
 
+    reproj_error = sum(total_error) / len(total_error)  # get average RMSE for all cameras
+
+    print("mean reprojection error for point cloud:")
+    print(round(reproj_error, 3))
+
+    tiepoint_acc = (round(reproj_error, 2))
+    chunk.tiepoint_accuracy = tiepoint_acc
+    chunk.marker_projection_accuracy = tiepoint_acc
+    doc.save()
+
+
+def calc_reprojection_error(chunk, points, projections):
+
+    npoints = len(points)
+
+    photo_avg = []
+
+    for camera in chunk.cameras:
+        if not camera.transform:
+            continue
+        point_index = 0
+        photo_num = 0
+        photo_err = 0
+        for proj in projections[camera]:
+            track_id = proj.track_id
+            while point_index < npoints and points[point_index].track_id < track_id:
+                point_index += 1
+            if point_index < npoints and points[point_index].track_id == track_id:
+                if not points[point_index].valid:
+                    continue
+
+                dist = camera.error(points[point_index].coord, proj.coord).norm() ** 2  # get the square error for each point in camera
+
+                photo_num += 1  # counts number of points per camera
+                photo_err += dist  # creates list of square point errors
+
+        photo_avg.append(math.sqrt(photo_err / photo_num))  # get root mean square error for each camera
+
+    return photo_avg  # returns list of rmse values for each camera
+
+
+    main()
+        
     point_proj = chunk.point_cloud.projections
 
     # Need CoordinateSystem object, but PS only returns 'None' if an arbitrary coordinate system is being used
@@ -152,7 +202,7 @@ def KickOff():
     npoints = len(points)
     camera_index = 0
 
-    if retrieve_shape_vals is True:
+    if retrieve_shape_only_Prec is True:
         retrieve_shape_precision(chunk, camera_index, npoints, points)
     else:
         print("Shape Precision values not requested... Skipping export")
@@ -382,11 +432,13 @@ def retrieve_shape_precision(chunk, camera_index, npoints, points):
             if not camera.transform:
                 continue
 
+            fx = camera.sensor.calibration.fx
+
             # Accommodate change in attribute name in v.1.2.5
-            try:
-                fx = camera.sensor.calibration.fx
-            except AttributeError:
-                fx = camera.sensor.calibration.f
+            # try:
+            #    fx = camera.sensor.calibration.fx
+            # except AttributeError:
+            #     fx = camera.sensor.calibration.f
 
             point_index = 0
             for proj in chunk.point_cloud.projections[camera]:
