@@ -3,16 +3,26 @@ A python workflow to create precision maps with Agisoft MetaShape.
 
 (Developed after: James, M., Robson, S., and Smith M (2017) ‘3-D Uncertainty-Based Topographic Change Detection with Structure-from-Motion Photogrammetry: Precision Maps for Ground Control and Directly Georeferenced Surveys’. Earth Surface Processes and Landforms 42(12):1769–88. https://doi.org/10.1002/esp.4125).
 # 
-### Installation
-Run the falling (in cmd.exe) to install dependencies in the Metashape environment:
+### Dependencies
+The SFM Precision Module requires Agisoft Metashape version 1.5.4 (*tested only on Windows*)
+The Metashape Python API is used to carry out the repeated randomised camera optimisations.  
+This script requires the following external python modules:  
+numpy: https://numpy.org/  
+plyfile: https://github.com/dranjan/python-plyfile  
+tqdm: https://tqdm.github.io/  
 
-"C:\Program Files\Agisoft\Metashape Pro\python\python.exe" -m pip install numpy tqdm plyfile
+Install these modules in Metshape's python distributon by running the following (in cmd.exe):      
+`"C:\Program Files\Agisoft\Metashape Pro\python\python.exe" -m pip install numpy tqdm plyfile` 
 
-Then if you want to add this as a module in the Metashape python distribution just copy SFM_precision.py into 
+### Installation  
+
+Then, if you want to add this as a module in the Metashape python distribution, just copy SFM_precision.py into 
 this folder: "C:\Program Files\Agisoft\Metashape Pro\python\Lib\site-packages". Then the module can be used in custom 
-scripts or called directly from the metashape console with:
+scripts or called directly from the metashape console.  
+
 #
 ### Run SFM Prcision Analysis
+
 `import SFM_precision`
   
 `params = ['fit_f', 'fit_cx', 'fit_cy','fit_b1', 'fit_b2', 'fit_k1',  
