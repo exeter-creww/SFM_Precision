@@ -28,6 +28,7 @@ class ppc:
         self.things = None
         self.min_res = None
         self.pcdata = None
+        self.raster = None
 
     def readPC_xyerr(self):
         pcdata = np.loadtxt(self.ppc, delimiter=' ', skiprows=1,
@@ -44,52 +45,52 @@ class ppc:
 
         self.things = 'a whole new thing'
 
-        startTime = datetime.now()
-        print("Total Time: " + str(datetime.now() - startTime))  # get the time
         print("starting pipeline")
-        #
-        #
 
-        #
-        # if res < 0.005:
-        #     print("maimum xy error is < 1m, setting Raster resolution to 1m")
-        #     res = 0.005
-        # # if res < 1:
-        # #     print("maimum xy error is < 1m, setting Raster resolution to 1m")
-        # #     res = 1
+        if self.res < self.min_res:
+            self.res = self.min_res
 
-        # with tempfile.TemporaryFile() as tmp:
-        #     # Do stuff with tmp
-        #     tmp.write('stuff')
+        # tmp = tempfile.NamedTemporaryFile(suffix='.tif', mode='w+b').name
+        tmp_fold = tempfile.mkdtemp()
+        tmp = os.path.join(tmp_fold, 'temp_pc.tif')
 
-        # dtm_gen = {
-        #     "pipeline":[
-        #         {
-        #             "type": "readers.text",
-        #             "filename":  pc_filename
-        #         },
+        dtm_gen = {
+            "pipeline": [
+                {
+                    "type": "readers.text",
+                    "filename":  self.ppc
+                },
+
+                {
+                    "type":"writers.gdal",
+                    "filename": tmp,  # output file name
+                    "resolution": self.res,
+                    "dimension": "zerr",  # raster resolution
+                    # "radius": res*2,  # radius in which to search for other points
+                    "output_type": "all",  # creates a multiband raster with: min, max, mean, idw, count, stdev
+                    # "output_type": "stdev",  # use this if you just want a single band output for e.g. stdev
+                    "window_size": 20 # changes the search area around an empty cell - second stage of algorithm
+
+                },                       # may want this value to be a bit smaller than at present...
+
+            ]
+        }
+
+        pipeline = pdal.Pipeline(json.dumps(dtm_gen)) # define the pdal pipeline
+        pipeline.validate()  # validate the pipeline
+        pipeline.execute()   #  run the pipeline
         #
-        #         {
-        #             "type":"writers.gdal",
-        #             "filename": out_dem,  # output file name
-        #             "resolution": res,
-        #             "dimension": "zerr",  # raster resolution
-        #             # "radius": res*2,  # radius in which to search for other points
-        #             "output_type": "all",  # creates a multiband raster with: min, max, mean, idw, count, stdev
-        #             # "output_type": "stdev",  # use this if you just want a single band output for e.g. stdev
-        #             "window_size": 20 # changes the search area around an empty cell - second stage of algorithm
         #
-        #         },                       # may want this value to be a bit smaller than at present...
-        #
-        #     ]
-        # }
-        #
-        # pipeline = pdal.Pipeline(json.dumps(dtm_gen)) # define the pdal pipeline
-        # pipeline.validate()  # validate the pipeline
-        # pipeline.execute()   #  run the pipeline
-        #
-        #
-        # dataset = rasterio.open(out_dem)
+        self.raster = rasterio.open(tmp)
+
+
+        try:
+            os.remove(tmp)
+        except OSError as e:
+            print(e)
+            pass
+
+
         #
         # # fig = plt.gcf()
         # # show(dataset, cmap='magma')
@@ -119,9 +120,9 @@ class ppc:
 
 
 
-    def zero_to_nan(self, arr):
-        """Replace every -999 with 'nan' and return a copy."""
-        arr[arr < 0] = np.nan
-        return arr
+    # def zero_to_nan(self, arr):
+    #     """Replace every -999 with 'nan' and return a copy."""
+    #     arr[arr < 0] = np.nan
+    #     return arr
 
 # if __name__ == "__main__":
