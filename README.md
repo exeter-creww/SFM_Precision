@@ -75,7 +75,7 @@ parameters used (e.g. spatial resolution etc.) depending on their application.
 
 #
 #### Example Results...
-Here are some examples of z precision maps produced using this module:  
+Here are some examples of z precision maps produced using the point cloud output from this module:  
 
 ![CWC example](./Example_Images/CWC_example.png)  
 &nbsp;
