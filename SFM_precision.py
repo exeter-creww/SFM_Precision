@@ -343,9 +343,10 @@ def MonteCarloJam(num_act_cam_orients, chunk, original_chunk, point_proj,
                              plydata.elements[0].data['z']]).transpose()
 
         check_dim = np.shape(ply_arr)
-
+        
+        # Check array size is are consistent. Inconsistent arrarys can occur if tie point locations move across the reconstruction region bounding box.
         if check_dim != dimen:
-            print("size issue!!!!!!!!!!!!!!!!!!!")
+            print("Inconsistent array dimension, iteration discarded")  
             n_size_err += 1
             del plydata, ply_arr
             continue
