@@ -1,7 +1,7 @@
 # SFM_Precision
 A python workflow to create precision maps with Agisoft MetaShape.
 
-(Developed after: James, M., Robson, S., and Smith M (2017) ‘3-D Uncertainty-Based Topographic Change Detection with  
+(Developed after: James, M., Robson, S., and Smith M. (2017) ‘3-D Uncertainty-Based Topographic Change Detection with  
 Structure-from-Motion Photogrammetry: Precision Maps for Ground Control and Directly Georeferenced Surveys’.  
 Earth Surface Processes and Landforms 42(12):1769–88. https://doi.org/10.1002/esp.4125).
 
@@ -13,7 +13,7 @@ space efficient as it does not require the storage of all point clouds.
 The SFM Precision Module requires Agisoft Metashape version 1.5.4 (*tested only on Windows*)
 The Metashape Python API is used to carry out the repeated randomised camera optimisations.  
 This script requires the following external python modules:  
-numpy: https://numpy.org/  
+numpy: https://numpy.org/
 plyfile: https://github.com/dranjan/python-plyfile  
 tqdm: https://tqdm.github.io/  
 
