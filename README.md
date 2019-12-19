@@ -29,6 +29,8 @@ scripts or called directly from the metashape console.
 #
 ### Run SFM Prcision Analysis
 
+Ensure that the marker accuracy (pix) is set appropriately in the Metashape project. 
+
 `import SFM_precision`
   
 `params = ['fit_f', 'fit_cx', 'fit_cy','fit_b1', 'fit_b2', 'fit_k1',  
