@@ -6,7 +6,7 @@ Structure-from-Motion Photogrammetry: Precision Maps for Ground Control and Dire
 Earth Surface Processes and Landforms 42(12):1769–88. https://doi.org/10.1002/esp.4125).
 
 This module uses Welford's online algorithm to calculate rolling standard deviation of point locations of a sparse cloud  
-in Metashape. This approach is space efficient as it does not require the storage of all point clouds. The point cloud is produced entirely in Metashape/python, simplifying the workflow. It assumes a meter-based coordinate reference system, and that precision vaues are only of interest to at most six decimal places.
+in Metashape. This approach is space efficient as it does not require the storage of all point clouds. The point cloud is produced entirely in Metashape/python, simplifying the workflow. It assumes a meter-based coordinate reference system, and that precision values are only of interest to at most six decimal places.
 # 
 ### Dependencies
 The SFM Precision Module requires Agisoft Metashape version 1.5.4 (*tested only on Windows*).
