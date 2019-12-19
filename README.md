@@ -10,7 +10,7 @@ in Metashape. The point cloud is produced entirely in Metshape/python, simplifyi
 space efficient as it does not require the storage of all point clouds. 
 # 
 ### Dependencies
-The SFM Precision Module requires Agisoft Metashape version 1.5.4 (*tested only on Windows*)
+The SFM Precision Module requires Agisoft Metashape version 1.5.4 (*tested only on Windows*).
 The Metashape Python API is used to carry out the repeated randomised camera optimisations.  
 This script requires the following external python modules:  
 numpy: https://numpy.org/
