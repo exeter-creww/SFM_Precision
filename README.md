@@ -13,9 +13,9 @@ space efficient as it does not require the storage of all point clouds.
 The SFM Precision Module requires Agisoft Metashape version 1.5.4 (*tested only on Windows*)
 The Metashape Python API is used to carry out the repeated randomised camera optimisations.  
 This script requires the following external python modules:  
-numpy: https://numpy.org/  
-plyfile: https://github.com/dranjan/python-plyfile  
-tqdm: https://tqdm.github.io/  
+numpy (1.17.4): https://numpy.org/  
+plyfile (0.7.1) : https://github.com/dranjan/python-plyfile  
+tqdm tqdm (4.40.0): https://tqdm.github.io/  
 
 Install these modules in Metshape's python distributon by running the following (in cmd.exe):      
 `"C:\Program Files\Agisoft\Metashape Pro\python\python.exe" -m pip install numpy tqdm plyfile` 
