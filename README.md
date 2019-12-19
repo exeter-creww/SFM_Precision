@@ -11,21 +11,36 @@ Run the falling (in cmd.exe) to install dependencies in the Metashape environmen
 Then if you want to add this as a module in the Metashape python distribution just copy SFM_precision_analysis.py into 
 this folder: "C:\Program Files\Agisoft\Metashape Pro\python\Lib\site-packages". Then the module can be used in custom 
 scripts or called directly from the metashape console with:
-
+#
+### Run SFM Prcision Analysis
 `import SFM_precision`
-
-`SFM_precision.Run(num_iterations=1000)`
-
+  
+`params = ['fit_f', 'fit_cx', 'fit_cy','fit_b1', 'fit_b2', 'fit_k1',  
+'fit_k2', 'fit_k3', 'fit_k4','fit_p1', 'fit_p2', 'fit_p3', 'fit_p4']`
+  
+`SFM_precision.Run(num_iterations=1000,  
+                   params_list=params,  
+                   shape_only_Prec=False,    
+                   export_log=True)`  
+                   
+#
 #### The following optional args can be used:
+**num_iterations**: (*integer*) The number of Monte Carlo iterations to undertake. James et al., suggest 4000
+                    This may take too long for large point clouds in which case 1000 is acceptable.
 
-**shape_only_Prec=False** # Default is False - if True then a file with observation distances is produced
+**params_list**: (*list*) This is a list with desired camera optimization parameters, submitting an empty list returns all params
+                 as False. Enter desired params in list as follows:  
+                    *['fit_f', 'fit_cx', 'fit_cy','fit_b1', 'fit_b2', 'fit_k1',  
+                    'fit_k2', 'fit_k3', 'fit_k4','fit_p1', 'fit_p2', 'fit_p3', 'fit_p4']*
+                 If no arg is provided then default parameters are selected based on James, et al. 2017.
+                    
+**shape_only_Prec**: (*Boolean*) Default is False - if True then a file with observation distances is produced
 
-**params_list=[]** # This is a list with desired camera optimization parameters, submitting an empty list returns all params
-as False. Enter desired params in list as follows:  
-['fit_f', 'fit_cx', 'fit_cy','fit_b1', 'fit_b2', 'fit_k1', 
-'fit_k2', 'fit_k3', 'fit_k4','fit_p1', 'fit_p2', 'fit_p3', 'fit_p4']
-If no arg is provided then default parameters are selected based on James, et al. 2017.
+**export_log**: (*Boolean*) Default is True - returns a log file containing information on the SFM precision Point Cloud 
+                generation.
 
+#
+### Description of scripts in repo...
 **SFM_precision.py** is the new version of the original SfM precision code published by James et al. 2017, which is a module that produces a sparse point cloud of mean location and x, y and z precision estimate for each tie point, based on Monte Carlo analysis in Metashape.
 
 **SS/original_precision_estimates.py** is the original python script published by James et al. (with some minor changes for running from cmd and testing). Produces a folder with all montecarlo outputs and additional output info (some of which is not relevant here...).

@@ -41,8 +41,8 @@ def Run(num_iterations, *args, **kwargs):
 
     doc, dir_path, file_name = Proj_SetUp()
 
-    retrieve_shape_only_Prec = kwargs.get('shape_only_Prec', False)
     params_list = kwargs.get('params_list', None)
+    retrieve_shape_only_Prec = kwargs.get('shape_only_Prec', False)
     export_log = kwargs.get('export_log', True)
     # retrieve_shape_only_Prec = False
     if isinstance(params_list, list) is True:
