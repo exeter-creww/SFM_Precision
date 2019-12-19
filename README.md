@@ -1,13 +1,12 @@
 # SFM_Precision
-A python workflow to create precision maps with Agisoft MetaShape.
+A python workflow to create precision maps with Agisoft Metashape.
 
 (Developed after: James, M., Robson, S., and Smith M. (2017) ‘3-D Uncertainty-Based Topographic Change Detection with  
 Structure-from-Motion Photogrammetry: Precision Maps for Ground Control and Directly Georeferenced Surveys’.  
 Earth Surface Processes and Landforms 42(12):1769–88. https://doi.org/10.1002/esp.4125).
 
 This module uses Welford's online algorithm to calculate rolling standard deviation of point locations of a sparse cloud  
-in Metashape. The point cloud is produced entirely in Metshape/python, simplifying the workflow. This approach is
-space efficient as it does not require the storage of all point clouds. 
+in Metashape. This approach is space efficient as it does not require the storage of all point clouds. The point cloud is produced entirely in Metashape/python, simplifying the workflow. 
 # 
 ### Dependencies
 The SFM Precision Module requires Agisoft Metashape version 1.5.4 (*tested only on Windows*).
