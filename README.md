@@ -1,7 +1,13 @@
 # SFM_Precision
 A python workflow to create precision maps with Agisoft MetaShape.
 
-(Developed after: James, M., Robson, S., and Smith M (2017) ‘3-D Uncertainty-Based Topographic Change Detection with Structure-from-Motion Photogrammetry: Precision Maps for Ground Control and Directly Georeferenced Surveys’. Earth Surface Processes and Landforms 42(12):1769–88. https://doi.org/10.1002/esp.4125).
+(Developed after: James, M., Robson, S., and Smith M (2017) ‘3-D Uncertainty-Based Topographic Change Detection with  
+Structure-from-Motion Photogrammetry: Precision Maps for Ground Control and Directly Georeferenced Surveys’.  
+Earth Surface Processes and Landforms 42(12):1769–88. https://doi.org/10.1002/esp.4125).
+
+This module uses Welford's online algorithm to calculate rolling standard deviation of point locations of a sparse cloud  
+in Metashape. The point cloud is produced entirely in Metshape/python, simplifying the workflow. This approach is
+space efficient as it does not require the storage of all point clouds. 
 # 
 ### Dependencies
 The SFM Precision Module requires Agisoft Metashape version 1.5.4 (*tested only on Windows*)
@@ -16,8 +22,8 @@ Install these modules in Metshape's python distributon by running the following 
 
 ### Installation  
 
-Then, if you want to add this as a module in the Metashape python distribution, just copy SFM_precision.py into 
-this folder: "C:\Program Files\Agisoft\Metashape Pro\python\Lib\site-packages". Then the module can be used in custom 
+Then, if you want to add this as a module in the Metashape python distribution, just copy SFM_precision.py into this   
+folder: "C:\Program Files\Agisoft\Metashape Pro\python\Lib\site-packages". Then the module can be used in custom 
 scripts or called directly from the metashape console.  
 
 #
@@ -53,11 +59,26 @@ Cloud generation.
 
 #
 ### Description of scripts in repo...
-**SFM_precision.py** is the new version of the original SfM precision code published by James et al. 2017, which is a module that produces a sparse point cloud of mean location and x, y and z precision estimate for each tie point, based on Monte Carlo analysis in Metashape.
+**SFM_precision.py** module based on code published by James et al. 2017, which produces a sparse point cloud of mean   
+location and x, y and z precision estimate for each tie point, based on Monte Carlo analysis in Metashape.
 
-**SS/original_precision_estimates.py** is the original python script published by James et al. (with some minor changes for running from cmd and testing). Produces a folder with all montecarlo outputs and additional output info (some of which is not relevant here...).
+**SS/original_precision_estimates.py** is the original python script published by James et al. (with some minor changes  
+for running from cmd and testing). Produces a folder with all montecarlo outputs and additional output info  
+(some of which is not relevant here...).
 
-**Create_Prec_Raster.py** is an example of creating a precision map (raster) from the precision point cloud. NB. this cannot be combined into the MetaShape script because the required modules cannot be imported into the metashape environment. Other point2grid approaches could be used for this, and it is essential for users to specify the parameters used (e.g. spatial resolution etc.) depending on their application.
+**Create_Prec_Raster.py** is an example of creating a precision map (raster) from the precision point cloud. NB. this  
+cannot be combined into the MetaShape script because the required modules cannot be imported into the metashape  
+environment. Other point2grid approaches could be used for this, and it is essential for users to specify the  
+parameters used (e.g. spatial resolution etc.) depending on their application.
 
 **Launch_script.py** is an example launch script for the SFM_precision module
 
+#
+#### Example Results...
+Here are some examples of z precision maps produced using this module:  
+
+![CWC example](./Example_Images/CWC_example.png)  
+&nbsp;
+&nbsp;
+![Experimental Plot example](./Example_Images/Prec_Pia_NEW1000it.png)
+&nbsp;
