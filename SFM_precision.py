@@ -34,66 +34,6 @@ def Proj_SetUp():
 
     return docu, direc_path, file_name
 
-def Set_Camera_Params(p_list):
-
-    if 'fit_f' in p_list:
-        optimise_f = True
-    else:
-        optimise_f = False
-
-    if 'fit_cx' in p_list:
-        optimise_cx = True
-    else:
-        optimise_cx = False
-    if 'fit_cy' in p_list:
-        optimise_cy = True
-    else:
-        optimise_cy = False
-    if 'fit_b1' in p_list:
-        optimise_b1 = True
-    else:
-        optimise_b1 = False
-    if 'fit_b2' in p_list:
-        optimise_b2 = True
-    else:
-        optimise_b2 = False
-    if 'fit_k1' in p_list:
-        optimise_k1 = True
-    else:
-        optimise_k1 = False
-    if 'fit_k2' in p_list:
-        optimise_k2 = True
-    else:
-        optimise_k2 = False
-    if 'fit_k3' in p_list:
-        optimise_k3 = True
-    else:
-        optimise_k3 = False
-    if 'fit_k4' in p_list:
-        optimise_k4 = True
-    else:
-        optimise_k4 = False
-    if 'fit_p1' in p_list:
-        optimise_p1 = True
-    else:
-        optimise_p1 = False
-    if 'fit_p2' in p_list:
-        optimise_p2 = True
-    else:
-        optimise_p2 = False
-    if 'fit_p3' in p_list:
-        optimise_p3 = True
-    else:
-        optimise_p3 = False
-    if 'fit_p4' in p_list:
-        optimise_p4 = True
-    else:
-        optimise_p4 = False
-
-    return optimise_f, optimise_cx, optimise_cy, optimise_b1,\
-           optimise_b2, optimise_k1, optimise_k2, optimise_k3,\
-           optimise_k4, optimise_p1, optimise_p2, optimise_p3,\
-           optimise_p4
 
 
 def Run(num_iterations, *args, **kwargs):
@@ -101,11 +41,12 @@ def Run(num_iterations, *args, **kwargs):
 
     doc, dir_path, file_name = Proj_SetUp()
 
+    params_list = kwargs.get('params_list', None)
     retrieve_shape_only_Prec = kwargs.get('shape_only_Prec', False)
-    params_list = kwargs.get('params_list', [])
+    export_log = kwargs.get('export_log', True)
 
-    # retrieve_shape_only_Prec = False
-    if len(params_list) > 0:
+    if isinstance(params_list, list) is True:
+        print("optimization params provided - using user defined parameters")
         optimise_f, optimise_cx, optimise_cy, optimise_b1, \
         optimise_b2, optimise_k1, optimise_k2, optimise_k3, \
         optimise_k4, optimise_p1, optimise_p2, optimise_p3, \
@@ -222,15 +163,11 @@ def Run(num_iterations, *args, **kwargs):
     camera_index = 0
 
     if retrieve_shape_only_Prec is True:
-        retrieve_shape_precision(chunk, camera_index, npoints, points, dir_path)
+        retrieve_shape_precision(chunk, camera_index, npoints, points, dir_path, file_name)
     else:
         print("Shape Precision values not requested... Skipping export")
 
-    # Export a text file with the coordinate system
-    # with open(os.path.join(fold_path, '_coordinate_system.txt'), "w") as f:
-    #     fwriter = csv.writer(f, dialect='excel-tab', lineterminator='\n')
-    #     fwriter.writerow([crs])
-    #     f.close()
+
 
     # Make a copy of the chunk to use as a zero-error reference chunk
     original_chunk = chunk.copy()
@@ -278,7 +215,7 @@ def Run(num_iterations, *args, **kwargs):
     Metashape.app.document.chunk = chunk
 
     # Run the monteCarlo Stuff
-    MonteCarloJam(num_act_cam_orients, chunk, original_chunk, point_proj,
+    ppc_path, num_fail = MonteCarloJam(num_act_cam_orients, chunk, original_chunk, point_proj,
                   original_point_proj, tie_proj_x_stdev, tie_proj_y_stdev,
                   marker_proj_x_stdev, marker_proj_y_stdev, file_name,
                   crs, pts_offset, dir_path, dimen, num_iterations,
@@ -300,7 +237,13 @@ def Run(num_iterations, *args, **kwargs):
     doc.chunks = c_list
 
     TotTime = datetime.now() - startTime
-    print("Precision Analysis Run time: " + str(TotTime))
+
+    if export_log is True:
+        logfile_export(dir_path, file_name, crs, ppc_path, num_iterations, num_fail, retrieve_shape_only_Prec,
+                       optimise_f, optimise_cx, optimise_cy, optimise_b1, optimise_b2, optimise_k1, optimise_k2,
+                       optimise_k3, optimise_k4, optimise_p1, optimise_p2, optimise_p3, optimise_p4, TotTime)
+
+    print("SFM Precision Complete.\n Run time: " + str(TotTime))
 
 
 #########################################################################################
@@ -452,6 +395,8 @@ def MonteCarloJam(num_act_cam_orients, chunk, original_chunk, point_proj,
         print("{0} out of {1} iterations skipped...".format(n_size_err, num_iterations))
         print("Results based on {0} iterations.".format(num_iterations-n_size_err))
 
+    return out_cloud_path, n_size_err
+
 
 def update(existingAggregate, newValue):
 
@@ -505,8 +450,8 @@ def calc_reprojection_error(chunk, points, projections):
 
     return photo_avg  # returns list of rmse values for each camera
 
-def retrieve_shape_precision(chunk, camera_index, npoints, points, dir_path):
-    with open(os.path.join(dir_path,'observation_distances.txt'), "w") as f:
+def retrieve_shape_precision(chunk, camera_index, npoints, points, dir_path, file_name):
+    with open(os.path.join(dir_path, file_name + '_observation_distances.txt'), "w") as f:
         fwriter = csv.writer(f, dialect='excel-tab', lineterminator='\n')
         for camera in chunk.cameras:
             camera_index += 1
@@ -528,3 +473,104 @@ def retrieve_shape_precision(chunk, camera_index, npoints, points, dir_path):
                     fwriter.writerow([camera_index, '{0:.4f}'.format(dist / fx), '{0:.2f}'.format(dist)])
 
         f.close()
+
+
+def Set_Camera_Params(p_list):
+
+    if 'fit_f' in p_list:
+        optimise_f = True
+    else:
+        optimise_f = False
+
+    if 'fit_cx' in p_list:
+        optimise_cx = True
+    else:
+        optimise_cx = False
+    if 'fit_cy' in p_list:
+        optimise_cy = True
+    else:
+        optimise_cy = False
+    if 'fit_b1' in p_list:
+        optimise_b1 = True
+    else:
+        optimise_b1 = False
+    if 'fit_b2' in p_list:
+        optimise_b2 = True
+    else:
+        optimise_b2 = False
+    if 'fit_k1' in p_list:
+        optimise_k1 = True
+    else:
+        optimise_k1 = False
+    if 'fit_k2' in p_list:
+        optimise_k2 = True
+    else:
+        optimise_k2 = False
+    if 'fit_k3' in p_list:
+        optimise_k3 = True
+    else:
+        optimise_k3 = False
+    if 'fit_k4' in p_list:
+        optimise_k4 = True
+    else:
+        optimise_k4 = False
+    if 'fit_p1' in p_list:
+        optimise_p1 = True
+    else:
+        optimise_p1 = False
+    if 'fit_p2' in p_list:
+        optimise_p2 = True
+    else:
+        optimise_p2 = False
+    if 'fit_p3' in p_list:
+        optimise_p3 = True
+    else:
+        optimise_p3 = False
+    if 'fit_p4' in p_list:
+        optimise_p4 = True
+    else:
+        optimise_p4 = False
+
+    return optimise_f, optimise_cx, optimise_cy, optimise_b1,\
+           optimise_b2, optimise_k1, optimise_k2, optimise_k3,\
+           optimise_k4, optimise_p1, optimise_p2, optimise_p3,\
+           optimise_p4
+
+def logfile_export(dir_path, file_name, crs, ppc_path, num_it, num_fail, obs_path,
+                   optimise_f, optimise_cx, optimise_cy, optimise_b1,optimise_b2, optimise_k1, optimise_k2,
+                   optimise_k3, optimise_k4, optimise_p1, optimise_p2, optimise_p3, optimise_p4, time):
+    print("Exporting log file...")
+    with open(os.path.join(dir_path, file_name + '_log_file.txt'), "w") as f:
+        f.write("------------------------------------------------------------\n")
+        f.write("------------- METASHAPE SFM PRECISION LOG FILE -------------\n")
+        f.write("------------------------------------------------------------\n\n")
+        f.write("Number of MonteCarlo iterations Attempted:    {0}\n".format(num_it))
+        f.write("Number of MonteCarlo iterations Skipped:      {0}\n".format(num_fail))
+        f.write("Number of MonteCarlo iterations Completed:    {0}\n\n".format(num_it-num_fail))
+        f.write("------------------------------------------------------------\n\n")
+        f.write("Project CRS:\n")
+        f.write(str([crs]) + "\n\n")
+        f.write("------------------------------------------------------------\n\n")
+        f.write("Optimised Lens Parameters:\n")
+        f.write('fit_f  = {}\n'.format(optimise_f))
+        f.write('fit_cx = {}\n'.format(optimise_cx))
+        f.write('fit_cy = {}\n'.format(optimise_cy))
+        f.write('fit_b1 = {}\n'.format(optimise_b1))
+        f.write('fit_b2 = {}\n'.format(optimise_b2))
+        f.write('fit_k1 = {}\n'.format(optimise_k1))
+        f.write('fit_k2 = {}\n'.format(optimise_k2))
+        f.write('fit_k3 = {}\n'.format(optimise_k3))
+        f.write('fit_k4 = {}\n'.format(optimise_k4))
+        f.write('fit_p1 = {}\n'.format(optimise_p1))
+        f.write('fit_p2 = {}\n'.format(optimise_p2))
+        f.write('fit_p3 = {}\n'.format(optimise_p3))
+        f.write('fit_p4 = {}\n\n'.format(optimise_p4))
+        f.write("------------------------------------------------------------\n\n")
+        f.write("The following files were produced:\n\n")
+        f.write("{0}\n\n".format(ppc_path))
+        if obs_path is True:
+            f.write("{0}\n\n".format(os.path.join(dir_path, file_name + '_observation_distances.txt')))
+        f.write("------------------------------------------------------------\n\n")
+        f.write("SFM Precision Run Time: {0}".format(time))
+
+    f.close()
