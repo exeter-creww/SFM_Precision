@@ -44,7 +44,7 @@ def Run(num_iterations, *args, **kwargs):
     params_list = kwargs.get('params_list', None)
     retrieve_shape_only_Prec = kwargs.get('shape_only_Prec', False)
     export_log = kwargs.get('export_log', True)
-    
+
     if isinstance(params_list, list) is True:
         print("optimization params provided - using user defined parameters")
         optimise_f, optimise_cx, optimise_cy, optimise_b1, \
@@ -574,15 +574,3 @@ def logfile_export(dir_path, file_name, crs, ppc_path, num_it, num_fail, obs_pat
         f.write("SFM Precision Run Time: {0}".format(time))
 
     f.close()
-
-
-    # n iterations and n skipped
-    #crs
-    # chosen lens optimisation params
-    # as paths to all output files
-
-    # Export a text file with the coordinate system
-    # with open(os.path.join(fold_path, '_coordinate_system.txt'), "w") as f:
-    #     fwriter = csv.writer(f, dialect='excel-tab', lineterminator='\n')
-    #     fwriter.writerow([crs])
-    #     f.close()
