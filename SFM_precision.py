@@ -79,8 +79,7 @@ def Run(num_iterations, *args, **kwargs):
         chunk.dense_cloud = None
     
     # Functions to set the tie point and marker accuracies to the mean of the tie point marker RMSE values. (SOME MORE INTEGRATION MIGHT BE NEEDED!)
-    # This is specified in the James et al. documentation, but we still want to double check setting marker accuracy in this way is also 
-    # correct (as it is now).
+    # We want to double check with Mike James about not setting marker accuracy and leaving as the project level.
     
     point_cloud = chunk.point_cloud
     points = point_cloud.points
@@ -98,7 +97,7 @@ def Run(num_iterations, *args, **kwargs):
 
     point_proj = chunk.point_cloud.projections
 
-    # Need CoordinateSystem object, but MS only returns 'None' if an arbitrary coordinate system is being used
+    # Need CoordinateSystem object. If an arbitrary coordinate system is being used Metashape returns 'None', 
     # thus need to set manually in this case; otherwise use the Chunk coordinate system.
 
     if chunk.crs is None:
