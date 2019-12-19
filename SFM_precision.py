@@ -357,7 +357,6 @@ def MonteCarloJam(num_act_cam_orients, chunk, original_chunk, point_proj,
             dimen = np.shape(ply_arr)
             start_arr = np.zeros(dimen)
 
-            # Agg = (0, start_arr, ply_arr * prec_val, ply_arr * prec_val)
             Agg = (0, ply_arr * prec_val, ply_arr * prec_val)
 
         Agg = update(Agg, int_arr)
