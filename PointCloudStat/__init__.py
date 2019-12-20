@@ -4,7 +4,7 @@ __version__ = '1.0'
 
 from PointCloudStat import DSM
 from PointCloudStat import precision_map
-from PointCloudStat import DEM_of_difference
+from PointCloudStat import dem_of_diff
 
 # I'm thinking this should have the following functions:
 #

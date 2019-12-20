@@ -14,7 +14,7 @@ def precision_map(prec_point_cloud, out_raster, resolution, prec_dimension):
     startTime = datetime.now()
 
     ppc_process = ppc(prec_point_cloud, out_raster, resolution, prec_dimension)
-    ppc_process.readPC_xyerr()
+    ppc_process.readPC_xyzerr()
     ppc_process.Run()
 
     print("Total Time: " + str(datetime.now() - startTime))  # get the time
@@ -32,7 +32,7 @@ class ppc:
         self.pcdata = None
         self.max_prec = None
 
-    def readPC_xyerr(self):
+    def readPC_xyzerr(self):
         pcdata = np.loadtxt(self.ppc, delimiter=' ', skiprows=1,
                              dtype={'names': ('x', 'y', 'z', 'xerr', 'yerr', 'zerr'),
                                     'formats': ('f8', 'f8', 'f8', 'f8', 'f8', 'f8')})
