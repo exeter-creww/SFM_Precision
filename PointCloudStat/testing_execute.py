@@ -1,14 +1,23 @@
 from PointCloudStat.precision_map import precision_map
 import os
+import rasterio
 from rasterio.plot import show
 from matplotlib import pyplot as plt
 
-pc_filename = os.path.abspath("C:/HG_Projects/CWC_Drone_work/PrecAnal_Testing/HG_Retest_Pia_1000_it/"
-                              "Monte_Carlo_output/Final_PointCloud.txt")
+dpc_path = os.path.abspath("C:/HG_Projects/CWC_Drone_work/17_02_15_Danes_Mill/17_02_15_Exports/"
+                           "CWC_examplePC_clip.laz")
 
-ras = precision_map(pc_filename, 0.01)
+pcp_path = os.path.abspath("C:/HG_Projects/CWC_Drone_work/18_09_25_Danes_Mill/"
+                              "18_09_25_DanesCroft_SFM_PREC/18_09_25_DanesCroft_Prec_Cloud.txt")
+out_path = os.path.abspath("C:/HG_Projects/CWC_Drone_work/18_09_25_Danes_Mill/"
+                          "18_09_25_DanesCroft_SFM_PREC/Testing_New_Module/test_raster.tif")
 
-data = ras.raster
+
+
+ras = precision_map(prec_point_cloud=pcp_path, out_raster=out_path, resolution=1, prec_dimension='zerr')
+
+data = rasterio.open(ras.path)
+
 
 fig = plt.gcf()
 show(data, cmap='twilight_shifted')
