@@ -1,4 +1,4 @@
-###  Script to convert the Precision point cloud from MS_Prec_Estim.py into a Raster.
+###  Script to convert the Precision point cloud from MS_Prec_Estim.py into a Raster and visualise results.
 
 import pdal
 import rasterio
@@ -11,7 +11,7 @@ import os
 from matplotlib import pyplot as plt
 import geopandas as gpd
 import fiona
-
+# import pandas as pd # Pandas section is currently commented out.
 
 
 startTime = datetime.now()
@@ -26,15 +26,12 @@ def readPLY_xyerr(ply):
     std_err = max([np.std(plydata['xerr']),
                     np.std(plydata['yerr'])])
     # mean_add_std = math.ceil((mean_err + std_err)*10)/10
-    mean_add_std = math.ceil((mean_err + std_err) * 10000) / 10000
+    mean_add_std = math.ceil((mean_err + std_err) * 10000) / 10000  # Why is this * & / 10000 needed?
     # print(max_err)
     print(mean_add_std)
     print(np.mean(plydata['zerr']))
 
     return mean_add_std
-# import pandas as pd # Pandas section is currently commented out.
-
-
 
 home = os.path.abspath("C:/HG_Projects/CWC_Drone_work/NEW_Prec_test_outs_v1/Rasters") # provide project directory
 # export_loc = home + "/exports"   # export folder (needs to be created before script run)
@@ -61,7 +58,8 @@ if res < 0.005:
 #     print("maimum xy error is < 1m, setting Raster resolution to 1m")
 #     res = 1
 
-dtm_gen = {
+# Points-to-Grid
+sfm_prec_p2g = {
     "pipeline":[
         {
             "type": "readers.text",
@@ -70,25 +68,24 @@ dtm_gen = {
 
         {
             "type":"writers.gdal",
-            "filename": out_dem,  # output file name
+            "filename": sfm_prec_raster,  # output file name
             "resolution": res,
             "dimension": "zerr",  # raster resolution
             # "radius": res*2,  # radius in which to search for other points
             "output_type": "all",  # creates a multiband raster with: min, max, mean, idw, count, stdev
             # "output_type": "stdev",  # use this if you just want a single band output for e.g. stdev
             "window_size": 20 # changes the search area around an empty cell - second stage of algorithm
-
         },                       # may want this value to be a bit smaller than at present...
 
     ]
 }
 
-pipeline = pdal.Pipeline(json.dumps(dtm_gen)) # define the pdal pipeline
+pipeline = pdal.Pipeline(json.dumps(sfm_prec_p2g)) # define the pdal pipeline
 pipeline.validate()  # validate the pipeline
 pipeline.execute()   #  run the pipeline
 
 
-dataset = rasterio.open(out_dem)
+dataset = rasterio.open(sfm_prec_raster)
 
 # fig = plt.gcf()
 # show(dataset, cmap='magma')
@@ -115,12 +112,13 @@ fig.savefig(fname = img_path, dpi = 300, format = 'png')
 
 # gcps = gpd.read_file(gcp_file)
 #
-#
 fig, ax = plt.subplots(figsize=(10,10))
 rasterio.plot.show(dataset, ax=ax, cmap ='twilight_shifted')
 # gcps.plot(ax=ax, column='type', cmap='gist_gray', markersize=50, legend=True)
 plt.show()
 # fig.savefig(fname = img_path, dpi = 300, format = 'png')
 # # plt.imshow(dataset.read(1), cmap='magma')
+
+
 
 print("Total Time: " + str(datetime.now() - startTime))  # get the time
