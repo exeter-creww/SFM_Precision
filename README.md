@@ -65,15 +65,15 @@ Cloud generation.
 location and x, y and z precision estimate for each tie point, based on Monte Carlo analysis in Metashape.
 
 **Create_Prec_Raster.py** is an example of creating a precision map (raster) from the precision point cloud. NB. this  
-cannot be combined into the MetaShape script because the required modules cannot be imported into the metashape  
+cannot be combined into the MetaShape script because the required modules cannot be imported into the Metashape  
 environment. Other point2grid approaches could be used for this, and it is essential for users to specify the  
-parameters used (e.g. spatial resolution etc.) depending on their application.
+parameters used (e.g. spatial resolution etc.) suitable for their application.
 
 **SS/original_precision_estimates.py** is the original python script published by James et al. (with some minor changes  
-for running from cmd and testing). Produces a folder with all montecarlo outputs and additional output info  
+for running from cmd and testing). Produces a folder with all Monte Carlo outputs and additional output info  
 (some of which is not relevant here...).
 
-**Launch_script.py** is an example launch script for the SFM_precision module
+**Launch_script.py** is an example launch script for the SFM_precision module.
 
 #
 #### Example Results...
