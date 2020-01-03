@@ -45,7 +45,7 @@ Ensure that the marker accuracy (pix) is set appropriately in the Metashape proj
 #### The following args can be used:
 **num_iterations**: (*integer*) The number of Monte Carlo iterations to undertake. James et al., suggest 4000  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-This may take too long for large point clouds in which case 1000 is acceptable.
+This may take too long for large point clouds in which case 1000 may be acceptable.
 
 **params_list**: (*list*) This is a list with desired camera optimization parameters, submitting an empty list returns    
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
