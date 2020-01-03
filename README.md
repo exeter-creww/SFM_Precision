@@ -17,7 +17,7 @@ numpy: https://numpy.org/
 plyfile: https://github.com/dranjan/python-plyfile  
 tqdm: https://tqdm.github.io/  
 
-Install these modules in Metshape's python distributon by running the following (in cmd.exe):      
+Install these modules in Metshape's python distribution by running the following (in cmd.exe with administrator permissions):      
 `"C:\Program Files\Agisoft\Metashape Pro\python\python.exe" -m pip install numpy tqdm plyfile` 
 
 ### Installation  
