@@ -83,8 +83,8 @@ class ppc:
                         "dimension": self.pr_dim,  # raster resolution
                         "nodata": -999,
                         "bounds": str(self.bounds),
-                        "output_type": "all",  # creates a multiband raster with: min, max, mean, idw, count, stdev
-                        # "output_type": "stdev",  # use this if you just want a single band output for e.g. stdev
+                        # "output_type": "all",  # creates a multiband raster with: min, max, mean, idw, count, stdev
+                        "output_type": "mean, stdev",  # use this if you just want a single band output for e.g. stdev
                         "window_size": 0  # changes the search area around an empty cell - second stage of algorithm
 
                     },
@@ -121,10 +121,13 @@ class ppc:
         pipeline.execute()   #  run the pipeline
 
         with rasterio.open(self.path, 'r+') as src:
-            array = src.read(1)
-            array[array == -999] = self.max_prec
+            def write_b(band, fill_val):
+                array = src.read(band)
+                array[array == -999] = fill_val
+                src.write_band(band, array)
+            write_b(1, self.max_prec)
+            write_b(2, np.max(src.read(2)))
             src.write_mask(True)
-            src.write(array, 1)
 
             if self.bounds is None:
                 # ([xmin, xmax], [ymin, ymax])

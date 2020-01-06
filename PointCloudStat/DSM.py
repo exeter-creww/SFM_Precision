@@ -76,8 +76,8 @@ class dsm:
                         "resolution": self.res,
                         "dimension": 'Z',  # raster resolution
                         "nodata": -999,
-                        "output_type": "all",  # creates a multiband raster with: min, max, mean, idw, count, stdev
-                        # "output_type": "stdev",  # use this if you just want a single band output for e.g. stdev
+                        # "output_type": "all",  # creates a multiband raster with: min, max, mean, idw, count, stdev
+                        "output_type": "mean, stdev",  # use this if you just want a single band output for e.g. stdev
                         "window_size": self.wind
                         # changes the search area around an empty cell - second stage of algorithm
 
