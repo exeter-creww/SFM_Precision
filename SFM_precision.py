@@ -226,15 +226,10 @@ def Run(num_iterations, *args, **kwargs):
 
     # Tidying up - deleting temp chunks.
     rem_chunks = ['Monte Carlo chunk', 'MC copy']
-    c_list = []
 
     for c in doc.chunks:
         if c.label in rem_chunks:
-            pass
-        else:
-            c_list.append(c)
-
-    doc.chunks = c_list
+            doc.remove(c)
 
     TotTime = datetime.now() - startTime
 
@@ -346,7 +341,7 @@ def MonteCarloJam(num_act_cam_orients, chunk, original_chunk, point_proj,
         check_dim = np.shape(ply_arr)
 
         if check_dim != dimen:
-            print("size issue!!!!!!!!!!!!!!!!!!!")
+            print("Inconsistently sized array produced - skipping this iteration...")
             n_size_err += 1
             del plydata, ply_arr
             continue
