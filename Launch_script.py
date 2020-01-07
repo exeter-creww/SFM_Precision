@@ -4,7 +4,8 @@ import os
 
 
 def main():
-    filename = os.path.abspath("C:/HG_Projects/CWC_Drone_work/PrecAnal_Testing/pia_plots/P3E1.psz")
+    # filename = os.path.abspath("C:/HG_Projects/CWC_Drone_work/PrecAnal_Testing/pia_plots/P3E1.psz")
+    filename = os.path.abspath("C:/HG_Projects/CWC_Drone_work/18_03_27_Danes_Mill/18_03_27_DanesCroft.psx")
 
     n_its = 10
     params = ['fit_f', 'fit_cx']  # Choose from the following (include if True) -

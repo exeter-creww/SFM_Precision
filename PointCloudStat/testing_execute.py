@@ -8,23 +8,41 @@ from rasterio.plot import show
 
 import numpy as np
 
-dpc_path = os.path.abspath("C:/HG_Projects/CWC_Drone_work/17_02_15_Danes_Mill/17_02_15_Exports/"
-                           "CWC_examplePC_clip.laz")
+dpc1_path = os.path.abspath("C:/HG_Projects/CWC_Drone_work/17_02_15_Danes_Mill/17_02_15_Exports/"
+                           "17_02_15_DanesCroft_dpc_export.laz")
 
-pcp_path = os.path.abspath("C:/HG_Projects/CWC_Drone_work/18_09_25_Danes_Mill/"
+dpc2_path = os.path.abspath("C:/HG_Projects/CWC_Drone_work/18_03_27_Danes_Mill/18_03_27_Exports"
+                           "18_03_27_DanesCroft_dpc_export.laz")
+
+
+pcp1_path = os.path.abspath("C:/HG_Projects/CWC_Drone_work/18_09_25_Danes_Mill/"
                               "18_09_25_DanesCroft_SFM_PREC/18_09_25_DanesCroft_Prec_Cloud.txt")
-out_path = os.path.abspath("C:/HG_Projects/CWC_Drone_work/18_09_25_Danes_Mill/"
+
+pcp2_path = os.path.abspath("C:/HG_Projects/CWC_Drone_work/18_09_25_Danes_Mill/"
+                              "18_09_25_DanesCroft_SFM_PREC/18_09_25_DanesCroft_Prec_Cloud.txt")
+
+dsm1_out = os.path.abspath("C:/HG_Projects/CWC_Drone_work/18_09_25_Danes_Mill/"
                           "18_09_25_DanesCroft_SFM_PREC/Testing_New_Module/test_raster.tif")
-dsm_path = os.path.abspath("C:/HG_Projects/CWC_Drone_work/18_09_25_Danes_Mill/"
+dsm2_out = os.path.abspath("C:/HG_Projects/CWC_Drone_work/18_09_25_Danes_Mill/"
+                          "18_09_25_DanesCroft_SFM_PREC/Testing_New_Module/test_raster.tif")
+
+pcp1_out = os.path.abspath("C:/HG_Projects/CWC_Drone_work/18_09_25_Danes_Mill/"
                           "18_09_25_DanesCroft_SFM_PREC/Testing_New_Module/test_dsm.tif")
 
-dod_path = os.path.abspath("C:/HG_Projects/CWC_Drone_work/18_09_25_Danes_Mill/"
+pcp2_out = os.path.abspath("C:/HG_Projects/CWC_Drone_work/18_09_25_Danes_Mill/"
+                          "18_09_25_DanesCroft_SFM_PREC/Testing_New_Module/test_dsm.tif")
+
+dod_out_path = os.path.abspath("C:/HG_Projects/CWC_Drone_work/18_09_25_Danes_Mill/"
                           "18_09_25_DanesCroft_SFM_PREC/Testing_New_Module/test_dod.tif")
 
 def main():
     epsg_code = 27700
 
-    dsm = height_map(point_cloud=dpc_path, out_raster=dsm_path, resolution=0.5, window_size=10, epsg=epsg_code)
+    # ?????
+    dsm1 = height_map(point_cloud=dpc1_path, out_raster=dsm1_out, resolution=0.5, window_size=10, epsg=epsg_code)
+
+    dsm2 = height_map(point_cloud=dpc2_path, out_raster=dsm2_out, resolution=0.5, window_size=10, epsg=epsg_code,
+                      bounds=dsm1.bounds)
 
     # with rasterio.open(dsm.path) as h_map:
     #     for i in range(1, 3):
@@ -33,9 +51,11 @@ def main():
     #         show(arr, cmap='viridis')
     #     # print("pause")
 
+    prras1 = precision_map(prec_point_cloud=pcp1_path, out_raster=pcp1_out, resolution=1,
+                           prec_dimension='zerr', epsg=epsg_code, bounds=dsm1.bounds)
 
-    prras = precision_map(prec_point_cloud=pcp_path, out_raster=out_path, resolution=1,
-                          prec_dimension='zerr', epsg=epsg_code, bounds=dsm.bounds)
+    prras2 = precision_map(prec_point_cloud=pcp1_path, out_raster=pcp1_out, resolution=1,
+                           prec_dimension='zerr', epsg=epsg_code, bounds=dsm1.bounds)
 
     # with rasterio.open(prras.path) as p_map:
     #     for i in range(1, 3):
@@ -57,16 +77,16 @@ def main():
 
 
     # for now i'm just using several of the same raster - obviously you wouldn't do this for real...
-    demod = dem_of_diff(raster_1=dsm.path, raster_2=dsm.path,
-                        prec_point_cloud_1=prras.path, prec_point_cloud_2=prras.path,
-                        out_ras=dod_path, epsg=epsg_code)
+    demod = dem_of_diff(raster_1=dsm1.path, raster_2=dsm2.path,
+                        prec_point_cloud_1=prras1.path, prec_point_cloud_2=prras2.path,
+                        out_ras=dod_out_path, epsg=epsg_code)
 
     with rasterio.open(demod.ras_out_path) as dod_map:
         # arr = p_map.read(1)
         # arr[arr == -999] = np.nan
         show(dod_map, cmap='viridis')
 
-
+        print("done")
 
 
 if __name__ == '__main__':
@@ -77,7 +97,7 @@ if __name__ == '__main__':
 
 
 
-print("done")
+
 
 # from matplotlib import pyplot as plt
 # for i in range(1,3):

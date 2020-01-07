@@ -1,17 +1,12 @@
-# Issues: currently the rasters are not equally sized - I've managed to even up the sizes but they are not corresponding
-# parts of the scene. currently, the resized raster is just the top left corner not the area in the other scene.
-# perhaps warp align target on all rasters line them all up then work on them...
+# Module to calculate a DEM of difference with the consideration of a a lOD95 based on precision maps and roughness.
+
 import os
 import rasterio
-from rasterio.mask import mask
 from rasterio.enums import Resampling
-from rasterio import warp
-from shapely.geometry import box
-import geopandas as gpd
 import tempfile
 from rasterio.crs import CRS
 import numpy as np
-import json
+
 
 
 def dem_of_diff(raster_1, raster_2, prec_point_cloud_1, prec_point_cloud_2, out_ras, **kwargs):
@@ -184,8 +179,10 @@ class deom_od:
         f[f == -999] = np.nan
         g = 0  # waiting on Pia for confirmation of what this is...
         # g[g == -999] = np.nan
+        t = 1  # could also use 1.96
 
-        lod = 1.96 * (a**2 + c**2 + d**2 + f**2 + g**2)**0.5
+        # set the t value to 1 and then allow for user o alter if needed... same for g
+        lod = t * (a**2 + c**2 + d**2 + f**2 + g**2)**0.5 # do we need to sq and sqrt? All these numbers will be positive?
 
         rand_noise = np.random.normal(2, 0.5, (a.shape)) #  for testing
 
