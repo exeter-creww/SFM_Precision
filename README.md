@@ -5,9 +5,10 @@ A python workflow to create precision maps with Agisoft MetaShape.
 Structure-from-Motion Photogrammetry: Precision Maps for Ground Control and Directly Georeferenced Surveys’.  
 Earth Surface Processes and Landforms 42(12):1769–88. https://doi.org/10.1002/esp.4125).
 
-This module uses Welford's online algorithm to calculate rolling standard deviation of point locations of a sparse cloud  
-in Metashape. The point cloud is produced entirely in Metshape/python, simplifying the workflow. This approach is
+This module uses an online algorithm to calculate rolling standard deviation of point locations of a sparse cloud  
+in Metashape (Welford, 1962). The point cloud is produced entirely in Metshape/python, simplifying the workflow. This approach is
 space efficient as it does not require the storage of all point clouds. 
+
 # 
 ### Dependencies
 The SFM Precision Module requires Agisoft Metashape version 1.5.4 (*tested only on Windows*)
@@ -73,7 +74,7 @@ parameters used (e.g. spatial resolution etc.) suitable for their application.
 for running from cmd and testing). Produces a folder with all Monte Carlo outputs and additional output info  
 (some of which is not relevant here...).
 
-**Launch_script.py** is an example launch script for the SFM_precision module.
+**Launch_script.py** is an example script for running the SFM_precision module 'headless' from the command line.
 
 #
 #### Example Results...
@@ -84,3 +85,7 @@ Here are some examples of z precision maps produced using the point cloud output
 &nbsp;
 ![Experimental Plot example](./Example_Images/Prec_Pia_NEW1000it.png)
 &nbsp;
+
+#
+#### References....
+(Welford, B. P. (1962). "Note on a method for calculating corrected sums of squares and products". Technometrics. 4 (3): 419–420. doi:10.2307/1266577. JSTOR 1266577.
