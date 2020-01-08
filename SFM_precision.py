@@ -7,6 +7,8 @@ from datetime import datetime  #
 import numpy as np  #
 from plyfile import PlyData  #
 from tqdm import tqdm  #
+import shutil  #
+
 
 # Define how many times bundle adjustment (MetaShape 'optimisation') will be carried out.
 # 4000 recommended by James et al. as a reasonable starting point.
@@ -23,6 +25,7 @@ def Proj_SetUp():
 
     docu = Metashape.app.document
 
+    orig_path = docu.path
     file_name = os.path.basename(docu.path)[:-4]
     home = os.path.dirname(docu.path)
 
@@ -32,14 +35,34 @@ def Proj_SetUp():
     else:
         os.makedirs(direc_path)
 
-    return docu, direc_path, file_name
+    # delete dense cloud and mesh if they exist - copy document to temp psx file.
+    chunky = docu.chunk
 
+    #
+    if chunky.dense_cloud is not None:
+        chunky.remove(chunky.dense_cloud)
+    if chunky.model is not None:
+        chunky.remove(chunky.model)
+    if chunky.elevation is not None:
+        chunky.remove(chunky.elevation)
+    if chunky.depth_maps is not None:
+        chunky.remove(chunky.depth_maps)
+    if chunky.orthomosaic is not None:
+        chunky.remove(chunky.orthomosaic)
+    if chunky.tiled_model is not None:
+        chunky.remove(chunky.tiled_model)
+
+    temp_psx_path = os.path.join(direc_path, file_name + "_TEMP.psx")
+
+    docu.save(temp_psx_path)
+
+    return docu, direc_path, file_name, orig_path
 
 
 def Run(num_iterations, *args, **kwargs):
     startTime = datetime.now()
 
-    doc, dir_path, file_name = Proj_SetUp()
+    doc, dir_path, file_name, original_path = Proj_SetUp()
 
     params_list = kwargs.get('params_list', None)
     retrieve_shape_only_Prec = kwargs.get('shape_only_Prec', False)
@@ -68,20 +91,21 @@ def Run(num_iterations, *args, **kwargs):
         optimise_p3 = False
         optimise_p4 = False
 
-    NaN = float('NaN') # Recomend that these are not chnged - enforces the calculation of offsets automatically
+    NaN = float('NaN')  # Recomend that these are not chnged - enforces the calculation of offsets automatically
     pts_offset = Metashape.Vector([NaN, NaN, NaN])
 
-    chunk_orig = doc.chunk
-    chunk = chunk_orig.copy()
+    # chunk_orig = doc.chunk
+    chunk = doc.chunk
+    # chunk = chunk_orig.copy()
     chunk.label = 'Monte Carlo chunk'
 
-    if chunk.dense_cloud is not None:
-        chunk.dense_cloud = None
-    
+    # if chunk.dense_cloud is not None:
+    #     chunk.dense_cloud = None
+
     # Functions to set the tie point and marker accuracies to the mean of the tie point marker RMSE values. (SOME MORE INTEGRATION MIGHT BE NEEDED!)
-    # This is specified in the James et al. documentation, but we still want to double check setting marker accuracy in this way is also 
+    # This is specified in the James et al. documentation, but we still want to double check setting marker accuracy in this way is also
     # correct (as it is now).
-    
+
     point_cloud = chunk.point_cloud
     points = point_cloud.points
     projections = chunk.point_cloud.projections
@@ -167,8 +191,6 @@ def Run(num_iterations, *args, **kwargs):
     else:
         print("Shape Precision values not requested... Skipping export")
 
-
-
     # Make a copy of the chunk to use as a zero-error reference chunk
     original_chunk = chunk.copy()
     original_chunk.label = 'MC copy'
@@ -177,7 +199,8 @@ def Run(num_iterations, *args, **kwargs):
     print("iterating markers - setting zero error")
     for original_marker in tqdm(original_chunk.markers):
         if original_marker.position is not None:
-            original_marker.reference.location = crs.project(original_chunk.transform.matrix.mulp(original_marker.position))
+            original_marker.reference.location = crs.project(
+                original_chunk.transform.matrix.mulp(original_marker.position))
 
     # Set the original_marker and point projections to be zero error, from which we can add simulated error
     original_points = original_chunk.point_cloud.points
@@ -216,22 +239,37 @@ def Run(num_iterations, *args, **kwargs):
 
     # Run the monteCarlo Stuff
     ppc_path, num_fail = MonteCarloJam(num_act_cam_orients, chunk, original_chunk, point_proj,
-                  original_point_proj, tie_proj_x_stdev, tie_proj_y_stdev,
-                  marker_proj_x_stdev, marker_proj_y_stdev, file_name,
-                  crs, pts_offset, dir_path, dimen, num_iterations,
-                  optimise_f, optimise_cx, optimise_cy, optimise_b1,
-                  optimise_b2, optimise_k1, optimise_k2, optimise_k3,
-                  optimise_k4, optimise_p1, optimise_p2, optimise_p3,
-                  optimise_p4)
+                                       original_point_proj, tie_proj_x_stdev, tie_proj_y_stdev,
+                                       marker_proj_x_stdev, marker_proj_y_stdev, file_name,
+                                       crs, pts_offset, dir_path, dimen, num_iterations,
+                                       optimise_f, optimise_cx, optimise_cy, optimise_b1,
+                                       optimise_b2, optimise_k1, optimise_k2, optimise_k3,
+                                       optimise_k4, optimise_p1, optimise_p2, optimise_p3,
+                                       optimise_p4)
 
-    # Tidying up - deleting temp chunks.
-    rem_chunks = ['Monte Carlo chunk', 'MC copy']
-
-    for c in doc.chunks:
-        if c.label in rem_chunks:
-            doc.remove(c)
+    # Tidying up - deleting temp chunks. This bit may not be needed with the new approach...
+    # rem_chunks = ['Monte Carlo chunk', 'MC copy']
+    #
+    # for c in doc.chunks:
+    #     if c.label in rem_chunks:
+    #         doc.remove(c)
 
     TotTime = datetime.now() - startTime
+
+    t_path = doc.path
+    t_folder = doc.path[:-4] + ".files"
+
+    # reopen original document and delete temp files/folders
+    doc.open(original_path)
+    try:
+        os.remove(t_path)
+    except OSError as e:
+        print(e)
+    try:
+
+        shutil.rmtree(t_folder)
+    except OSError as e:
+        print(e)
 
     if export_log is True:
         logfile_export(dir_path, file_name, crs, ppc_path, num_iterations, num_fail, retrieve_shape_only_Prec,
@@ -252,7 +290,6 @@ def MonteCarloJam(num_act_cam_orients, chunk, original_chunk, point_proj,
                   optimise_b2, optimise_k1, optimise_k2, optimise_k3,
                   optimise_k4, optimise_p1, optimise_p2, optimise_p3,
                   optimise_p4):
-
     file_idx = 0
     n_size_err = 0
     prec_val = 100000000
@@ -314,9 +351,10 @@ def MonteCarloJam(num_act_cam_orients, chunk, original_chunk, point_proj,
             for markerIDx, marker in enumerate(chunk.markers):
                 if not marker.projections[camera]:
                     continue
-                marker.projections[camera].coord = (original_chunk.markers[markerIDx].projections[original_camera].coord +
-                                                    Metashape.Vector([random.gauss(0, marker_proj_x_stdev),
-                                                                      random.gauss(0, marker_proj_y_stdev)]))
+                marker.projections[camera].coord = (
+                            original_chunk.markers[markerIDx].projections[original_camera].coord +
+                            Metashape.Vector([random.gauss(0, marker_proj_x_stdev),
+                                              random.gauss(0, marker_proj_y_stdev)]))
 
         # Bundle adjustment
         chunk.optimizeCameras(fit_f=optimise_f, fit_cx=optimise_cx, fit_cy=optimise_cy, fit_b1=optimise_b1,
@@ -364,7 +402,7 @@ def MonteCarloJam(num_act_cam_orients, chunk, original_chunk, point_proj,
     mean_arr = mean / prec_val
     # sv_std = np.sqrt(sampleVariance)
 
-    out_cloud_path = os.path.join(dir_path, file_name +'_Prec_Cloud.txt')
+    out_cloud_path = os.path.join(dir_path, file_name + '_Prec_Cloud.txt')
 
     combined = np.concatenate((mean_arr, stdev_arr), axis=1)
     nested_lst_of_tuples = [tuple(l) for l in combined]
@@ -387,13 +425,12 @@ def MonteCarloJam(num_act_cam_orients, chunk, original_chunk, point_proj,
     if n_size_err > 0:
         print("############   WARNING   ############")
         print("{0} out of {1} iterations skipped...".format(n_size_err, num_iterations))
-        print("Results based on {0} iterations.".format(num_iterations-n_size_err))
+        print("Results based on {0} iterations.".format(num_iterations - n_size_err))
 
     return out_cloud_path, n_size_err
 
 
 def update(existingAggregate, newValue):
-
     (count, mean, M2) = existingAggregate
 
     count += 1
@@ -416,12 +453,11 @@ def finalize(existingAggregate):
 
 
 def calc_reprojection_error(chunk, points, projections):
-
     npoints = len(points)
 
     photo_avg = []
-
-    for camera in chunk.cameras:
+    print(" iterating cameras to determine Reprojection Error...")
+    for camera in tqdm(chunk.cameras):
         if not camera.transform:
             continue
         point_index = 0
@@ -435,7 +471,8 @@ def calc_reprojection_error(chunk, points, projections):
                 if not points[point_index].valid:
                     continue
 
-                dist = camera.error(points[point_index].coord, proj.coord).norm() ** 2  # get the square error for each point in camera
+                dist = camera.error(points[point_index].coord,
+                                    proj.coord).norm() ** 2  # get the square error for each point in camera
 
                 photo_num += 1  # counts number of points per camera
                 photo_err += dist  # creates list of square point errors
@@ -443,6 +480,7 @@ def calc_reprojection_error(chunk, points, projections):
         photo_avg.append(math.sqrt(photo_err / photo_num))  # get root mean square error for each camera
 
     return photo_avg  # returns list of rmse values for each camera
+
 
 def retrieve_shape_precision(chunk, camera_index, npoints, points, dir_path, file_name):
     with open(os.path.join(dir_path, file_name + '_observation_distances.txt'), "w") as f:
@@ -463,14 +501,14 @@ def retrieve_shape_precision(chunk, camera_index, npoints, points, dir_path, fil
                     if not points[point_index].valid:
                         continue
                     dist = (chunk.transform.matrix.mulp(camera.center) - chunk.transform.matrix.mulp(Metashape.Vector(
-                        [points[point_index].coord[0], points[point_index].coord[1], points[point_index].coord[2]]))).norm()
+                        [points[point_index].coord[0], points[point_index].coord[1],
+                         points[point_index].coord[2]]))).norm()
                     fwriter.writerow([camera_index, '{0:.4f}'.format(dist / fx), '{0:.2f}'.format(dist)])
 
         f.close()
 
 
 def Set_Camera_Params(p_list):
-
     if 'fit_f' in p_list:
         optimise_f = True
     else:
@@ -525,13 +563,14 @@ def Set_Camera_Params(p_list):
     else:
         optimise_p4 = False
 
-    return optimise_f, optimise_cx, optimise_cy, optimise_b1,\
-           optimise_b2, optimise_k1, optimise_k2, optimise_k3,\
-           optimise_k4, optimise_p1, optimise_p2, optimise_p3,\
+    return optimise_f, optimise_cx, optimise_cy, optimise_b1, \
+           optimise_b2, optimise_k1, optimise_k2, optimise_k3, \
+           optimise_k4, optimise_p1, optimise_p2, optimise_p3, \
            optimise_p4
 
+
 def logfile_export(dir_path, file_name, crs, ppc_path, num_it, num_fail, obs_path,
-                   optimise_f, optimise_cx, optimise_cy, optimise_b1,optimise_b2, optimise_k1, optimise_k2,
+                   optimise_f, optimise_cx, optimise_cy, optimise_b1, optimise_b2, optimise_k1, optimise_k2,
                    optimise_k3, optimise_k4, optimise_p1, optimise_p2, optimise_p3, optimise_p4, time):
     print("Exporting log file...")
     with open(os.path.join(dir_path, file_name + '_log_file.txt'), "w") as f:
@@ -540,7 +579,7 @@ def logfile_export(dir_path, file_name, crs, ppc_path, num_it, num_fail, obs_pat
         f.write("------------------------------------------------------------\n\n")
         f.write("Number of MonteCarlo iterations Attempted:    {0}\n".format(num_it))
         f.write("Number of MonteCarlo iterations Skipped:      {0}\n".format(num_fail))
-        f.write("Number of MonteCarlo iterations Completed:    {0}\n\n".format(num_it-num_fail))
+        f.write("Number of MonteCarlo iterations Completed:    {0}\n\n".format(num_it - num_fail))
         f.write("------------------------------------------------------------\n\n")
         f.write("Project CRS:\n")
         f.write(str([crs]) + "\n\n")
