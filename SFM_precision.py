@@ -259,7 +259,7 @@ def Run(num_iterations, *args, **kwargs):
     t_folder = doc.path[:-4] + ".files"
 
     # reopen original document and delete temp files/folders
-    doc.open(original_path)
+    doc.open(original_path, read_only=False)
     try:
         os.remove(t_path)
     except OSError as e:
