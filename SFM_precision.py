@@ -238,14 +238,13 @@ def Run(num_iterations, *args, **kwargs):
     Metashape.app.document.chunk = chunk
 
     # Run the monteCarlo Stuff
-    ppc_path, num_fail = MonteCarloJam(num_act_cam_orients, chunk, original_chunk, point_proj,
-                                       original_point_proj, tie_proj_x_stdev, tie_proj_y_stdev,
-                                       marker_proj_x_stdev, marker_proj_y_stdev, file_name,
-                                       crs, pts_offset, dir_path, dimen, num_iterations,
-                                       optimise_f, optimise_cx, optimise_cy, optimise_b1,
-                                       optimise_b2, optimise_k1, optimise_k2, optimise_k3,
-                                       optimise_k4, optimise_p1, optimise_p2, optimise_p3,
-                                       optimise_p4)
+    ppc_path, num_fail, p_val_list = MonteCarloJam(num_act_cam_orients,chunk, original_chunk, point_proj,
+                                                   original_point_proj,  tie_proj_x_stdev, tie_proj_y_stdev,
+                                                   marker_proj_x_stdev, marker_proj_y_stdev, file_name,
+                                                   crs, pts_offset, dir_path, dimen, num_iterations,
+                                                   optimise_f, optimise_cx,  optimise_cy, optimise_b1,
+                                                   optimise_b2, optimise_k1, optimise_k2,  optimise_k3,
+                                                   optimise_k4, optimise_p1, optimise_p2, optimise_p3, optimise_p4)
 
     # Tidying up - deleting temp chunks. This bit may not be needed with the new approach...
     # rem_chunks = ['Monte Carlo chunk', 'MC copy']
@@ -274,7 +273,8 @@ def Run(num_iterations, *args, **kwargs):
     if export_log is True:
         logfile_export(dir_path, file_name, crs, ppc_path, num_iterations, num_fail, retrieve_shape_only_Prec,
                        optimise_f, optimise_cx, optimise_cy, optimise_b1, optimise_b2, optimise_k1, optimise_k2,
-                       optimise_k3, optimise_k4, optimise_p1, optimise_p2, optimise_p3, optimise_p4, TotTime)
+                       optimise_k3, optimise_k4, optimise_p1, optimise_p2, optimise_p3, optimise_p4, TotTime,
+                       p_val_list)
 
     print("SFM Precision Complete.\n Run time: " + str(TotTime))
 
@@ -427,7 +427,19 @@ def MonteCarloJam(num_act_cam_orients, chunk, original_chunk, point_proj,
         print("{0} out of {1} iterations skipped...".format(n_size_err, num_iterations))
         print("Results based on {0} iterations.".format(num_iterations - n_size_err))
 
-    return out_cloud_path, n_size_err
+    xmean = np.mean(comb_arr['x'])
+    xmax = np.max(comb_arr['x'])
+    xmin = np.min(comb_arr['x'])
+    ymean = np.mean(comb_arr['y'])
+    ymax = np.max(comb_arr['y'])
+    ymin = np.min(comb_arr['y'])
+    zmean = np.mean(comb_arr['z'])
+    zmax = np.max(comb_arr['z'])
+    zmin = np.min(comb_arr['z'])
+
+    p_s_vals = [xmean, xmax, xmin, ymean, ymax, ymin, zmean, zmax, zmin]
+
+    return out_cloud_path, n_size_err, p_s_vals
 
 
 def update(existingAggregate, newValue):
@@ -571,7 +583,7 @@ def Set_Camera_Params(p_list):
 
 def logfile_export(dir_path, file_name, crs, ppc_path, num_it, num_fail, obs_path,
                    optimise_f, optimise_cx, optimise_cy, optimise_b1, optimise_b2, optimise_k1, optimise_k2,
-                   optimise_k3, optimise_k4, optimise_p1, optimise_p2, optimise_p3, optimise_p4, time):
+                   optimise_k3, optimise_k4, optimise_p1, optimise_p2, optimise_p3, optimise_p4, time, p_sum_list):
     print("Exporting log file...")
     with open(os.path.join(dir_path, file_name + '_log_file.txt'), "w") as f:
         f.write("------------------------------------------------------------\n")
@@ -583,6 +595,17 @@ def logfile_export(dir_path, file_name, crs, ppc_path, num_it, num_fail, obs_pat
         f.write("------------------------------------------------------------\n\n")
         f.write("Project CRS:\n")
         f.write(str([crs]) + "\n\n")
+        f.write("------------------------------------------------------------\n\n")
+        f.write("Point Precision Summary Stats:\n")
+        f.write("mean x: {0}".format(p_sum_list[0]))
+        f.write("max x:  {0}".format(p_sum_list[1]))
+        f.write("min x:  {0}".format(p_sum_list[2]))
+        f.write("mean y: {0}".format(p_sum_list[3]))
+        f.write("max y:  {0}".format(p_sum_list[4]))
+        f.write("min y:  {0}".format(p_sum_list[5]))
+        f.write("mean z: {0}".format(p_sum_list[6]))
+        f.write("max z:  {0}".format(p_sum_list[7]))
+        f.write("min z:  {0}".format(p_sum_list[8]))
         f.write("------------------------------------------------------------\n\n")
         f.write("Optimised Lens Parameters:\n")
         f.write('fit_f  = {}\n'.format(optimise_f))
