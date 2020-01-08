@@ -9,7 +9,8 @@ import rasterio
 import os
 
 
-def precision_map(prec_point_cloud, out_raster, resolution, prec_dimension, **kwargs):
+def precision_map(prec_point_cloud, out_raster, resolution, **kwargs):
+    prec_dimension = kwargs.get('prec_dimension', 'zerr')
     epsg = kwargs.get('epsg', None)
     bounds = kwargs.get('bounds', None)
 

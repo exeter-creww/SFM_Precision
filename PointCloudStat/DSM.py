@@ -10,11 +10,13 @@ def height_map(point_cloud, out_raster, resolution, **kwargs):
     window_size = kwargs.get('window_size', 0)
     epsg = kwargs.get('epsg', None)
     bounds = kwargs.get('bounds', None)
+    stat = kwargs.get('stat', None)
 
     startTime = datetime.now()
 
-    dsm_process = dsm(point_cloud, out_raster, resolution, window_size, epsg, bounds)
+    dsm_process = dsm(point_cloud, out_raster, resolution, window_size, epsg, bounds, stat)
     # dsm_process.readPC_xyerr()
+    dsm_process.get_reader()
     dsm_process.Run()
 
     print("Total Time: " + str(datetime.now() - startTime))  # get the time
@@ -23,7 +25,7 @@ def height_map(point_cloud, out_raster, resolution, **kwargs):
 
 class dsm:
 
-    def __init__(self, prec_pc, ras_path, ras_res, window, epsg, bbox):
+    def __init__(self, prec_pc, ras_path, ras_res, window, epsg, bbox, stat):
         self.ppc = prec_pc
         self.res = ras_res
         self.path = ras_path
@@ -33,6 +35,21 @@ class dsm:
             self.epsg_code = []
         else:
             self.epsg_code = "EPSG:{0}".format(epsg)
+        if stat is None:
+            self.statval = 'mean'
+        else:
+            self.statval = stat
+        self.reader = None
+
+    def get_reader(self):
+
+        if self.ppc[-4:] == '.las' or self.ppc[-4:] == '.laz':
+            self.reader = 'readers.las'
+        elif self.ppc[-4:] == '.txt':
+            self.reader = 'readers.text'
+        else:
+            raise InputError("the Point cloud format provided is not supported "
+                             "provide file with extension: .las, .laz, .txt")
 
     def Run(self):
 
@@ -41,7 +58,7 @@ class dsm:
             dtm_gen = {
                 "pipeline": [
                     {
-                        "type": "readers.las",
+                        "type": self.reader,
                         "filename":  self.ppc,
                         "override_srs": self.epsg_code
                     },
@@ -53,8 +70,7 @@ class dsm:
                         "dimension": 'Z',  # raster resolution
                         "nodata": -999,
                         "bounds": str(self.bounds),
-                        "output_type": "all",  # creates a multiband raster with: min, max, mean, idw, count, stdev
-                        # "output_type": "stdev",  # use this if you just want a single band output for e.g. stdev
+                        "output_type": "{0}, stdev".format(self.statval),
                         "window_size": self.wind  # changes the search area around an empty cell - second stage of algorithm
 
                     },                       # may want this value to be a bit smaller than at present...
@@ -65,7 +81,7 @@ class dsm:
             dtm_gen = {
                 "pipeline": [
                     {
-                        "type": "readers.las",
+                        "type": self.reader,
                         "filename": self.ppc,
                         "override_srs": self.epsg_code
                     },
@@ -76,8 +92,7 @@ class dsm:
                         "resolution": self.res,
                         "dimension": 'Z',  # raster resolution
                         "nodata": -999,
-                        # "output_type": "all",  # creates a multiband raster with: min, max, mean, idw, count, stdev
-                        "output_type": "mean, stdev",  # use this if you just want a single band output for e.g. stdev
+                        "output_type": "{0}, stdev".format(self.statval),
                         "window_size": self.wind
                         # changes the search area around an empty cell - second stage of algorithm
 
@@ -95,5 +110,17 @@ class dsm:
                 self.bounds = ([src.bounds[0], src.bounds[2]], [src.bounds[1], src.bounds[3]])
 
 
+class Error(Exception):
+    """Base class for exceptions in this module."""
+    pass
 
+class InputError(Error):
+    """Exception raised for errors in the input.
+
+    Attributes:
+        message -- explanation of the error
+    """
+
+    def __init__(self, message):
+        self.message = message
 

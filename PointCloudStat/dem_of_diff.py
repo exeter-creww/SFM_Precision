@@ -12,10 +12,14 @@ import numpy as np
 def dem_of_diff(raster_1, raster_2, prec_point_cloud_1, prec_point_cloud_2, out_ras, **kwargs):
     print("calculating DEM of difference...")
     epsg_code = kwargs.get('epsg', None)
+    reg_error = kwargs.get('reg_error', 0)
+    t_value = kwargs.get('t_value', 1)
+
     if epsg_code is not None:
         epsg_code = CRS.from_epsg(epsg_code)
 
-    dem_od_process = deom_od(raster_1, raster_2, epsg_code, prec_point_cloud_1, prec_point_cloud_2, out_ras)
+    dem_od_process = deom_od(raster_1, raster_2, epsg_code, prec_point_cloud_1, prec_point_cloud_2, out_ras, reg_error,
+                             t_value)
 
     dem_od_process.load_rasters()
     dem_od_process.resample_rasters()
@@ -27,7 +31,7 @@ def dem_of_diff(raster_1, raster_2, prec_point_cloud_1, prec_point_cloud_2, out_
 
 
 class deom_od:
-    def __init__(self, rast1, rast2, epsg_c, prec_ras1, prec_ras2, out_ras_p):
+    def __init__(self, rast1, rast2, epsg_c, prec_ras1, prec_ras2, out_ras_p, r_err, t_val):
         self.raster_pths = [rast1, rast2, prec_ras1, prec_ras2]
         self.rasters = [None, None, None, None]
         self.ras_out_path = out_ras_p
@@ -35,6 +39,9 @@ class deom_od:
 
         self.temp_log = []
         self.out_meta_data = None
+
+        self.reg_error = r_err
+        self.t_value = t_val
 
     def load_rasters(self):
 
@@ -177,17 +184,18 @@ class deom_od:
         e[e == -999] = np.nan
         f = self.rasters[1].read(2)
         f[f == -999] = np.nan
-        g = 0  # waiting on Pia for confirmation of what this is...
+        g = self.reg_error  # waiting on Pia for confirmation of what this is...
         # g[g == -999] = np.nan
-        t = 1  # could also use 1.96
+        t = self.t_value  # could also use 1.96
 
         # set the t value to 1 and then allow for user o alter if needed... same for g
         lod = t * (a**2 + c**2 + d**2 + f**2 + g**2)**0.5 # do we need to sq and sqrt? All these numbers will be positive?
 
-        rand_noise = np.random.normal(2, 0.5, (a.shape)) #  for testing
+        # rand_noise = np.random.normal(2, 0.5, (a.shape)) #  for testing
 
-        diff_arr = e - (b + rand_noise)  # plus random noise is just for testing
+        diff_arr = e - b  # dem of difference
         dod = np.zeros(diff_arr.shape)
+
 
         mask1 = (abs(diff_arr) > lod) & (diff_arr < 0)
         dod[mask1] = diff_arr[mask1] + lod[mask1]
@@ -195,7 +203,10 @@ class deom_od:
         mask2 = (abs(diff_arr) > lod) & (diff_arr > 0)
         dod[mask2] = diff_arr[mask2] - lod[mask2]
 
-        dod = np.nan_to_num(dod, nan=-999)
+        mask3 = ((diff_arr == np.nan) | (lod == np.nan))
+        dod[mask3] = -999
+
+        # dod = np.nan_to_num(dod, nan=-999)
 
         with rasterio.open(self.ras_out_path, "w", **self.out_meta_data) as dest:
             dest.write(dod, 1)
