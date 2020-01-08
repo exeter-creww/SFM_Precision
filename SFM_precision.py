@@ -408,9 +408,8 @@ def MonteCarloJam(num_act_cam_orients, chunk, original_chunk, point_proj,
     nested_lst_of_tuples = [tuple(l) for l in combined]
     comb_arr = np.array(nested_lst_of_tuples,
                         dtype=[('x', 'f8'), ('y', 'f8'),
-                               ('z', 'f8'), ('x'
-                                             'err', 'f8'), ('yerr', 'f8'),
-                               ('zerr', 'f8')])
+                               ('z', 'f8'), ('xerr', 'f8'),
+                               ('yerr', 'f8'),('zerr', 'f8')])
 
     comb_arr['x'] = comb_arr['x'] + pts_offset[0]
     comb_arr['y'] = comb_arr['y'] + pts_offset[1]
@@ -427,15 +426,15 @@ def MonteCarloJam(num_act_cam_orients, chunk, original_chunk, point_proj,
         print("{0} out of {1} iterations skipped...".format(n_size_err, num_iterations))
         print("Results based on {0} iterations.".format(num_iterations - n_size_err))
 
-    xmean = np.mean(comb_arr['x'])
-    xmax = np.max(comb_arr['x'])
-    xmin = np.min(comb_arr['x'])
-    ymean = np.mean(comb_arr['y'])
-    ymax = np.max(comb_arr['y'])
-    ymin = np.min(comb_arr['y'])
-    zmean = np.mean(comb_arr['z'])
-    zmax = np.max(comb_arr['z'])
-    zmin = np.min(comb_arr['z'])
+    xmean = np.mean(comb_arr['xerr'])
+    xmax = np.max(comb_arr['xerr'])
+    xmin = np.min(comb_arr['xerr'])
+    ymean = np.mean(comb_arr['yerr'])
+    ymax = np.max(comb_arr['yerr'])
+    ymin = np.min(comb_arr['yerr'])
+    zmean = np.mean(comb_arr['zerr'])
+    zmax = np.max(comb_arr['zerr'])
+    zmin = np.min(comb_arr['zerr'])
 
     p_s_vals = [xmean, xmax, xmin, ymean, ymax, ymin, zmean, zmax, zmin]
 
