@@ -191,10 +191,11 @@ class deom_od:
         # set the t value to 1 and then allow for user o alter if needed... same for g
         lod = t * (a**2 + c**2 + d**2 + f**2 + g**2)**0.5 # do we need to sq and sqrt? All these numbers will be positive?
 
-        rand_noise = np.random.normal(2, 0.5, (a.shape)) #  for testing
+        # rand_noise = np.random.normal(2, 0.5, (a.shape)) #  for testing
 
-        diff_arr = e - (b + rand_noise)  # plus random noise is just for testing
+        diff_arr = e - b  # dem of difference
         dod = np.zeros(diff_arr.shape)
+
 
         mask1 = (abs(diff_arr) > lod) & (diff_arr < 0)
         dod[mask1] = diff_arr[mask1] + lod[mask1]
@@ -202,7 +203,10 @@ class deom_od:
         mask2 = (abs(diff_arr) > lod) & (diff_arr > 0)
         dod[mask2] = diff_arr[mask2] - lod[mask2]
 
-        dod = np.nan_to_num(dod, nan=-999)
+        mask3 = ((diff_arr == np.nan) | (lod == np.nan))
+        dod[mask3] = -999
+
+        # dod = np.nan_to_num(dod, nan=-999)
 
         with rasterio.open(self.ras_out_path, "w", **self.out_meta_data) as dest:
             dest.write(dod, 1)
