@@ -15,34 +15,31 @@ dpc2_path = os.path.abspath("C:/HG_Projects/CWC_Drone_work/18_03_27_Danes_Mill/1
                            "18_03_27_DanesCroft_dpc_export.laz")
 
 
-pcp1_path = os.path.abspath("C:/HG_Projects/CWC_Drone_work/18_09_25_Danes_Mill/"
-                              "18_09_25_DanesCroft_SFM_PREC/18_09_25_DanesCroft_Prec_Cloud.txt")
+pcp1_path = os.path.abspath("C:/HG_Projects\CWC_Drone_work/17_02_15_Danes_Mill/"
+                            "17_02_15_DanesCroft_SFM_PREC/17_02_15_DanesCroft_Prec_Cloud.txt")
 
-pcp2_path = os.path.abspath("C:/HG_Projects/CWC_Drone_work/18_09_25_Danes_Mill/"
-                              "18_09_25_DanesCroft_SFM_PREC/18_09_25_DanesCroft_Prec_Cloud.txt")
+pcp2_path = os.path.abspath("C:/HG_Projects/CWC_Drone_work/18_03_27_Danes_Mill/"
+                            "18_03_27_DanesCroft_SFM_PREC/18_03_27_DanesCroft_Prec_Cloud.txt")
 
-dsm1_out = os.path.abspath("C:/HG_Projects/CWC_Drone_work/18_09_25_Danes_Mill/"
-                          "18_09_25_DanesCroft_SFM_PREC/Testing_New_Module/test_raster.tif")
-dsm2_out = os.path.abspath("C:/HG_Projects/CWC_Drone_work/18_09_25_Danes_Mill/"
-                          "18_09_25_DanesCroft_SFM_PREC/Testing_New_Module/test_raster.tif")
+out_ras_home = os.path.abspath("C:/HG_Projects/CWC_Drone_work/PrecAnal_Testing/CWC_DODs_Testing/1702_18_03")
 
-pcp1_out = os.path.abspath("C:/HG_Projects/CWC_Drone_work/18_09_25_Danes_Mill/"
-                          "18_09_25_DanesCroft_SFM_PREC/Testing_New_Module/test_dsm.tif")
+dsm1_out = os.path.join(out_ras_home, "dsm1.tif")
+dsm2_out = os.path.join(out_ras_home, "dsm2.tif")
 
-pcp2_out = os.path.abspath("C:/HG_Projects/CWC_Drone_work/18_09_25_Danes_Mill/"
-                          "18_09_25_DanesCroft_SFM_PREC/Testing_New_Module/test_dsm.tif")
+pcp1_out = os.path.join(out_ras_home, "pcc1.tif")
+pcp2_out = os.path.join(out_ras_home, "pcc1.tif")
 
-dod_out_path = os.path.abspath("C:/HG_Projects/CWC_Drone_work/18_09_25_Danes_Mill/"
-                          "18_09_25_DanesCroft_SFM_PREC/Testing_New_Module/test_dod.tif")
+dod_out_path = os.path.join(out_ras_home, "dod.tif")
 
 def main():
     epsg_code = 27700
 
     # ?????
-    dsm1 = height_map(point_cloud=dpc1_path, out_raster=dsm1_out, resolution=0.5, window_size=10, epsg=epsg_code, stat= 'mean')
+    dsm1 = height_map(point_cloud=dpc1_path, out_raster=dsm1_out, resolution=0.5, window_size=10, epsg=epsg_code,
+                      stat='mean')
 
     dsm2 = height_map(point_cloud=dpc2_path, out_raster=dsm2_out, resolution=0.5, window_size=10, epsg=epsg_code,
-                      bounds=dsm1.bounds)
+                      stat='mean', bounds=dsm1.bounds)
 
     # with rasterio.open(dsm.path) as h_map:
     #     for i in range(1, 3):
