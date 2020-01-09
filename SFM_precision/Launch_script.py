@@ -1,4 +1,4 @@
-import SFM_precision
+from SFM_precision import SFM_precision
 import Metashape
 import os
 
