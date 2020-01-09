@@ -1,3 +1,6 @@
+# This script is not part of the package it is an example workflow of how the package can be used to
+# derive a DEM of difference.
+
 from PointCloudStat.precision_map import precision_map
 from PointCloudStat.DSM import height_map
 from PointCloudStat.dem_of_diff import dem_of_diff
@@ -42,7 +45,7 @@ def main():
     dsm2 = height_map(point_cloud=dpc2_path, out_raster=dsm2_out, resolution=0.5, window_size=10, epsg=epsg_code,
                       stat='mean', bounds=dsm1.bounds)
     #
-    # # with rasterio.open(dsm.path) as h_map:
+    # # with rasterio.open(dsm1.path) as h_map:
     # #     for i in range(1, 3):
     # #         arr = h_map.read(i)
     # #         arr[arr == -999] = np.nan
@@ -55,7 +58,7 @@ def main():
     prras2 = precision_map(prec_point_cloud=pcp1_path, out_raster=pcp1_out, resolution=1,
                            prec_dimension='zerr', epsg=epsg_code, bounds=dsm1.bounds)
 
-    # with rasterio.open(prras.path) as p_map:
+    # with rasterio.open(prras1.path) as p_map:
     #     for i in range(1, 3):
     #         arr = p_map.read(i)
     #         arr[arr == -999] = np.nan
@@ -67,22 +70,10 @@ def main():
         # print('pause')
 
 
-    # finest_res = ras.min_res
-    #     # print(finest_res)
-    #     #
-    #     # chosen_res = myround(finest_res)
-
-
-
     # for now i'm just using several of the same raster - obviously you wouldn't do this for real...
     demod = dem_of_diff(raster_1=dsm1.path, raster_2=dsm2.path,
                         prec_point_cloud_1=prras1.path, prec_point_cloud_2=prras2.path,
                         out_ras=dod_out_path, epsg=epsg_code)
-
-    # demod = dem_of_diff(raster_1=dsm1_out, raster_2=dsm2_out,
-    #                     prec_point_cloud_1=pcp1_out, prec_point_cloud_2=pcp2_out,
-    #                     out_ras=dod_out_path, epsg=epsg_code)
-
 
 
     with rasterio.open(demod.ras_out_path) as dod_map:
@@ -108,28 +99,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-
-
-
-
-
-
-# from matplotlib import pyplot as plt
-# for i in range(1,3):
-#     a = src.read(i)
-#     a[a==-999] = np.nan
-#
-#     fig, ax = plt.subplots(figsize=(8, 8))
-#     img = ax.imshow(a, cmap='viridis')
-#     fig.colorbar(img, ax=ax)
-#     ax.set_axis_off()
-#     plt.show()
-
-# from matplotlib import pyplot as plt
-# fig, ax = plt.subplots(figsize=(8, 8))
-# img = ax.imshow(lod, cmap='viridis')
-# fig.colorbar(img, ax=ax)
-# ax.set_axis_off()
-# plt.show()
