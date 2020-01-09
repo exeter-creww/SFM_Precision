@@ -11,7 +11,8 @@ some text...
 
 **PrecisionMap module**
 
-more text...
+Have a map...
+![CWC example](../Example_Images/dod_example.png)  
 
 **DEMofDiff module**
 
