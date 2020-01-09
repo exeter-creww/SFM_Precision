@@ -17,3 +17,10 @@ Have a map...
 ### DEMofDiff module
 
 blah... blah...
+
+### Plotting module
+
+This hasn't been made yet but need to make a module that can create simple plots with all the 
+necessaries. Also need to create something to export histograms for Precision Analysis.
+
+
