@@ -1,19 +1,19 @@
-***This Directory contains the XXXXX module***
-##
-**Name ideas:**
+#This Directory contains the XXXXX module
+
+###Name ideas:
 PointCloudStat
 SFMtoGrid
 The above aren't great so ideas welcome!
 ##
-**DSM module**
+###DSM module
 
 some text...
 
-**PrecisionMap module**
+###PrecisionMap module
 
 Have a map...
 ![CWC example](../Example_Images/dod_example.png)  
 
-**DEMofDiff module**
+###DEMofDiff module
 
 blah... blah...
