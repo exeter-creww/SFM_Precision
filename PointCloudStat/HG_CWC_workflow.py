@@ -96,19 +96,17 @@ def main():
         # trans = rasterio.plot.plotting_extent(dod_map)
         trans = dod_map.bounds[:2]
 
+        show((dod_map,1), cmap='twilight_shifted_r', title='Height Change Map', vmin=-5, vmax=5)  # plot with rasterio
+
         # plot with matplotlib
 
         fig, ax = plt.subplots(figsize=(8, 8))
-
         img = ax.imshow(arr, cmap='twilight_shifted_r', vmin=-5, vmax=5)
-
         fig.colorbar(img, ax=ax)
         # from matplotlib import ticker
         # # ax.set_ylim(ax.get_ylim()[1], ax.get_ylim()[0])
         # ax.xaxis.set_major_formatter(ticker.ScalarFormatter(useOffset=-trans[0],useMathText=False))
         # ax.yaxis.set_major_formatter(ticker.ScalarFormatter(useOffset=-(trans[1]+ax.get_ylim()[0]), useMathText=False))
-
-
         # ax.set_axis_off()
 
         # plt.ylim(102800, 106025)
