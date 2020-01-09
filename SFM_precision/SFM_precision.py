@@ -14,7 +14,7 @@ import shutil  #
 # 4000 recommended by James et al. as a reasonable starting point.
 
 # For efficiency of read and write, we have maintained the original handling of intermediate MonteCarlo files.
-# An offset is calculated and applied to all points whic are then  written in .ply format.
+# An offset is calculated and applied to all points which are then  written in .ply format.
 # The final result is then re-projected using the saved offsets.
 
 ###################################   END OF SETUP   ###################################
@@ -409,7 +409,7 @@ def MonteCarloJam(num_act_cam_orients, chunk, original_chunk, point_proj,
     comb_arr = np.array(nested_lst_of_tuples,
                         dtype=[('x', 'f8'), ('y', 'f8'),
                                ('z', 'f8'), ('xerr', 'f8'),
-                               ('yerr', 'f8'),('zerr', 'f8')])
+                               ('yerr', 'f8'), ('zerr', 'f8')])
 
     comb_arr['x'] = comb_arr['x'] + pts_offset[0]
     comb_arr['y'] = comb_arr['y'] + pts_offset[1]
