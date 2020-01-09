@@ -96,8 +96,6 @@ def main():
         # trans = rasterio.plot.plotting_extent(dod_map)
         trans = dod_map.bounds[:2]
 
-        show(dod_map, cmap='twilight_shifted_r', title='Height Change Map', vmin=-5, vmax=5)  # plot with rasterio
-
         # plot with matplotlib
 
         fig, ax = plt.subplots(figsize=(8, 8))
