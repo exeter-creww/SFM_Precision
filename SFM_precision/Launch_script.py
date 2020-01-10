@@ -15,7 +15,7 @@ psx_list = [psx1, psx2, psx3, psx4, psx5, psx6]
 
 def main():
 
-    n_its = 10
+    n_its = 1000
     # params = ['fit_f', 'fit_cx']  # Choose from the following (include if True) -
                                 # ['fit_f', 'fit_cx', 'fit_cy','fit_b1', 'fit_b2', 'fit_k1', 'fit_k2', 'fit_k3',
                                 # 'fit_k4','fit_p1', 'fit_p2', 'fit_p3', 'fit_p4']
