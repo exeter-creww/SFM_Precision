@@ -1,7 +1,7 @@
 # SFM_Precision
 A python workflow to create precision maps with Agisoft MetaShape.
 
-(Developed after: James, M., Robson, S., and Smith M (2017) ‘3-D Uncertainty-Based Topographic Change Detection with  
+(Developed after: James et al., 2017) ‘3-D Uncertainty-Based Topographic Change Detection with  
 Structure-from-Motion Photogrammetry: Precision Maps for Ground Control and Directly Georeferenced Surveys’.  
 Earth Surface Processes and Landforms 42(12):1769–88. https://doi.org/10.1002/esp.4125).
 
@@ -73,7 +73,7 @@ then default parameters are selected based on James et al., 2017 (i.e. ['fit_f',
 Cloud generation.
 
 #
-#### Example Results...
+#### Example Results
 Here are some examples of z precision maps produced using the point cloud output from this module:  
 
 ![CWC example](../Example_Images/CWC_example.png)  
@@ -83,5 +83,9 @@ Here are some examples of z precision maps produced using the point cloud output
 &nbsp;
 
 #
-#### References....
-(Welford, B. P. (1962). "Note on a method for calculating corrected sums of squares and products". Technometrics. 4 (3): 419–420. doi:10.2307/1266577. JSTOR 1266577.
+#### References
+James, M., Robson, S., and Smith M (2017) ‘3-D Uncertainty-Based Topographic Change Detection with  
+Structure-from-Motion Photogrammetry: Precision Maps for Ground Control and Directly Georeferenced Surveys’.  
+Earth Surface Processes and Landforms 42(12):1769–88. https://doi.org/10.1002/esp.4125).
+
+Welford, B. P. (1962) 'Note on a method for calculating corrected sums of squares and products'. Technometrics. 4 (3): 419–420. doi:10.2307/1266577. JSTOR 1266577.
