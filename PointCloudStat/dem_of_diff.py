@@ -203,7 +203,7 @@ class deom_od:
         mask2 = (abs(diff_arr) > lod) & (diff_arr > 0)
         dod[mask2] = diff_arr[mask2] - lod[mask2]
 
-        mask3 = ((diff_arr == np.nan) | (lod == np.nan))
+        mask3 = (np.isnan(b)) | (np.isnan(e))
         dod[mask3] = -999
 
         # dod = np.nan_to_num(dod, nan=-999)
