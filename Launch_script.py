@@ -1,4 +1,4 @@
-from SFM_precision import SFM_precision
+import SFM_precision
 import Metashape
 import os
 
@@ -25,10 +25,10 @@ def main():
         doc = Metashape.app.document
         doc.open(psx, read_only=False)
 
-        # SFM_precision.Run(num_iterations=n_its, shape_only_Prec=False, export_log=True, params_list=params)  # full options
-        # SFM_precision.Run(num_iterations=n_its, params_list=params)  # just optimization params
+        # SFM_precision_Module.Run(num_iterations=n_its, shape_only_Prec=False, export_log=True, params_list=params)  # full options
+        # SFM_precision_Module.Run(num_iterations=n_its, params_list=params)  # just optimization params
         SFM_precision.Run(num_iterations=n_its)  # what we really need...
-
+        # SFM_precision.Run
         doc.save()
 
     print("DONE!!!")
