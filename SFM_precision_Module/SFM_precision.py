@@ -58,7 +58,7 @@ def Proj_SetUp():
     return docu, direc_path, file_name, orig_path
 
 
-def Run(num_iterations, *args, **kwargs):
+def Run(num_iterations, **kwargs):
     startTime = datetime.now()
 
     doc, dir_path, file_name, original_path = Proj_SetUp()
@@ -93,13 +93,8 @@ def Run(num_iterations, *args, **kwargs):
     NaN = float('NaN')  # Recommend that these are not changed - enforces the calculation of offsets automatically
     pts_offset = Metashape.Vector([NaN, NaN, NaN])
 
-    # chunk_orig = doc.chunk
     chunk = doc.chunk
-    # chunk = chunk_orig.copy()
     chunk.label = 'Monte Carlo chunk'
-
-    # if chunk.dense_cloud is not None:
-    #     chunk.dense_cloud = None
 
     # Functions to set the tie point accuracy to the mean of the tie point marker RMSE values.
     point_cloud = chunk.point_cloud
@@ -242,14 +237,6 @@ def Run(num_iterations, *args, **kwargs):
                                                    optimise_b2, optimise_k1, optimise_k2,  optimise_k3,
                                                    optimise_k4, optimise_p1, optimise_p2, optimise_p3, optimise_p4)
 
-    # Tidying up
-    # deleting temp chunks. This bit may not be needed with the new approach...
-    # rem_chunks = ['Monte Carlo chunk', 'MC copy']
-    #
-    # for c in doc.chunks:
-    #     if c.label in rem_chunks:
-    #         doc.remove(c)
-
     TotTime = datetime.now() - startTime
 
     t_path = doc.path
@@ -262,7 +249,6 @@ def Run(num_iterations, *args, **kwargs):
     except OSError as e:
         print(e)
     try:
-
         shutil.rmtree(t_folder)
     except OSError as e:
         print(e)
@@ -624,5 +610,8 @@ def logfile_export(dir_path, file_name, crs, ppc_path, num_it, num_fail, obs_pat
             f.write("{0}\n\n".format(os.path.join(dir_path, file_name + '_observation_distances.txt')))
         f.write("------------------------------------------------------------\n\n")
         f.write("SFM Precision Run Time: {0}".format(time))
+        f.write("Analysis completed at: {0}".format(datetime.now()))
+
+
 
     f.close()
