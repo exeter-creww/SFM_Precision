@@ -73,7 +73,7 @@ def main():
     # for now i'm just using several of the same raster - obviously you wouldn't do this for real...
     demod = dem_of_diff(raster_1=dsm1.path, raster_2=dsm2.path,
                         prec_point_cloud_1=prras1.path, prec_point_cloud_2=prras2.path,
-                        out_ras=dod_out_path, epsg=epsg_code)
+                        out_ras=dod_out_path, epsg=epsg_code, handle_gaps=True)
 
 
     with rasterio.open(demod.ras_out_path) as dod_map:

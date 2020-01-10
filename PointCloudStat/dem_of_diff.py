@@ -14,12 +14,13 @@ def dem_of_diff(raster_1, raster_2, prec_point_cloud_1, prec_point_cloud_2, out_
     epsg_code = kwargs.get('epsg', None)
     reg_error = kwargs.get('reg_error', 0)
     t_value = kwargs.get('t_value', 1)
+    handle_gaps = kwargs.get('handle_gaps', True)
 
     if epsg_code is not None:
         epsg_code = CRS.from_epsg(epsg_code)
 
     dem_od_process = deom_od(raster_1, raster_2, epsg_code, prec_point_cloud_1, prec_point_cloud_2, out_ras, reg_error,
-                             t_value)
+                             t_value, handle_gaps)
 
     dem_od_process.load_rasters()
     dem_od_process.resample_rasters()
@@ -31,7 +32,7 @@ def dem_of_diff(raster_1, raster_2, prec_point_cloud_1, prec_point_cloud_2, out_
 
 
 class deom_od:
-    def __init__(self, rast1, rast2, epsg_c, prec_ras1, prec_ras2, out_ras_p, r_err, t_val):
+    def __init__(self, rast1, rast2, epsg_c, prec_ras1, prec_ras2, out_ras_p, r_err, t_val, gap_handle):
         self.raster_pths = [rast1, rast2, prec_ras1, prec_ras2]
         self.rasters = [None, None, None, None]
         self.ras_out_path = out_ras_p
@@ -42,6 +43,11 @@ class deom_od:
 
         self.reg_error = r_err
         self.t_value = t_val
+
+        if gap_handle is False:
+            self.prec_band = 2
+        else:
+            self.prec_band = 1
 
     def load_rasters(self):
 
@@ -172,13 +178,13 @@ class deom_od:
         g – REGISTRATION/ALIGNMENT RMSE
         """
 
-        a = self.rasters[2].read(1)
+        a = self.rasters[2].read(self.prec_band)
         a[a == -999] = np.nan
         b = self.rasters[0].read(1)
         b[b == -999] = np.nan
         c = self.rasters[0].read(2)
         c[c == -999] = np.nan
-        d = self.rasters[3].read(1)
+        d = self.rasters[3].read(self.prec_band)
         d[d == -999] = np.nan
         e = self.rasters[1].read(1)
         e[e == -999] = np.nan
@@ -203,7 +209,7 @@ class deom_od:
         mask2 = (abs(diff_arr) > lod) & (diff_arr > 0)
         dod[mask2] = diff_arr[mask2] - lod[mask2]
 
-        mask3 = (np.isnan(b)) | (np.isnan(e))
+        mask3 = (np.isnan(b)) | (np.isnan(e)) | (np.isnan(a)) | (np.isnan(d))
         dod[mask3] = -999
 
         # dod = np.nan_to_num(dod, nan=-999)
