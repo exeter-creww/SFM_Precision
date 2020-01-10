@@ -38,7 +38,6 @@ def Proj_SetUp():
     # delete dense cloud and mesh if they exist - copy document to temp psx file.
     chunky = docu.chunk
 
-    #
     if chunky.dense_cloud is not None:
         chunky.remove(chunky.dense_cloud)
     if chunky.model is not None:
@@ -76,7 +75,7 @@ def Run(num_iterations, *args, **kwargs):
         optimise_p4 = Set_Camera_Params(params_list)
     else:
         print("no params provided - using default optimization params")
-        # these are the params described in James, et al. 2017 paper... use as defaults when no preference given.
+        # these are the parameters described in James et al., 2017... use as defaults when no preference given.
         optimise_f = True
         optimise_cx = True
         optimise_cy = True
@@ -91,7 +90,7 @@ def Run(num_iterations, *args, **kwargs):
         optimise_p3 = False
         optimise_p4 = False
 
-    NaN = float('NaN')  # Recomend that these are not chnged - enforces the calculation of offsets automatically
+    NaN = float('NaN')  # Recommend that these are not changed - enforces the calculation of offsets automatically
     pts_offset = Metashape.Vector([NaN, NaN, NaN])
 
     # chunk_orig = doc.chunk
@@ -102,10 +101,7 @@ def Run(num_iterations, *args, **kwargs):
     # if chunk.dense_cloud is not None:
     #     chunk.dense_cloud = None
 
-    # Functions to set the tie point and marker accuracies to the mean of the tie point marker RMSE values. (SOME MORE INTEGRATION MIGHT BE NEEDED!)
-    # This is specified in the James et al. documentation, but we still want to double check setting marker accuracy in this way is also
-    # correct (as it is now).
-
+    # Functions to set the tie point accuracy to the mean of the tie point marker RMSE values.
     point_cloud = chunk.point_cloud
     points = point_cloud.points
     projections = chunk.point_cloud.projections
@@ -122,7 +118,7 @@ def Run(num_iterations, *args, **kwargs):
 
     point_proj = chunk.point_cloud.projections
 
-    # Need CoordinateSystem object, but MS only returns 'None' if an arbitrary coordinate system is being used
+    # Need CoordinateSystem object, but MS returns 'None' if an arbitrary coordinate system is being used.
     # thus need to set manually in this case; otherwise use the Chunk coordinate system.
 
     if chunk.crs is None:
@@ -140,7 +136,7 @@ def Run(num_iterations, *args, **kwargs):
     # Reset the random seed, so that all equivalent runs of this script are started identically
     random.seed(1)
 
-    # Carry out an initial bundle adjustment to ensure that everything subsequent has a consistent reference starting point.
+    # Carry out an initial bundle adjustment as a starting point to provide a consistent.
     chunk.optimizeCameras(fit_f=optimise_f, fit_cx=optimise_cx, fit_cy=optimise_cy,
                           fit_b1=optimise_b1, fit_b2=optimise_b2,
                           fit_k1=optimise_k1, fit_k2=optimise_k2, fit_k3=optimise_k3, fit_k4=optimise_k4,
@@ -238,7 +234,7 @@ def Run(num_iterations, *args, **kwargs):
     Metashape.app.document.chunk = chunk
 
     # Run the monteCarlo Stuff
-    ppc_path, num_fail, p_val_list = MonteCarloJam(num_act_cam_orients,chunk, original_chunk, point_proj,
+    ppc_path, num_fail, p_val_list = MonteCarloJam(num_act_cam_orients, chunk, original_chunk, point_proj,
                                                    original_point_proj,  tie_proj_x_stdev, tie_proj_y_stdev,
                                                    marker_proj_x_stdev, marker_proj_y_stdev, file_name,
                                                    crs, pts_offset, dir_path, dimen, num_iterations,
@@ -246,7 +242,8 @@ def Run(num_iterations, *args, **kwargs):
                                                    optimise_b2, optimise_k1, optimise_k2,  optimise_k3,
                                                    optimise_k4, optimise_p1, optimise_p2, optimise_p3, optimise_p4)
 
-    # Tidying up - deleting temp chunks. This bit may not be needed with the new approach...
+    # Tidying up
+    # deleting temp chunks. This bit may not be needed with the new approach...
     # rem_chunks = ['Monte Carlo chunk', 'MC copy']
     #
     # for c in doc.chunks:
