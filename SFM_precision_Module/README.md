@@ -62,9 +62,9 @@ This may take too long for large point clouds in which case 1000 may be acceptab
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 all params as False. Example above enables all parameters. If no arg is provided  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-then default parameters are selected based on James et al., 2017 i.e. 'fit_f', 'fit_cx', 'fit_cy','fit_b1',  
+then default parameters are selected based on James et al., 2017 (i.e. ('fit_f', 'fit_cx', 'fit_cy','fit_b1',  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-'fit_b2', 'fit_k1', 'fit_k2','fit_p1', 'fit_p2'.  
+'fit_b2', 'fit_k1', 'fit_k2','fit_p1', 'fit_p2')).  
                     
 **shape_only_Prec**: (*Boolean*) Default is False - if True then a file with observation distances is produced  
 
