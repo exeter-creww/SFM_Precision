@@ -5,8 +5,8 @@ import SFM_precision
 import Metashape
 import os
 
-test_proj = os.path.abspath("C:/HG_Projects/CWC_Drone_work/PrecAnal_Testing/pia_plots/P3E1.psz")
-# test_proj = os.path.abspath("C:/HG_Projects/CWC_Drone_work/16_12_18_Danes_Mill/16_12_18_DanesCroft_backup_copy.psx")
+# test_proj = os.path.abspath("C:/HG_Projects/CWC_Drone_work/PrecAnal_Testing/pia_plots/P3E1.psz")
+test_proj = os.path.abspath("C:/HG_Projects/CWC_Drone_work/16_12_18_Danes_Mill/16_12_18_DanesCroft_backup_copy.psx")
 # root_dir = os.path.abspath("C:/HG_Projects/CWC_Drone_work")
 #
 # psx1 = os.path.join(root_dir, "16_12_18_Danes_Mill", "16_12_18_DanesCroft.psx")

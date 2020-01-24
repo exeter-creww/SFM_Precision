@@ -371,7 +371,7 @@ def MonteCarloJam(num_act_cam_orients, chunk, original_chunk, point_proj,
 
     mean, variance, sampleVariance = finalize(Agg)
 
-    stdev_arr = np.sqrt(variance) / prec_val
+    stdev_arr = np.sqrt(abs(variance)) / prec_val
     mean_arr = mean / prec_val
     # sv_std = np.sqrt(sampleVariance)
 
