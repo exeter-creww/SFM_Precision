@@ -51,9 +51,7 @@ def Proj_SetUp():
     if chunky.tiled_model is not None:
         chunky.remove(chunky.tiled_model)
 
-    temp_psx_path = os.path.join(direc_path, file_name + "_TEMP.psx")
-
-    docu.save(temp_psx_path)
+    docu.read_only = True
 
     return docu, direc_path, file_name, orig_path
 
@@ -242,16 +240,8 @@ def Run(num_iterations, **kwargs):
     t_path = doc.path
     t_folder = doc.path[:-4] + ".files"
 
-    # reopen original document and delete temp files/folders
+    # reopen original document
     doc.open(original_path, read_only=False)
-    try:
-        os.remove(t_path)
-    except OSError as e:
-        print(e)
-    try:
-        shutil.rmtree(t_folder)
-    except OSError as e:
-        print(e)
 
     if export_log is True:
         logfile_export(dir_path, file_name, crs, ppc_path, num_iterations, num_fail, retrieve_shape_only_Prec,
