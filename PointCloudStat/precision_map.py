@@ -7,6 +7,7 @@ import numpy as np
 import math
 import rasterio
 import os
+import warnings
 
 
 def precision_map(prec_point_cloud, out_raster, resolution, **kwargs):
@@ -63,10 +64,12 @@ class ppc:
         if self.res < self.min_res:
             self.res = self.min_res
 
+            warnings.warn("Desired precision raster resolution too low: \n"
+                          "Resolution set to the max xy error + stdev. \n"
+                          "Resolution reset to:   {0}".format(self.min_res), Warning)
+
         if os.path.exists(self.path):
             os.remove(self.path)
-        #
-        # epsg_str = "EPSG:{0}".format(self.epsg_code)
 
         if self.bounds is not None:
             dtm_gen = {
@@ -131,6 +134,3 @@ class ppc:
             if self.bounds is None:
                 # ([xmin, xmax], [ymin, ymax])
                 self.bounds = ([src.bounds[0], src.bounds[2]], [src.bounds[1], src.bounds[3]])
-
-
-

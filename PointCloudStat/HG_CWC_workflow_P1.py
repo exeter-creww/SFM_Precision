@@ -5,32 +5,71 @@ from PointCloudStat.DSM import height_map
 from PointCloudStat.dem_of_diff import dem_of_diff
 
 import os
+import sys
 import rasterio
 from rasterio.plot import show
 from matplotlib import pyplot as plt
 
 import numpy as np
+import sys
+dpc1_path = os.path.abspath("C:/HG_Projects/CWC_Drone_work/16_12_18_Danes_Mill/16_12_18_Exports/"
+                           "16_12_18_DanesCroft_dpc_export.laz")
 
-dpc1_path = os.path.abspath("C:/HG_Projects/CWC_Drone_work/17_02_15_Danes_Mill/17_02_15_Exports/"
+dpc2_path = os.path.abspath("C:/HG_Projects/CWC_Drone_work/17_02_15_Danes_Mill/17_02_15_Exports/"
                            "17_02_15_DanesCroft_dpc_export.laz")
 
-dpc2_path = os.path.abspath("C:/HG_Projects/CWC_Drone_work/18_03_27_Danes_Mill/18_03_27_Exports/"
+dpc3_path = os.path.abspath("C:/HG_Projects/CWC_Drone_work/17_09_07_Danes_Mill/17_09_07_Exports/"
+                           "17_09_07_DanesCroft_dpc_export.laz")
+
+dpc4_path = os.path.abspath("C:/HG_Projects/CWC_Drone_work/18_01_23_Danes_Mill/18_01_23_Exports/"
+                           "18_01_23_DanesCroft_dpc_export.laz")
+
+dpc5_path = os.path.abspath("C:/HG_Projects/CWC_Drone_work/18_03_27_Danes_Mill/18_03_27_Exports/"
                            "18_03_27_DanesCroft_dpc_export.laz")
 
+dpc6_path = os.path.abspath("C:/HG_Projects/CWC_Drone_work/18_09_25_Danes_Mill/18_09_25_Exports/"
+                           "18_09_25_DanesCroft_dpc_export.laz")
 
-pcp1_path = os.path.abspath("C:/HG_Projects\CWC_Drone_work/17_02_15_Danes_Mill/"
+
+pcp1_path = os.path.abspath("C:/HG_Projects\CWC_Drone_work/16_12_18_Danes_Mill/"
+                            "16_12_18_DanesCroft_SFM_PREC/16_12_18_DanesCroft_Prec_Cloud.txt")
+
+pcp2_path = os.path.abspath("C:/HG_Projects\CWC_Drone_work/17_02_15_Danes_Mill/"
                             "17_02_15_DanesCroft_SFM_PREC/17_02_15_DanesCroft_Prec_Cloud.txt")
 
-pcp2_path = os.path.abspath("C:/HG_Projects/CWC_Drone_work/18_03_27_Danes_Mill/"
+pcp3_path = os.path.abspath("C:/HG_Projects\CWC_Drone_work/17_09_07_Danes_Mill/"
+                            "17_09_07_DanesCroft_SFM_PREC/17_09_07_DanesCroft_Prec_Cloud.txt")
+
+pcp4_path = os.path.abspath("C:/HG_Projects/CWC_Drone_work/18_01_23_Danes_Mill/"
+                            "18_01_23_DanesCroft_SFM_PREC/18_01_23_DanesCroft_Prec_Cloud.txt")
+
+pcp5_path = os.path.abspath("C:/HG_Projects/CWC_Drone_work/18_03_27_Danes_Mill/"
                             "18_03_27_DanesCroft_SFM_PREC/18_03_27_DanesCroft_Prec_Cloud.txt")
 
-out_ras_home = os.path.abspath("C:/HG_Projects/CWC_Drone_work/PrecAnal_Testing/CWC_DODs_Testing/1702_18_03")
+pcp6_path = os.path.abspath("C:/HG_Projects/CWC_Drone_work/18_09_25_Danes_Mill/"
+                            "18_09_25_DanesCroft_SFM_PREC/18_09_25_DanesCroft_Prec_Cloud.txt")
+
+for i in [dpc1_path, dpc2_path, dpc3_path, dpc4_path, dpc5_path, dpc6_path,
+          pcp1_path, pcp2_path, pcp3_path, pcp4_path, pcp5_path, pcp6_path]:
+    if os.path.isfile(i) is False:
+        sys.exit("One of the paths is wrong - fix it...")
+
+
+out_ras_home = os.path.abspath("C:/HG_Projects/CWC_Drone_work/Prec_Anal_Exports/Rasters_v1")
 
 dsm1_out = os.path.join(out_ras_home, "dsm1.tif")
 dsm2_out = os.path.join(out_ras_home, "dsm2.tif")
+dsm3_out = os.path.join(out_ras_home, "dsm3.tif")
+dsm4_out = os.path.join(out_ras_home, "dsm4.tif")
+dsm5_out = os.path.join(out_ras_home, "dsm5.tif")
+dsm6_out = os.path.join(out_ras_home, "dsm6.tif")
 
 pcp1_out = os.path.join(out_ras_home, "pcc1.tif")
-pcp2_out = os.path.join(out_ras_home, "pcc1.tif")
+pcp2_out = os.path.join(out_ras_home, "pcc2.tif")
+pcp3_out = os.path.join(out_ras_home, "pcc3.tif")
+pcp4_out = os.path.join(out_ras_home, "pcc4.tif")
+pcp5_out = os.path.join(out_ras_home, "pcc5.tif")
+pcp6_out = os.path.join(out_ras_home, "pcc6.tif")
 
 dod_out_path = os.path.join(out_ras_home, "dod.tif")
 
