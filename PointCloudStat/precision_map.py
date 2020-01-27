@@ -64,9 +64,8 @@ class ppc:
         if self.res < self.min_res:
             self.res = self.min_res
 
-            warnings.warn("Desired precision raster resolution too low: \n"
-                          "Resolution set to the max xy error + stdev. \n"
-                          "Resolution reset to:   {0}".format(self.min_res), Warning)
+            warnings.warn("Desired precision raster resolution too low!! \n"
+                          "Resolution set to the mean xy error + stdev:   {0}".format(self.min_res), Warning)
 
         if os.path.exists(self.path):
             os.remove(self.path)
