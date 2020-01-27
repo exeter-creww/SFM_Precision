@@ -35,6 +35,9 @@ location and x, y and z precision estimate for each tie point, based on Monte Ca
 #
 ### Run SFM Precision Analysis
 
+These modules assume the project is using a metre-based coordinate reference system. Using non-metre-based systems has 
+not been tested and may produce unexpected results.
+
 Ensure that the marker accuracy (pix) is set appropriately in the Metashape project. 
 
 Import module

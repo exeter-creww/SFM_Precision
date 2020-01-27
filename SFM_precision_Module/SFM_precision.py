@@ -111,12 +111,10 @@ def Run(num_iterations, **kwargs):
 
     point_proj = chunk.point_cloud.projections
 
-    # Need CoordinateSystem object, but MS returns 'None' if an arbitrary coordinate system is being used.
-    # thus need to set manually in this case; otherwise use the Chunk coordinate system.
-
+    # check for a crs. By default Metashape returns CoordinateSystem 'Local Coordinates (m)' unless changed by the user.
     if chunk.crs is None:
-        crs = Metashape.CoordinateSystem('LOCAL_CS["Local CS",LOCAL_DATUM["Local Datum",0],UNIT["metre",1]]')
-        chunk.crs = crs
+        raise CrsError('ERROR: No coordinate reference system set. Please set a (preferably metre-based) '
+                       'coordinate reference system before running the SFM_Precision module.')
     else:
         crs = chunk.crs
 
@@ -605,3 +603,19 @@ def logfile_export(dir_path, file_name, crs, ppc_path, num_it, num_fail, obs_pat
 
 
     f.close()
+
+
+class Error(Exception):
+    """Base class for exceptions in this module."""
+    pass
+
+
+class CrsError(Error):
+    """Exception raised for errors in the input.
+
+    Attributes:
+        message -- explanation of the error
+    """
+
+    def __init__(self, message):
+        self.message = message
