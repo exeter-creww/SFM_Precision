@@ -51,9 +51,7 @@ def Proj_SetUp():
     if chunky.tiled_model is not None:
         chunky.remove(chunky.tiled_model)
 
-    temp_psx_path = os.path.join(direc_path, file_name + "_TEMP.psx")
-
-    docu.save(temp_psx_path)
+    docu.read_only = True
 
     return docu, direc_path, file_name, orig_path
 
@@ -113,12 +111,10 @@ def Run(num_iterations, **kwargs):
 
     point_proj = chunk.point_cloud.projections
 
-    # Need CoordinateSystem object, but MS returns 'None' if an arbitrary coordinate system is being used.
-    # thus need to set manually in this case; otherwise use the Chunk coordinate system.
-
+    # check for a crs. By default Metashape returns CoordinateSystem 'Local Coordinates (m)' unless changed by the user.
     if chunk.crs is None:
-        crs = Metashape.CoordinateSystem('LOCAL_CS["Local CS",LOCAL_DATUM["Local Datum",0],UNIT["metre",1]]')
-        chunk.crs = crs
+        raise CrsError('ERROR: No coordinate reference system set. Please set a (preferably metre-based) '
+                       'coordinate reference system before running the SFM_Precision module.')
     else:
         crs = chunk.crs
 
@@ -242,16 +238,8 @@ def Run(num_iterations, **kwargs):
     t_path = doc.path
     t_folder = doc.path[:-4] + ".files"
 
-    # reopen original document and delete temp files/folders
+    # reopen original document
     doc.open(original_path, read_only=False)
-    try:
-        os.remove(t_path)
-    except OSError as e:
-        print(e)
-    try:
-        shutil.rmtree(t_folder)
-    except OSError as e:
-        print(e)
 
     if export_log is True:
         logfile_export(dir_path, file_name, crs, ppc_path, num_iterations, num_fail, retrieve_shape_only_Prec,
@@ -381,7 +369,7 @@ def MonteCarloJam(num_act_cam_orients, chunk, original_chunk, point_proj,
 
     mean, variance, sampleVariance = finalize(Agg)
 
-    stdev_arr = np.sqrt(variance) / prec_val
+    stdev_arr = np.sqrt(abs(variance)) / prec_val
     mean_arr = mean / prec_val
     # sv_std = np.sqrt(sampleVariance)
 
@@ -615,3 +603,19 @@ def logfile_export(dir_path, file_name, crs, ppc_path, num_it, num_fail, obs_pat
 
 
     f.close()
+
+
+class Error(Exception):
+    """Base class for exceptions in this module."""
+    pass
+
+
+class CrsError(Error):
+    """Exception raised for errors in the input.
+
+    Attributes:
+        message -- explanation of the error
+    """
+
+    def __init__(self, message):
+        self.message = message
