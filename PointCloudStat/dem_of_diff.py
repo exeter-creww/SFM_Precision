@@ -216,6 +216,7 @@ class deom_od:
 
         with rasterio.open(self.ras_out_path, "w", **self.out_meta_data) as dest:
             dest.write(dod, 1)
+            dest.write(lod, 2)
 
 
 

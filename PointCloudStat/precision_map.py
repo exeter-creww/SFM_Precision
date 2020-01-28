@@ -17,7 +17,7 @@ def precision_map(prec_point_cloud, out_raster, resolution, **kwargs):
 
     startTime = datetime.now()
 
-    ppc_process = ppc(prec_point_cloud, out_raster, resolution, prec_dimension, bounds, epsg)
+    ppc_process = PrRas(prec_point_cloud, out_raster, resolution, prec_dimension, bounds, epsg)
     ppc_process.readPC_xyzerr()
     ppc_process.Run()
 
@@ -25,7 +25,7 @@ def precision_map(prec_point_cloud, out_raster, resolution, **kwargs):
     return ppc_process
 
 
-class ppc:
+class PrRas:
 
     def __init__(self, prec_pc, ras_path, ras_res, prec_dim, bbox, epsg):
         self.ppc = prec_pc
@@ -122,13 +122,23 @@ class ppc:
         pipeline.execute()   #  run the pipeline
 
         with rasterio.open(self.path, 'r+') as src:
-            def write_b(band, fill_val):
-                array = src.read(band)
-                array[array == -999] = fill_val
-                src.write_band(band, array)
-            write_b(1, self.max_prec)
-            write_b(2, -999)
-            src.write_mask(True)
+            meta = src.meta
+            arr = src.read(1)
+
+        arr_fill = np.copy(arr)
+        arr_fill[arr_fill == -999] = self.max_prec
+        meta.update(count=2)
+
+        with rasterio.open(self.path, 'w', **meta) as src:
+            # def write_b(band, fill_val):
+            #     arr_copy = arr
+            #     arr_copy[arr_copy == -999] = fill_val
+            #     src.write_band(band, arr_copy)
+            # write_b(1, self.max_prec)
+            # write_b(2, -999)
+            # src.write_mask(True)
+            src.write_band(1, arr_fill)
+            src.write_band(2, arr)
 
             if self.bounds is None:
                 # ([xmin, xmax], [ymin, ymax])

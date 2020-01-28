@@ -10,11 +10,10 @@ def height_map(point_cloud, out_raster, resolution, **kwargs):
     window_size = kwargs.get('window_size', 0)
     epsg = kwargs.get('epsg', None)
     bounds = kwargs.get('bounds', None)
-    stat = kwargs.get('stat', None)
 
     startTime = datetime.now()
 
-    dsm_process = dsm(point_cloud, out_raster, resolution, window_size, epsg, bounds, stat)
+    dsm_process = Dsm(point_cloud, out_raster, resolution, window_size, epsg, bounds)
     # dsm_process.readPC_xyerr()
     dsm_process.get_reader()
     dsm_process.Run()
@@ -23,10 +22,10 @@ def height_map(point_cloud, out_raster, resolution, **kwargs):
     return dsm_process
 
 
-class dsm:
+class Dsm:
 
-    def __init__(self, prec_pc, ras_path, ras_res, window, epsg, bbox, stat):
-        self.ppc = prec_pc
+    def __init__(self, real_pc, ras_path, ras_res, window, epsg, bbox):
+        self.rpc = real_pc
         self.res = ras_res
         self.path = ras_path
         self.wind = window
@@ -35,17 +34,16 @@ class dsm:
             self.epsg_code = []
         else:
             self.epsg_code = "EPSG:{0}".format(epsg)
-        if stat is None:
-            self.statval = 'mean'
-        else:
-            self.statval = stat
+
+        self.statval = 'mean'  # we could add the string to the pdal pipline but in case we decide to later add other
+                               # stats it will be more strightforward.
         self.reader = None
 
     def get_reader(self):
 
-        if self.ppc[-4:] == '.las' or self.ppc[-4:] == '.laz':
+        if self.rpc[-4:] == '.las' or self.rpc[-4:] == '.laz':
             self.reader = 'readers.las'
-        elif self.ppc[-4:] == '.txt':
+        elif self.rpc[-4:] == '.txt':
             self.reader = 'readers.text'
         else:
             raise InputError("the Point cloud format provided is not supported "
@@ -59,21 +57,20 @@ class dsm:
                 "pipeline": [
                     {
                         "type": self.reader,
-                        "filename":  self.ppc,
+                        "filename":  self.rpc,
                         "override_srs": self.epsg_code
                     },
 
                     {
-                        "type":"writers.gdal",
+                        "type": "writers.gdal",
                         "filename": self.path,  # output file name
                         "resolution": self.res,
                         "dimension": 'Z',  # raster resolution
                         "nodata": -999,
                         "bounds": str(self.bounds),
                         "output_type": "{0}, stdev".format(self.statval),
-                        "window_size": self.wind  # changes the search area around an empty cell - second stage of algorithm
-
-                    },                       # may want this value to be a bit smaller than at present...
+                        "window_size": self.wind  # changes search area around an empty cell - second stage of algorithm
+                    },
 
                 ]
             }
@@ -82,7 +79,7 @@ class dsm:
                 "pipeline": [
                     {
                         "type": self.reader,
-                        "filename": self.ppc,
+                        "filename": self.rpc,
                         "override_srs": self.epsg_code
                     },
 
@@ -94,9 +91,8 @@ class dsm:
                         "nodata": -999,
                         "output_type": "{0}, stdev".format(self.statval),
                         "window_size": self.wind
-                        # changes the search area around an empty cell - second stage of algorithm
 
-                    },  # may want this value to be a bit smaller than at present...
+                    },
 
                 ]
             }
@@ -123,4 +119,3 @@ class InputError(Error):
 
     def __init__(self, message):
         self.message = message
-
