@@ -6,7 +6,7 @@ from rasterio.enums import Resampling
 import tempfile
 from rasterio.crs import CRS
 import numpy as np
-
+import warnings
 
 
 def dem_of_diff(raster_1, raster_2, prec_point_cloud_1, prec_point_cloud_2, out_ras, **kwargs):
@@ -202,7 +202,7 @@ class deom_od:
         diff_arr = e - b  # dem of difference
         dod = np.zeros(diff_arr.shape)
 
-
+        warnings.filterwarnings('ignore')
         mask1 = (abs(diff_arr) > lod) & (diff_arr < 0)
         dod[mask1] = diff_arr[mask1] + lod[mask1]
 
