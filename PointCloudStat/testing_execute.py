@@ -7,9 +7,7 @@ from PointCloudStat.dem_of_diff import dem_of_diff
 import PointCloudStat.Plot as PcPlot
 
 import os
-import rasterio
-from rasterio.plot import show
-from matplotlib import pyplot as plt
+
 
 import numpy as np
 
@@ -50,7 +48,7 @@ def main():
     prras1 = precision_map(prec_point_cloud=pcp1_path, out_raster=pcp1_out, resolution=1,
                            prec_dimension='zerr', epsg=epsg_code, bounds=dsm1.bounds)
 
-    prras2 = precision_map(prec_point_cloud=pcp1_path, out_raster=pcp1_out, resolution=1,
+    prras2 = precision_map(prec_point_cloud=pcp2_path, out_raster=pcp2_out, resolution=1,
                            prec_dimension='zerr', epsg=epsg_code, bounds=dsm1.bounds)
 
     for i in [prras1, prras2]:
