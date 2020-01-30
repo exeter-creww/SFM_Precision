@@ -1,15 +1,11 @@
 # This script is not part of the package it is an example workflow of how the package can be used to
 # derive a DEM of difference.
 
+import os
 from PointCloudStat.precision_map import precision_map
 from PointCloudStat.DSM import height_map
 from PointCloudStat.dem_of_diff import dem_of_diff
 import PointCloudStat.Plot as PcPlot
-
-import os
-
-
-import numpy as np
 
 dpc1_path = os.path.abspath("C:/HG_Projects/CWC_Drone_work/17_09_07_Danes_Mill/17_09_07_Exports/"
                            "17_09_07_DanesCroft_dpc_export.laz")
@@ -29,13 +25,14 @@ dsm1_out = os.path.join(out_ras_home, "dsm1.tif")
 dsm2_out = os.path.join(out_ras_home, "dsm2.tif")
 
 pcp1_out = os.path.join(out_ras_home, "pcc1.tif")
-pcp2_out = os.path.join(out_ras_home, "pcc1.tif")
+pcp2_out = os.path.join(out_ras_home, "pcc2.tif")
 
 dod_out_path = os.path.join(out_ras_home, "dod.tif")
 
 def main():
     epsg_code = 27700
 
+    # Create and plot Digital Surface Models (DSM)
     dsm1 = height_map(point_cloud=dpc1_path, out_raster=dsm1_out, resolution=0.5, window_size=10, epsg=epsg_code)
 
     dsm2 = height_map(point_cloud=dpc2_path, out_raster=dsm2_out, resolution=0.5, window_size=10,
@@ -45,6 +42,7 @@ def main():
         PcPlot.plot_dsm(dsm_path=i.path)
         PcPlot.plot_roughness(dsm_path=i.path)
 
+    # Create and plot Precision Maps
     prras1 = precision_map(prec_point_cloud=pcp1_path, out_raster=pcp1_out, resolution=1,
                            prec_dimension='zerr', epsg=epsg_code, bounds=dsm1.bounds)
 
@@ -55,8 +53,7 @@ def main():
 
         PcPlot.plot_precision(prec_map_path=i.path, fill_gaps=True)
 
-
-    # for now i'm just using several of the same raster - obviously you wouldn't do this for real...
+    # Calculate a DEM of Difference Raster
     demod = dem_of_diff(raster_1=dsm1.path, raster_2=dsm2.path,
                               prec_point_cloud_1=prras1.path, prec_point_cloud_2=prras2.path,
                               out_ras=dod_out_path, epsg=epsg_code)
@@ -66,7 +63,7 @@ def main():
 
     PcPlot.hist_dsm(dsm1.path)
     PcPlot.hist_roughness(dsm1.path)
-    PcPlot.hist_precision(pcp2_path)
+    PcPlot.hist_precision(pcp2_path, n_bins=50)
     PcPlot.hist_lod(demod.ras_out_path)
     PcPlot.hist_dem_of_diff(demod.ras_out_path)
 

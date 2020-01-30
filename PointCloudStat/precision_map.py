@@ -47,7 +47,7 @@ class PrRas:
                                     'formats': ('f8', 'f8', 'f8', 'f8', 'f8', 'f8')})
 
         min_val = max([np.mean(pcdata['xerr']) + np.std(pcdata['xerr']),
-                        np.mean(pcdata['yerr'])+ np.std(pcdata['yerr'])])
+                       np.mean(pcdata['yerr']) + np.std(pcdata['yerr'])])
 
         self.min_res = math.ceil(min_val * 10000) / 10000
 
