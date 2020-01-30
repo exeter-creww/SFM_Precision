@@ -42,10 +42,11 @@ def plot_hist(raster, band, v_range, n_bins, colour, density, title, xlabel, sav
                  range=v_range, density=density, edgecolor='black', linewidth=1.2)
         plt.title(title)
         plt.xlabel(xlabel)
-        plt.show()
 
         if save_path is not None:
             plt.savefig(fname=save_path, dpi=dpi, format='jpg')
+
+        plt.show()
 
 
 def plot_dsm(dsm_path, **kwargs ):

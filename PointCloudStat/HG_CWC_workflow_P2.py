@@ -34,32 +34,30 @@ epsg_code = 27700
 
 def run_functions():
 
+    # Start - Finish (WINTER)
     Dec16_Mar18 = dem_of_diff(raster_1=dsm1612, raster_2=dsm1803,
                               prec_point_cloud_1=pcp1612, prec_point_cloud_2=pcp1803,
                               out_ras=DoD_Dec16_Mar18, epsg=epsg_code)
 
     # pcplot.plot_dsm(dsm_path=dsm1612, dpi=200, save_path=os.path.join(out_ras_home, "test_dsm1.jpg"))
 
-    pcplot.plot_dem_of_diff(Dec16_Mar18.ras_out_path, save_path=os.path.join(out_ras_home, "test_dod1.jpg"),
-                            v_range=(-5, 5))
-    pcplot.plot_lod(Dec16_Mar18.ras_out_path, save_path=os.path.join(out_ras_home, "test_lod1.jpg"))
+    pcplot.plot_dem_of_diff(Dec16_Mar18.ras_out_path, save_path=os.path.join(out_ras_home, "Dec16_Mar18_DOD.jpg"),
+                            v_range=(-5, 5), title="Dec16 - Mar18 Elevation Change")
+    pcplot.plot_lod(Dec16_Mar18.ras_out_path, save_path=os.path.join(out_ras_home, "Dec16_Mar18_LOD.jpg"))
 
     pcplot.hist_dem_of_diff(Dec16_Mar18.ras_out_path, range=(-2, 2), n_bins=50,
-                            save_path=os.path.join(out_ras_home, "test_dodHist1.jpg"))
+                            save_path=os.path.join(out_ras_home, "Dec16_Mar18_DOD_hist.jpg"))
 
-    pcplot.hist_lod(Dec16_Mar18.ras_out_path, n_bins=50, save_path=os.path.join(out_ras_home, "test_lodHist1.jpg"))
+    pcplot.hist_lod(Dec16_Mar18.ras_out_path, n_bins=50, save_path=os.path.join(out_ras_home, "Dec16_Mar18_LOD_hist.jpg"))
 
-
+    # Start - Finish (SUMMER)
     Sep17_Sep18 = dem_of_diff(raster_1=dsm1709, raster_2=dsm1809,
                               prec_point_cloud_1=pcp1709, prec_point_cloud_2=pcp1809,
                               out_ras=DoD_Sep17_Sep18, epsg=epsg_code)
 
-    pcplot.plot_dem_of_diff(Sep17_Sep18.ras_out_path, save_path=os.path.join(out_ras_home, "test_dod2.jpg"),
-                            v_range=(-5, 5))
-    pcplot.plot_lod(Sep17_Sep18.ras_out_path, save_path=os.path.join(out_ras_home, "test_lod2.jpg"))
-
-        # show_hist(dod2, bins=50, lw=0.0, stacked=False, alpha=0.3,
-                  # histtype='stepfilled', title="Histogram")
+    pcplot.plot_dem_of_diff(Sep17_Sep18.ras_out_path, save_path=os.path.join(out_ras_home, "Sep17_Sep18_DOD.jpg"),
+                            v_range=(-5, 5), title="Sep17 - Sep18 Elevation Change")
+    pcplot.plot_lod(Sep17_Sep18.ras_out_path, save_path=os.path.join(out_ras_home, "Sep17_Sep18_LOD.jpg"))
 
 
 
