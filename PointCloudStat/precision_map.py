@@ -8,16 +8,19 @@ import math
 import rasterio
 import os
 import warnings
-
+from PointCloudStat.mask_AOI import mask_it
 
 def precision_map(prec_point_cloud, out_raster, resolution, **kwargs):
-    prec_dimension = kwargs.get('prec_dimension', 'zerr')
+    prec_dimension = kwargs.get('prec_dimension', 'z')
+    if prec_dimension not in ['x', 'y', 'z']:
+        raise(InputError("prec_dimension must be: 'x', 'y' or 'z'"))
+
     epsg = kwargs.get('epsg', None)
     bounds = kwargs.get('bounds', None)
-
+    mask = kwargs.get('mask', None)
     startTime = datetime.now()
 
-    ppc_process = PrRas(prec_point_cloud, out_raster, resolution, prec_dimension, bounds, epsg)
+    ppc_process = PrRas(prec_point_cloud, out_raster, resolution, prec_dimension, bounds, epsg, mask)
     ppc_process.readPC_xyzerr()
     ppc_process.Run()
 
@@ -27,12 +30,20 @@ def precision_map(prec_point_cloud, out_raster, resolution, **kwargs):
 
 class PrRas:
 
-    def __init__(self, prec_pc, ras_path, ras_res, prec_dim, bbox, epsg):
+    def __init__(self, prec_pc, ras_path, ras_res, prec_dim, bbox, epsg, maskit):
         self.ppc = prec_pc
         self.res = ras_res
         self.path = ras_path
-        self.pr_dim = prec_dim
+
+        if prec_dim == 'z':
+            self.pr_dim = 'zerr'
+        if prec_dim == 'x':
+            self.pr_dim = 'xerr'
+        if prec_dim == 'y':
+            self.pr_dim = 'yerr'
+
         self.bounds = bbox
+        self.mask = maskit
         if epsg is None:
             self.epsg_code = []
         else:
@@ -57,9 +68,7 @@ class PrRas:
     def Run(self):
         print(self.ppc)
 
-        self.things = 'a whole new thing'
-
-        print("starting pipeline")
+        print("Generating Precision Raster...")
 
         if self.res < self.min_res:
             self.res = self.min_res
@@ -130,16 +139,33 @@ class PrRas:
         meta.update(count=2)
 
         with rasterio.open(self.path, 'w', **meta) as src:
-            # def write_b(band, fill_val):
-            #     arr_copy = arr
-            #     arr_copy[arr_copy == -999] = fill_val
-            #     src.write_band(band, arr_copy)
-            # write_b(1, self.max_prec)
-            # write_b(2, -999)
-            # src.write_mask(True)
             src.write_band(1, arr_fill)
             src.write_band(2, arr)
 
-            if self.bounds is None:
-                # ([xmin, xmax], [ymin, ymax])
+        if self.mask is not None:
+            mask_it(raster=self.path, shp_path=self.mask, epsg=self.epsg_code)
+
+        if self.bounds is None:
+            with rasterio.open(self.path) as src:
                 self.bounds = ([src.bounds[0], src.bounds[2]], [src.bounds[1], src.bounds[3]])
+
+        if self.pr_dim == 'zerr':
+            self.pr_dim = 'z'
+        if self.pr_dim == 'xerr':
+            self.pr_dim = 'x'
+        if self.pr_dim == 'yerr':
+            self.pr_dim = 'y'
+
+class Error(Exception):
+    """Base class for exceptions in this module."""
+    pass
+
+class InputError(Error):
+    """Exception raised for errors in the input.
+
+    Attributes:
+        message -- explanation of the error
+    """
+
+    def __init__(self, message):
+        self.message = message
