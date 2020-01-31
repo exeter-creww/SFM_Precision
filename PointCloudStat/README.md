@@ -149,9 +149,96 @@ A geopandas-readable polygon (http://geopandas.org/io.html). Masks areas as No D
 then all data is presented. [Default:None]
 
 
-### Plotting module
+### Plot module
 
-Now been made - need to add some instructions.
+The PointCloudStat.Plot module contains a number of functions which serve as wrappers for matplotlib. The core functions
+are plot_raster and plot_hist. These are generic and can be used but the following functions provide a simpler approach
+for plotting specific raster maps and histograms.
+
+#### PointCloudStat.Plot.plot_dsm
+
+`plot_dsm(dsm_path, save_path=None, dpi=300, cmap='BrBG', title='Surface Elevation Map', v_range=None)`
+
+#### Parameters:
+**dsm_path**: *str, path object or file-like object*
+The file path for the DSM raster to be plotted.
+
+**save_path**: *str, path object or file-like object, optional*
+If you want to save a copy of the map to disk then provide a file path including extension e.g. jpeg, png, etc. If None
+is provided then the plot will be displayed but not saved. [Default:None]
+
+**dpi**: *int, optional*
+The dpi value for the saved image. Only used if save_path is provided. [Default:300]
+
+**cmap**: *str, optional*
+A matplotlib colormap string - see here for info (https://matplotlib.org/tutorials/colors/colormaps.html)  
+[Default:'BrBG']
+
+**title**: *str, optional*
+A string value to add as a title of the plot. [Default:'Surface Elevation Map']
+
+**v_range**: *tuple, optional*
+Set limits to the vrtical range of the plot by providing a tuple such as (-5, 5). if None is provided then the 
+ maximum and minumum z values will be used to define the colormap. [Default:None]
+
+add a map...
+
+#### PointCloudStat.Plot.plot_roughness
+
+`plot_roughness(dsm_path, save_path=None, dpi=300, cmap='magma', title='Rasterization-Roughness Map', v_range=None)`
+
+#### Parameters:
+**dsm_path**: *str, path object or file-like object*
+The file path for the DSM raster. Roughness data is contained in Band 2 and is automatically selected.
+
+**save_path**: *str, path object or file-like object, optional*
+If you want to save a copy of the map to disk then provide a file path including extension e.g. jpeg, png, etc. If None
+is provided then the plot will be displayed but not saved. [Default:None]
+
+**dpi**: *int, optional*
+The dpi value for the saved image. Only used if save_path is provided. [Default:300]
+
+**cmap**: *str, optional*
+A matplotlib colormap string - see here for info (https://matplotlib.org/tutorials/colors/colormaps.html)  
+[Default:'magma']
+
+**title**: *str, optional*
+A string value to add as a title of the plot. [Default:'Rasterization-Roughness Map']
+
+**v_range**: *tuple, optional*
+Set limits to the vrtical range of the plot by providing a tuple such as (-5, 5). if None is provided then the 
+ maximum and minumum z values will be used to define the colormap. [Default:None]
+
+#### PointCloudStat.Plot.plot_precision
+
+`plot_precision(prec_map_path, save_path=None, dpi=300, cmap='cividis', fill_gaps=True, title='SFM Precision Map', 
+v_range=None)`
+
+#### Parameters:
+**prec_map_path**: *str, path object or file-like object*
+The file path for the Precision raster.
+
+**save_path**: *str, path object or file-like object, optional*
+If you want to save a copy of the map to disk then provide a file path including extension e.g. jpeg, png, etc. If None
+is provided then the plot will be displayed but not saved. [Default:None]
+
+**dpi**: *int, optional*
+The dpi value for the saved image. Only used if save_path is provided. [Default:300]
+
+**cmap**: *str, optional*
+A matplotlib colormap string - see here for info (https://matplotlib.org/tutorials/colors/colormaps.html)  
+[Default:'cividis]
+
+**fill_gaps:** *Bool, optional*
+If True then all gaps in the Precision raster map are filled with the heighest measured precision value. if False gaps
+are plotted as no data. [Default:True]
+
+**title**: *str, optional*
+A string value to add as a title of the plot. [Default:'SFM Precision Map']
+
+**v_range**: *tuple, optional*
+Set limits to the vrtical range of the plot by providing a tuple such as (-5, 5). if None is provided then the 
+ maximum and minumum z values will be used to define the colormap. [Default:None]
 
 Have a map...
 ![CWC example](../Example_Images/dod_example.png)  
