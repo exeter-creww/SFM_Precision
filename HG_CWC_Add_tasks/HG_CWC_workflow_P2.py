@@ -46,7 +46,7 @@ def run_functions():
     pcplot.plot_roughness(dsm_path=dsm1809, dpi=300, save_path=os.path.join(out_ras_home, "test_roughness1.jpg"))
 
     pcplot.plot_dem_of_diff(Dec16_Mar18.ras_out_path, save_path=os.path.join(out_ras_home, "Dec16_Mar18_DOD.jpg"),
-                            v_range=(-5, 5), title="Dec16 - Mar18")
+                            v_range=(-5, 5))
 
 
     pcplot.plot_lod(Dec16_Mar18.ras_out_path, save_path=os.path.join(out_ras_home, "Dec16_Mar18_LOD.jpg"))
@@ -61,8 +61,8 @@ def run_functions():
                                        prec_point_cloud_1=pcp1709, prec_point_cloud_2=pcp1809,
                                        out_ras=DoD_Sep17_Sep18, epsg=epsg_code, mask=mask_shp)
 
-    pcplot.plot_dem_of_diff(Sep17_Sep18.ras_out_path, save_path=os.path.join(out_ras_home, "Sep17_Sep18_DOD.jpg"),
-                            v_range=(-5, 5), title="Sep17 - Sep18")
+    pcplot.plot_dem_of_diff(Sep17_Sep18.ras_out_path, save_path=os.path.join(out_ras_home, "DOD_example1.jpg"),
+                            v_range=(-5, 5))
     pcplot.plot_lod(Sep17_Sep18.ras_out_path, save_path=os.path.join(out_ras_home, "Sep17_Sep18_LOD.jpg"))
 
 

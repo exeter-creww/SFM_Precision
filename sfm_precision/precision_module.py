@@ -132,8 +132,8 @@ def main(num_iterations, params_list, retrieve_shape_only_Prec, export_log):
                           fit_p1=optimise_p1, fit_p2=optimise_p2, fit_p3=optimise_p3, fit_p4=optimise_p4)
 
     sparse_ref = os.path.join(dir_path, 'start_pts_temp.ply')
-    chunk.exportPoints(sparse_ref, normals=False, colors=False,
-                       format=Metashape.PointsFormatPLY, projection=crs, shift=pts_offset)
+    chunk.exportPoints(sparse_ref, source_data='PointCloudData', save_normals=False, save_colors=False,
+                       format=Metashape.PointsFormatPLY, crs=crs, shift=pts_offset)
 
     # Read in reference cloud to get dimensions
     spcdata = PlyData.read(sparse_ref)
@@ -335,8 +335,8 @@ def MonteCarloJam(num_act_cam_orients, chunk, original_chunk, point_proj,
         if os.path.exists(out_file):
             os.remove(out_file)
         # Export the sparse point cloud
-        chunk.exportPoints(out_file, normals=False, colors=False, format=Metashape.PointsFormatPLY,
-                           projection=crs, shift=pts_offset)
+        chunk.exportPoints(out_file, source_data='PointCloudData', save_normals=False, save_colors=False,
+                           format=Metashape.PointsFormatPLY, crs=crs, shift=pts_offset)
 
         # Increment the file counter
 
@@ -595,7 +595,7 @@ def logfile_export(dir_path, file_name, crs, ppc_path, num_it, num_fail, obs_pat
         if obs_path is True:
             f.write("{0}\n\n".format(os.path.join(dir_path, file_name + '_observation_distances.txt')))
         f.write("------------------------------------------------------------\n\n")
-        f.write("SFM Precision Run Time: {0}".format(time))
+        f.write("SFM Precision Run Time: {0}\n".format(time))
         f.write("Analysis completed at: {0}".format(datetime.now()))
 
 
