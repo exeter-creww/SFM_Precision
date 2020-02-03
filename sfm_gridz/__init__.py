@@ -16,7 +16,9 @@ def dsm(point_cloud, out_raster, resolution, **kwargs):
     bounds = kwargs.get('bounds', None)
     mask = kwargs.get('mask', None)
 
-    DSM.height_map(point_cloud, out_raster, resolution, window_size, epsg, bounds, mask)
+    dsm_class = DSM.height_map(point_cloud, out_raster, resolution, window_size, epsg, bounds, mask)
+
+    return dsm_class
 
 
 def precision(prec_point_cloud, out_raster, resolution, **kwargs):
@@ -27,7 +29,10 @@ def precision(prec_point_cloud, out_raster, resolution, **kwargs):
     bounds = kwargs.get('bounds', None)
     mask = kwargs.get('mask', None)
 
-    precision_map.precision_map(prec_point_cloud, out_raster, resolution, prec_dimension, epsg, bounds, mask)
+    prec_class = precision_map.precision_map(prec_point_cloud, out_raster, resolution,
+                                             prec_dimension, epsg, bounds, mask)
+
+    return prec_class
 
 
 def difference(raster_1, raster_2,prec_point_cloud_1, prec_point_cloud_2, out_ras,**kwargs):
@@ -39,7 +44,9 @@ def difference(raster_1, raster_2,prec_point_cloud_1, prec_point_cloud_2, out_ra
     handle_gaps = kwargs.get('handle_gaps', True)
     mask = kwargs.get('mask', None)
 
-    dem_of_diff.dem_of_diff(raster_1, raster_2, prec_point_cloud_1, prec_point_cloud_2, out_ras, epsg_code, reg_error,
+    demod_class = dem_of_diff.dem_of_diff(raster_1, raster_2, prec_point_cloud_1, prec_point_cloud_2, out_ras, epsg_code, reg_error,
                 t_value, handle_gaps, mask)
+
+    return demod_class
 
 
