@@ -6,7 +6,7 @@ import rasterio
 from rasterio.plot import show_hist
 from matplotlib import pyplot as plt
 
-out_ras_home = os.path.abspath("C:/HG_Projects/CWC_Drone_work/Prec_Anal_Exports/Rasters_v1")
+out_ras_home = os.path.abspath("C:/HG_Projects/CWC_Drone_work/Prec_Anal_Exports/Rasters_v2")
 
 dsm1612 = os.path.join(out_ras_home, "dsm1.tif")
 dsm1702 = os.path.join(out_ras_home, "dsm2.tif")
@@ -39,7 +39,11 @@ def run_functions():
                                        prec_point_cloud_1=pcp1612, prec_point_cloud_2=pcp1803,
                                        out_ras=DoD_Dec16_Mar18, epsg=epsg_code, mask=mask_shp)
 
-    pcplot.plot_dsm(dsm_path=dsm1612, dpi=200, save_path=os.path.join(out_ras_home, "test_dsm1.jpg"))
+    pcplot.plot_dsm(dsm_path=dsm1809, dpi=300, save_path=os.path.join(out_ras_home, "test_dsm1.jpg"))
+
+    pcplot.plot_precision(prec_map_path=pcp1809, dpi=300, save_path=os.path.join(out_ras_home, "test_precmap1.jpg"))
+
+    pcplot.plot_roughness(dsm_path=dsm1809, dpi=300, save_path=os.path.join(out_ras_home, "test_roughness1.jpg"))
 
     pcplot.plot_dem_of_diff(Dec16_Mar18.ras_out_path, save_path=os.path.join(out_ras_home, "Dec16_Mar18_DOD.jpg"),
                             v_range=(-5, 5), title="Dec16 - Mar18")

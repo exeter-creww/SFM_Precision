@@ -1,5 +1,3 @@
-# Placed outside of the module folder to make sure that metashape is running the version in the site packages
-# directory and not the version here
 
 import sfm_precision
 import Metashape

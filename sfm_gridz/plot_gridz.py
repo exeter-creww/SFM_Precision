@@ -64,7 +64,7 @@ def plot_hist(raster, band, v_range, n_bins, colour, density, title, xlabel, sav
         fig, ax = plt.subplots(figsize=(8, 7))
 
         img = ax.hist(x=arr[~np.isnan(arr)].flatten(), bins=n_bins, color=colour, histtype='bar',
-                range=v_range, density=density, edgecolor='black', linewidth=1.2)
+                range=v_range, density=density, edgecolor='black', linewidth=0.8)
         plt.title(title)
 
         if ras.crs.linear_units == 'metre':
@@ -210,7 +210,7 @@ def hist_precision(ppc_path, **kwargs):
     fig, ax = plt.subplots(figsize=(8, 7))
 
     ax.hist(x=ppc_arr, bins=n_bins, color=colour, histtype='bar',
-             range=vrange, density=density, edgecolor='black', linewidth=1.2)
+             range=vrange, density=density, edgecolor='black', linewidth=0.8)
     plt.title(title)
     plt.xlabel(xlabel)
 

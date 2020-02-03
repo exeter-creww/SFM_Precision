@@ -1,17 +1,10 @@
 # This is hugh's CWC workflow and is a bit more specific to the use case...
 
 import sfm_gridz
-
 import sfm_gridz.plot_gridz as pcplot
-
 import os
 import sys
-import rasterio
-from rasterio.plot import show
-from matplotlib import pyplot as plt
 
-import numpy as np
-import sys
 dpc1_path = os.path.abspath("C:/HG_Projects/CWC_Drone_work/16_12_18_Danes_Mill/16_12_18_Exports/"
                            "16_12_18_DanesCroft_dpc_export.laz")
 

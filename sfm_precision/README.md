@@ -1,5 +1,5 @@
-# SFM_Precision
-A python workflow to create precision maps with Agisoft MetaShape.
+# sfm_precision
+A python package that creates precision point clouds with Agisoft MetaShape.
 
 (Developed after: James et al., 2017) ‘3-D Uncertainty-Based Topographic Change Detection with  
 Structure-from-Motion Photogrammetry: Precision Maps for Ground Control and Directly Georeferenced Surveys’.  
@@ -23,14 +23,12 @@ Install these modules in Metshape's python distribution by running the following
 
 ### Installation  
 
-Then, if you want to add this as a module in the Metashape python distribution, just copy SFM_precision.py into this   
+Then, add this package to the Metashape python distribution, just copy sfm_precision into this   
 folder: "C:\Program Files\Agisoft\Metashape Pro\python\Lib\site-packages". Then the module can be used in custom 
 scripts or called directly from the Metashape console.  
 
-**SFM_precision.py** module based on code published by James et al. 2017, which produces a sparse point cloud of mean   
+**sfm_precision** package based on code published by James et al. 2017, which produces a sparse point cloud of mean   
 location and x, y and z precision estimate for each tie point, based on Monte Carlo analysis in Metashape.
-
-**Launch_script.py** is an example script for running the SFM_precision module 'headless' from the command line.
 
 #
 ### Run SFM Precision Analysis
@@ -50,7 +48,7 @@ Create list of desired camera optimisation parameters
 'fit_k2', 'fit_k3', 'fit_k4','fit_p1', 'fit_p2', 'fit_p3', 'fit_p4']`
 ####  
 Initiate Monte Carlo analysis  
-`SFM_precision.Run(num_iterations=1000,  
+`sfm_precision.run(num_iterations=1000,  
                    params_list=params,  
                    shape_only_Prec=False,    
                    export_log=True)`  
@@ -79,10 +77,10 @@ Cloud generation.
 #### Example Results
 Here are some examples of z precision maps produced using the point cloud output from this module:  
 
-![CWC example](../Example_Images/CWC_example.png)  
+![CWC example](sfm_precision/Examples/CWC_example.png)  
 &nbsp;
 &nbsp;
-![Experimental Plot example](../Example_Images/Prec_Pia_NEW1000it.png)
+![Experimental Plot example](sfm_precision/Examples/Prec_Pia_NEW1000it.png)
 &nbsp;
 
 #

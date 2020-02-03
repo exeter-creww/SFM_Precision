@@ -1,11 +1,26 @@
-# This Directory contains the XXXXX module
+# sfm_gridz
 
-### Name ideas:
-PointCloudStat
-SFMtoGrid
-ConfidentChange
-The above aren't great so ideas welcome!
-##
+The sfm_gridz package is designed to provide a set a of tools that streamline the processing of SFM point cloud data to
+raster products. This model is designed to work alongside the sfm_precision module which derives precision pointclouds 
+from an Agisoft Metashape project. Digital Surface Models, Precision maps and Height change maps can be produced 
+ensuring that spatially explicit sfm-precision and rasterisation error are considered.
+
+# 
+### Dependencies
+
+*pdal* (2.2.1): https://pdal.io/
+*rasterio* (1.1.1): https://rasterio.readthedocs.io/en/latest/index.html
+*numpy* (1.17.3): https://numpy.org/  
+*geopandas* (0.6.2): http://geopandas.org/index.html
+
+### Installation
+
+For the time being... copy the sfm_precision package to the Lib\site-packages directory of your python environment.
+
+**Import package**:
+
+`import sfm_gridz`
+
 ### DSM module
 
 The DSM module has one function called'height_map' which allows for the derivation of a Digital Surface Model (DSM) from 
@@ -14,9 +29,7 @@ a point cloud. It uses the mean point height (z) within each grid square to defi
 
 #### The height_map function is exectued as follows:
 
-`from PointCloudStat.DSM import height_map`
-
-`height_map(point_cloud, out_raster, resolution, window_size=0, epsg=None, bounds=None, mask=None)`
+`sfm_gridz.dsm(point_cloud, out_raster, resolution, window_size=0, epsg=None, bounds=None, mask=None)`
 
 #### Parameters:
 **point_cloud**: *str, path object or file-like object*
@@ -59,9 +72,8 @@ generated with the SFM_Precision module in Metashape. One can make precision ras
 main purpose is to create a z precision raster so we can determine height change maps with accurate limits of detection.
 
 #### The precision_map function is exectued as follows:
-`from PointCloudStat.precision_map import precision_map`
 
-`precision_map(prec_point_cloud, out_raster, resolution, prec_dimension=None, epsg=None, bounds=None, 
+`sfm_gridz.precision(prec_point_cloud, out_raster, resolution, prec_dimension=None, epsg=None, bounds=None, 
 mask=None)`
 
 #### Parameters:
@@ -108,9 +120,7 @@ this module facilitates the use of SFM precision maps and Roughness maps to accu
 
 #### The DEMofDiff function is exectued as follows:
 
-`from PointCloudStat.dem_of_diff import dem_of_diff`
-
-`dem_of_diff(raster_1, raster_2, prec_point_cloud_1, prec_point_cloud_2, out_ras, epsg=None, reg_error=0, t_value=1,
+`sfm_gridz.difference(raster_1, raster_2, prec_point_cloud_1, prec_point_cloud_2, out_ras, epsg=None, reg_error=0, t_value=1,
 handle_gaps=True ,mask=None)`
 
 #### Parameters:
@@ -149,15 +159,18 @@ A geopandas-readable polygon (http://geopandas.org/io.html). Masks areas as No D
 then all data is presented. [Default:None]
 
 
-### Plot module
+## sfm_gridz.plot_gridz - plotting module
 
-The PointCloudStat.Plot module contains a number of functions which serve as wrappers for matplotlib. The core functions
+`from sfm_gridz import plot_gridz`
+
+The sfm_gridz.Plot module contains a number of functions which serve as wrappers for matplotlib. The core functions
 are plot_raster and plot_hist. These are generic and can be used but the following functions provide a simpler approach
 for plotting specific raster maps and histograms.
 
-#### PointCloudStat.Plot.plot_dsm
 
-`plot_dsm(dsm_path, save_path=None, dpi=300, cmap='BrBG', title='Surface Elevation Map', v_range=None, 
+#### plot_gridz.plot_dsm
+
+`plot_gridz.plot_dsm(dsm_path, save_path=None, dpi=300, cmap='BrBG', title='Surface Elevation Map', v_range=None, 
 colmap_label='Elevation')`
 
 #### Parameters:
@@ -185,11 +198,11 @@ Set limits to the vrtical range of the plot by providing a tuple such as (-5, 5)
 **colmap_label**: *str, optional*
 A string value to add as colourmap label. [Default:'Elevation']
 
-add a map...
+![DSM_example](sfm_gridz/Examples/test_dsm1.jpg)  
 
-#### PointCloudStat.Plot.plot_roughness
+#### plot_gridz.plot_roughness
 
-`plot_roughness(dsm_path, save_path=None, dpi=300, cmap='magma', title='Rasterization-Roughness Map', v_range=None,
+`plot_gridz.plot_roughness(dsm_path, save_path=None, dpi=300, cmap='magma', title='Rasterization-Roughness Map', v_range=None,
 colmap_label='Rasterisation Uncertainty')`
 
 #### Parameters:
@@ -217,9 +230,11 @@ Set limits to the vrtical range of the plot by providing a tuple such as (-5, 5)
 **colmap_label**: *str, optional*
 A string value to add as colourmap label. [Default:'Rasterisation Uncertainty']
 
-#### PointCloudStat.Plot.plot_precision
+![Ras_Roughness_example](sfm_gridz/Examples/test_roughness1.jpg)  
 
-`plot_precision(prec_map_path, save_path=None, dpi=300, cmap='cividis', fill_gaps=True, title='SFM Precision Map', 
+#### plot_gridz.plot_precision
+
+`plot_gridz.plot_precision(prec_map_path, save_path=None, dpi=300, cmap='cividis', fill_gaps=True, title='SFM Precision Map', 
 v_range=None, colmap_label='SFM Precision')`
 
 #### Parameters:
@@ -251,9 +266,11 @@ Set limits to the vertical range of the plot by providing a tuple such as (-5, 5
 **colmap_label**: *str, optional*
 A string value to add as colourmap label. [Default:'SFM Precision']
 
-#### PointCloudStat.Plot.plot_dem_of_diff
+![SFM_precision_example](sfm_gridz/Examples/test_precmap1.jpg)
 
-`plot_dem_of_diff(dem_o_diff_path, save_path =None, dpi =300, cmap ='RdBu', title ='Elevation Change Map', v_range=None,
+#### plot_gridz.plot_dem_of_diff
+
+`plot_gridz.plot_dem_of_diff(dem_o_diff_path, save_path =None, dpi =300, cmap ='RdBu', title ='Elevation Change Map', v_range=None,
 colmap_label='Elevation Change')`
 
 #### Parameters:
@@ -282,8 +299,10 @@ Set limits to the vertical range of the plot by providing a tuple such as (-5, 5
 **colmap_label**: *str, optional*
 A string value to add as colourmap label. [Default:'Elevation Change']
 
-#### PointCloudStat.Plot.plot_lod
-`plot_lod(dem_o_diff_path, save_path=None, dpi=300, cmap='summer', title='Limit of detection Map', v_range=None,
+![DEM of diff example](sfm_gridz/Examples/Sep17_Sep18_DOD.jpg)
+
+#### plot_gridz.plot_lod
+`plot_gridz.plot_lod(dem_o_diff_path, save_path=None, dpi=300, cmap='summer', title='Limit of detection Map', v_range=None,
 colmap_label='Limit of Detection')`
 
 **dem_o_diff_path**: *str, path object or file-like object*
@@ -310,74 +329,187 @@ Set limits to the vertical range of the plot by providing a tuple such as (-5, 5
  **colmap_label**: *str, optional*
 A string value to add as colourmap label. [Default:'Limit of Detection']
 
+![LOD example](sfm_gridz/Examples/Sep17_Sep18_LOD.jpg)
 
-#### PointCloudStat.Plot.hist_dsm
+#### plot_gridz.hist_dsm
 
-`hist_dsm(dsm_path, save_path=None, dpi=300, colour='green', n_bins=None, density=False, 
-title='Digital Surface Model Histogram', xlabel='Elevation')`
-
-**dsm_path**: *str, path object or file-like object*
-The file path for the DSM raster to be plotted as histogram.
-
-**save_path**: *str, path object or file-like object, optional*
-If you want to save a copy of the map to disk then provide a file path including extension e.g. jpeg, png, etc. If None
-is provided then the plot will be displayed but not saved. [Default:None]
-
-**dpi**: *int, optional*
-The dpi value for the saved image. Only used if save_path is provided. [Default:300]
-
-**cmap**: *str, optional*
-A matplotlib colormap string - see here for info (https://matplotlib.org/tutorials/colors/colormaps.html)  
-[Default:'BrBG']
-
-**title**: *str, optional*
-A string value to add as a title of the plot. [Default:'Digital Surface Model Histogram']
-
-**v_range**: *tuple, optional*
-Set limits to the vrtical range of the plot by providing a tuple such as (-5, 5). if None is provided then the 
- maximum and minumum z values will be used to define the colormap. [Default:None]
- 
-**xlabel**: *str, optional*
-A string value to add as x-axis label. [Default:'Elevation']
-
-#### PointCloudStat.Plot.hist_roughness
-
-`hist_roughness(dsm_path, save_path=None, dpi=300, colour='red', n_bins=None, density=False, 
-title='Surface roughness Histogram', xlabel='Rasterisation Uncertainty')`
+`plot_gridz.hist_dsm(dsm_path, save_path=None, dpi=300, colour='green', n_bins=None, density=False, 
+title='Digital Surface Model Histogram', xlabel='Elevation', range=None)`
 
 **dsm_path**: *str, path object or file-like object*
 The file path for the DSM raster to be plotted as histogram.
 
 **save_path**: *str, path object or file-like object, optional*
-If you want to save a copy of the map to disk then provide a file path including extension e.g. jpeg, png, etc. If None
+If you want to save a copy of the histogram to disk then provide a file path including extension e.g. jpeg, png, etc. 
+If None is provided then the plot will be displayed but not saved. [Default:None]
+
+**dpi**: *int, optional*
+The dpi value for the saved image. Only used if save_path is provided. [Default:300]
+
+**colour**: *str, optional*
+A matplotlib color string - see here for info (https://matplotlib.org/3.1.0/gallery/color/named_colors.html)  
+[Default:'green']
+
+**n_bins**: *int, optional*
+Number of bins to use for the histogram. If None then matplotlib default bins sizes are used. [Default: None]
+
+**denisty**: *Bool, optional*
+If True, y-axis is converted to point density rather than frequency. [Default:False]
+
+**title**: *str, optional*
+A string value to add as a title of the plot. [Default:'Digital Surface Model Histogram']
+ 
+**xlabel**: *str, optional*
+A string value to add as x-axis label. [Default:'Elevation']
+
+ **range**: *tuple, optional*
+Set limits to the range of the histogram by providing a tuple such as (-5, 5). if None is provided then the 
+maximum and minumum values will be used to define the colormap. [Default:None]
+
+#### plot_gridz.hist_roughness
+
+`plot_gridz.hist_roughness(dsm_path, save_path=None, dpi=300, colour='red', n_bins=None, density=False, 
+title='Surface roughness Histogram', xlabel='Rasterisation Uncertainty', range=None)`
+
+**dsm_path**: *str, path object or file-like object*
+The file path for the DSM raster to be plotted as histogram.
+
+**save_path**: *str, path object or file-like object, optional*
+If you want to save a copy of the histogram to disk then provide a file path including extension e.g. jpeg, png, etc. If None
 is provided then the plot will be displayed but not saved. [Default:None]
 
 **dpi**: *int, optional*
 The dpi value for the saved image. Only used if save_path is provided. [Default:300]
 
-**cmap**: *str, optional*
-A matplotlib colormap string - see here for info (https://matplotlib.org/tutorials/colors/colormaps.html)  
-[Default:'BrBG']
+**colour**: *str, optional*
+A matplotlib color string - see here for info (https://matplotlib.org/3.1.0/gallery/color/named_colors.html)  
+[Default:'red']
+
+**n_bins**: *int, optional*
+Number of bins to use for the histogram. If None then matplotlib default bins sizes are used. [Default: None]
+
+**denisty**: *Bool, optional*
+If True, y-axis is converted to point density rather than frequency. [Default:False]
 
 **title**: *str, optional*
-A string value to add as a title of the plot. [Default:'Digital Surface Model Histogram']
+A string value to add as a title of the plot. [Default:'Surface roughness Histogram']
 
-**v_range**: *tuple, optional*
-Set limits to the vrtical range of the plot by providing a tuple such as (-5, 5). if None is provided then the 
- maximum and minumum z values will be used to define the colormap. [Default:None]
- 
 **xlabel**: *str, optional*
-A string value to add as x-axis label. [Default:'Elevation']
+A string value to add as x-axis label. [Default:'Rasterisation Uncertainty']
 
-#### PointCloudStat.Plot.hist_precision
+ **range**: *tuple, optional*
+Set limits to the range of the histogram by providing a tuple such as (-5, 5). if None is provided then the 
+maximum and minumum values will be used to define the colormap. [Default:None]
 
-#### PointCloudStat.Plot.hist_dem_of_diff
+#### plot_gridz.hist_precision
 
-#### PointCloudStat.Plot.hist_lod
+`plot_gridz.hist_precision(ppc_path, save_path=None, dpi=300, colour='cyan', n_bins=None, density=False, 
+title='SFM Precision Histogram', xlabel='x/y/z Precision', range=None)`
 
+**ppc_path**: *str, path object or file-like object*
+The file path for precision point cloud file (i.e. the .txt file produced with the 'sfm_precision' module) 
+plotted as histogram.
+
+**save_path**: *str, path object or file-like object, optional*
+If you want to save a copy of the histogram to disk then provide a file path including extension e.g. jpeg, png, etc. If None
+is provided then the plot will be displayed but not saved. [Default:None]
+
+**dpi**: *int, optional*
+The dpi value for the saved image. Only used if save_path is provided. [Default:300]
+
+**colour**: *str, optional*
+A matplotlib color string - see here for info (https://matplotlib.org/3.1.0/gallery/color/named_colors.html)  
+[Default:'cyan']
+
+**n_bins**: *int, optional*
+Number of bins to use for the histogram. If None then matplotlib default bins sizes are used. [Default: None]
+
+**denisty**: *Bool, optional*
+If True, y-axis is converted to point density rather than frequency. [Default:False]
+
+**title**: *str, optional*
+A string value to add as a title of the plot. [Default:'SFM Precision Histogram']
+
+**xlabel**: *str, optional*
+A string value to add as x-axis label. [Default:'x/y/z Precision']
+
+ **range**: *tuple, optional*
+Set limits to the range of the histogram by providing a tuple such as (-5, 5). if None is provided then the 
+maximum and minumum values will be used to define the colormap. [Default:None]
+
+#### plot_gridz.Plot.hist_dem_of_diff
+
+`plot_gridz.hist_dem_of_diff(dem_o_diff_path, save_path=None, dpi=300, colour='magenta', n_bins=None, density=False, 
+title='DEM of Difference Histogram', xlabel='Elevation change', range=None')`
+
+**dem_o_diff_path**: *str, path object or file-like object*
+The file path for the DEM of difference (height change) raster to be plotted as histogram.
+
+**save_path**: *str, path object or file-like object, optional*
+If you want to save a copy of the histogram to disk then provide a file path including extension e.g. jpeg, png, etc. If None
+is provided then the plot will be displayed but not saved. [Default:None]
+
+**dpi**: *int, optional*
+The dpi value for the saved image. Only used if save_path is provided. [Default:300]
+
+**colour**: *str, optional*
+A matplotlib color string - see here for info (https://matplotlib.org/3.1.0/gallery/color/named_colors.html)  
+[Default:'magenta']
+
+**n_bins**: *int, optional*
+Number of bins to use for the histogram. If None then matplotlib default bins sizes are used. [Default: None]
+
+**denisty**: *Bool, optional*
+If True, y-axis is converted to point density rather than frequency. [Default:False]
+
+**title**: *str, optional*
+A string value to add as a title of the plot. [Default:'DEM of Difference Histogram']
+
+**xlabel**: *str, optional*
+A string value to add as x-axis label. [Default:'Elevation change']
+
+ **range**: *tuple, optional*
+Set limits to the range of the histogram by providing a tuple such as (-5, 5). if None is provided then the 
+maximum and minumum values will be used to define the colormap. [Default:None]
+
+#### plot_gridz.hist_lod
+
+`plot_gridz.hist_lod(dem_o_diff_path, save_path=None, dpi=300, colour='blue', n_bins=None, density=False, 
+title='Limit of Detection Histogram', xlabel='Limit of Detection', range=None')`
+
+**dem_o_diff_path**: *str, path object or file-like object*
+The file path for the DEM of difference (height change) raster. LOD saved in band 2 and automatically
+selected to be plotted as histogram.
+
+**save_path**: *str, path object or file-like object, optional*
+If you want to save a copy of the histogram to disk then provide a file path including extension e.g. jpeg, png, etc. If None
+is provided then the plot will be displayed but not saved. [Default:None]
+
+**dpi**: *int, optional*
+The dpi value for the saved image. Only used if save_path is provided. [Default:300]
+
+**colour**: *str, optional*
+A matplotlib color string - see here for info (https://matplotlib.org/3.1.0/gallery/color/named_colors.html)  
+[Default:'blue']
+
+**n_bins**: *int, optional*
+Number of bins to use for the histogram. If None then matplotlib default bins sizes are used. [Default: None]
+
+**denisty**: *Bool, optional*
+If True, y-axis is converted to point density rather than frequency. [Default:False]
+
+**title**: *str, optional*
+A string value to add as a title of the plot. [Default:'Limit of Detection Histogram']
+
+**xlabel**: *str, optional*
+A string value to add as x-axis label. [Default:'Limit of Detection']
+
+ **range**: *tuple, optional*
+Set limits to the range of the histogram by providing a tuple such as (-5, 5). if None is provided then the 
+maximum and minumum values will be used to define the colormap. [Default:None]
 
 Have a map...
-![CWC example](../Example_Images/dod_example.png)  
+![CWC example](../sfm_precision/Examples/dod_example.png)  
 
 ####OLD
 **Create_Prec_Raster.py** is an example of creating a precision map (raster) from the precision point cloud. NB. this  
