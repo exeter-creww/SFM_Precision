@@ -121,7 +121,7 @@ this module facilitates the use of SFM precision maps and Roughness maps to accu
 #### The 'difference' function is exectued as follows:
 
 `sfm_gridz.difference(raster_1, raster_2, prec_point_cloud_1, prec_point_cloud_2, out_ras, epsg=None, reg_error=0, t_value=1,
-handle_gaps=True ,mask=None)`
+handle_gaps=True)`
 
 #### Parameters:
 **raster_1**: *str, path object or file-like object*  
@@ -153,11 +153,7 @@ The desired t value to be used in the LOD calculation. [Default:1]
  If True the Band 1 of the precision raster will be used, in which all no data values are replaced with the maximum 
  recorded precision value. If False then Band 2 is used which forces No data values to be returned in the 
  DEM of difference where gaps in the Precision raster exist. [Default:True]
-
-**mask**: *str, path object or file-like object, optional*  
-A geopandas-readable polygon (http://geopandas.org/io.html). Masks areas as No Data outside the polygon area. If None 
-then all data is presented. [Default:None]
-
+ 
 
 ## sfm_gridz.plot_gridz - plotting module
 
