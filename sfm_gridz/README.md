@@ -27,7 +27,7 @@ The DSM module has one function called'height_map' which allows for the derivati
 a point cloud. It uses the mean point height (z) within each grid square to define the elevation of the raster cells 
 (Band 1). The standard deviation of point elevations is calculated for each grid cell and returned in Band 2.
 
-#### The dsm function is exectued as follows:
+#### The 'dsm' function is exectued as follows:
 
 `sfm_gridz.dsm(point_cloud, out_raster, resolution, window_size=0, epsg=None, bounds=None, mask=None)`
 
@@ -71,7 +71,7 @@ The precision_map module has the function precision_map which creates a precisio
 generated with the SFM_Precision module in Metashape. One can make precision rasters of x, y or z dimensions but the
 main purpose is to create a z precision raster so we can determine height change maps with accurate limits of detection.
 
-#### The precision_map function is exectued as follows:
+#### The 'precision' function is exectued as follows:
 
 `sfm_gridz.precision(prec_point_cloud, out_raster, resolution, prec_dimension=None, epsg=None, bounds=None, 
 mask=None)`
@@ -118,7 +118,7 @@ This module enables the creation of a height change map i.e. Digital Elevation M
 this module facilitates the use of SFM precision maps and Roughness maps to accurately caluclate the Limit of Detection
 (LOD) and therefore if the confidence of any observered changes (insert references).
 
-#### The DEMofDiff function is exectued as follows:
+#### The 'difference' function is exectued as follows:
 
 `sfm_gridz.difference(raster_1, raster_2, prec_point_cloud_1, prec_point_cloud_2, out_ras, epsg=None, reg_error=0, t_value=1,
 handle_gaps=True ,mask=None)`
@@ -165,7 +165,8 @@ then all data is presented. [Default:None]
 
 The sfm_gridz.Plot module contains a number of functions which serve as wrappers for matplotlib. The core functions
 are plot_raster and plot_hist. These are generic and can be used but the following functions provide a simpler approach
-for plotting specific raster maps and histograms.
+for plotting specific raster maps and histograms. This module is a bit restrictive and doesn't provide a full list of 
+options to adjust plot attributes.
 
 
 #### plot_gridz.plot_dsm
