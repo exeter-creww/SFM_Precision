@@ -74,21 +74,21 @@ def main():
 
     dsm1 = sfm_gridz.dsm(point_cloud=dpc1_path, out_raster=dsm1_out, resolution=0.5, window_size=10,
                          epsg=epsg_code, mask=mask_shp)
-    # dsm2 = sfm_gridz.dsm(point_cloud=dpc2_path, out_raster=dsm2_out, resolution=0.5, window_size=10,
-    #                   epsg=epsg_code, bounds=dsm1.bounds, mask=mask_shp)
-    # dsm3 = sfm_gridz.dsm(point_cloud=dpc3_path, out_raster=dsm3_out, resolution=0.5, window_size=10,
-    #                   epsg=epsg_code, bounds=dsm1.bounds, mask=mask_shp)
-    # dsm4 = sfm_gridz.dsm(point_cloud=dpc4_path, out_raster=dsm4_out, resolution=0.5, window_size=10,
-    #                   epsg=epsg_code, bounds=dsm1.bounds, mask=mask_shp)
-    # dsm5 = sfm_gridz.dsm(point_cloud=dpc5_path, out_raster=dsm5_out, resolution=0.5, window_size=10,
-    #                   epsg=epsg_code, bounds=dsm1.bounds, mask=mask_shp)
-    # dsm6 = sfm_gridz.dsm(point_cloud=dpc6_path, out_raster=dsm6_out, resolution=0.5, window_size=10,
-    #                   epsg=epsg_code, bounds=dsm1.bounds, mask=mask_shp)
-    #
-    # for i in [dsm1, dsm2, dsm3, dsm4, dsm5, dsm6]:
-    #
-    #     pcplot.plot_dsm(dsm_path=i.path)
-    #     pcplot.plot_roughness(dsm_path=i.path)
+    dsm2 = sfm_gridz.dsm(point_cloud=dpc2_path, out_raster=dsm2_out, resolution=0.5, window_size=10,
+                      epsg=epsg_code, bounds=dsm1.bounds, mask=mask_shp)
+    dsm3 = sfm_gridz.dsm(point_cloud=dpc3_path, out_raster=dsm3_out, resolution=0.5, window_size=10,
+                      epsg=epsg_code, bounds=dsm1.bounds, mask=mask_shp)
+    dsm4 = sfm_gridz.dsm(point_cloud=dpc4_path, out_raster=dsm4_out, resolution=0.5, window_size=10,
+                      epsg=epsg_code, bounds=dsm1.bounds, mask=mask_shp)
+    dsm5 = sfm_gridz.dsm(point_cloud=dpc5_path, out_raster=dsm5_out, resolution=0.5, window_size=10,
+                      epsg=epsg_code, bounds=dsm1.bounds, mask=mask_shp)
+    dsm6 = sfm_gridz.dsm(point_cloud=dpc6_path, out_raster=dsm6_out, resolution=0.5, window_size=10,
+                      epsg=epsg_code, bounds=dsm1.bounds, mask=mask_shp)
+
+    for i in [dsm1, dsm2, dsm3, dsm4, dsm5, dsm6]:
+
+        pcplot.plot_dsm(dsm_path=i.path)
+        pcplot.plot_roughness(dsm_path=i.path)
 
     prras1 = sfm_gridz.precision(prec_point_cloud=pcp1_path, out_raster=pcp1_out, resolution=1,
                            prec_dimension='z', epsg=epsg_code, bounds=dsm1.bounds, mask=mask_shp)
