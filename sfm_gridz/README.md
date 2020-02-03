@@ -15,9 +15,10 @@ raster common area...
 
 The limit of detection (LOD), used in the calculation of height change in this package, can be described as follows:
 
-![LOD equation](https://latex.codecogs.com/gif.latex?LoD&space;=&space;t&space;(\sqrt{\sigma&space;N_1^2&space;&plus;&space;\sigma&space;N_2^2&space;&plus;&space;reg^2}))
+![LOD equation](https://latex.codecogs.com/gif.latex?LoD&space;=&space;t&space;\sqrt{&space;N_1^2&space;&plus;&space;P_1^2&space;N_2^2&space;&plus;&space;P_2^2&space;&plus;&space;Reg^2})
 
-
+where: P1 – CLOUD1 SfM Precision, R1 – DEM1 roughness, P2 – CLOUD2 SfM Precision, R2 – DEM2 roughness, 
+reg – Registration/Alignment RMSE, t - scalar term
 ### Dependencies
 
 *pdal* (2.2.1): https://pdal.io/  
