@@ -21,13 +21,13 @@ For the time being... copy the sfm_precision package to the Lib\site-packages di
 
 `import sfm_gridz`
 
-### DSM module
+### Create a Digital Surface Model (DSM) raster
 
 The DSM module has one function called'height_map' which allows for the derivation of a Digital Surface Model (DSM) from 
 a point cloud. It uses the mean point height (z) within each grid square to define the elevation of the raster cells 
 (Band 1). The standard deviation of point elevations is calculated for each grid cell and returned in Band 2.
 
-#### The height_map function is exectued as follows:
+#### The dsm function is exectued as follows:
 
 `sfm_gridz.dsm(point_cloud, out_raster, resolution, window_size=0, epsg=None, bounds=None, mask=None)`
 
@@ -66,7 +66,7 @@ then all data is presented. [Default:None]
 * bounds - the bounds of the raster - can be used to match other rasters.  
 * mask - a geopandas readable polygon file to mask an area of interest. (If used)  
 
-### PrecisionMap module
+### Create and SFM precision raster
 The precision_map module has the function precision_map which creates a precision raster from a precision point cloud 
 generated with the SFM_Precision module in Metashape. One can make precision rasters of x, y or z dimensions but the
 main purpose is to create a z precision raster so we can determine height change maps with accurate limits of detection.
@@ -112,7 +112,7 @@ then all data is presented. [Default:None]
 * mask - a geopandas readable polygon file to mask an area of interest. (If used)  
 
 
-### DEMofDiff module
+### Create a Digital Elevation Model (DEM) of difference raster
 
 This module enables the creation of a height change map i.e. Digital Elevation Model(DEM) of difference. Critically,
 this module facilitates the use of SFM precision maps and Roughness maps to accurately caluclate the Limit of Detection
