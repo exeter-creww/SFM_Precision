@@ -2,10 +2,10 @@
 # derive a DEM of difference.
 
 import os
-from PointCloudStat.precision_map import precision_map
-from PointCloudStat.DSM import height_map
-from PointCloudStat.dem_of_diff import dem_of_diff
-import PointCloudStat.Plot as PcPlot
+from sfm_gridz.precision_map import precision_map
+from sfm_gridz.DSM import height_map
+from sfm_gridz.dem_of_diff import dem_of_diff
+import sfm_gridz.plot_gridz as PcPlot
 
 dpc1_path = os.path.abspath("C:/HG_Projects/CWC_Drone_work/17_09_07_Danes_Mill/17_09_07_Exports/"
                            "17_09_07_DanesCroft_dpc_export.laz")

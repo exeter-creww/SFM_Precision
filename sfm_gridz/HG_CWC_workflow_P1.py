@@ -1,9 +1,8 @@
 # This is hugh's CWC workflow and is a bit more specific to the use case...
 
-from PointCloudStat.precision_map import precision_map
-from PointCloudStat.DSM import height_map
-from PointCloudStat.dem_of_diff import dem_of_diff
-import PointCloudStat.Plot as pcplot
+import sfm_gridz
+
+import sfm_gridz.plot_gridz as pcplot
 
 import os
 import sys
@@ -80,18 +79,17 @@ epsg_code = 27700
 
 def main():
 
-
-    dsm1 = height_map(point_cloud=dpc1_path, out_raster=dsm1_out, resolution=0.5, window_size=10,
-                      epsg=epsg_code, mask=mask_shp)
-    dsm2 = height_map(point_cloud=dpc2_path, out_raster=dsm2_out, resolution=0.5, window_size=10,
+    dsm1 = sfm_gridz.dsm(point_cloud=dpc1_path, out_raster=dsm1_out, resolution=0.5, window_size=10,
+                         epsg=epsg_code, mask=mask_shp)
+    dsm2 = sfm_gridz.dsm(point_cloud=dpc2_path, out_raster=dsm2_out, resolution=0.5, window_size=10,
                       epsg=epsg_code, bounds=dsm1.bounds, mask=mask_shp)
-    dsm3 = height_map(point_cloud=dpc3_path, out_raster=dsm3_out, resolution=0.5, window_size=10,
+    dsm3 = sfm_gridz.dsm(point_cloud=dpc3_path, out_raster=dsm3_out, resolution=0.5, window_size=10,
                       epsg=epsg_code, bounds=dsm1.bounds, mask=mask_shp)
-    dsm4 = height_map(point_cloud=dpc4_path, out_raster=dsm4_out, resolution=0.5, window_size=10,
+    dsm4 = sfm_gridz.dsm(point_cloud=dpc4_path, out_raster=dsm4_out, resolution=0.5, window_size=10,
                       epsg=epsg_code, bounds=dsm1.bounds, mask=mask_shp)
-    dsm5 = height_map(point_cloud=dpc5_path, out_raster=dsm5_out, resolution=0.5, window_size=10,
+    dsm5 = sfm_gridz.dsm(point_cloud=dpc5_path, out_raster=dsm5_out, resolution=0.5, window_size=10,
                       epsg=epsg_code, bounds=dsm1.bounds, mask=mask_shp)
-    dsm6 = height_map(point_cloud=dpc6_path, out_raster=dsm6_out, resolution=0.5, window_size=10,
+    dsm6 = sfm_gridz.dsm(point_cloud=dpc6_path, out_raster=dsm6_out, resolution=0.5, window_size=10,
                       epsg=epsg_code, bounds=dsm1.bounds, mask=mask_shp)
 
     for i in [dsm1, dsm2, dsm3, dsm4, dsm5, dsm6]:
@@ -99,17 +97,17 @@ def main():
         pcplot.plot_dsm(dsm_path=i.path)
         pcplot.plot_roughness(dsm_path=i.path)
 
-    prras1 = precision_map(prec_point_cloud=pcp1_path, out_raster=pcp1_out, resolution=1,
+    prras1 = sfm_gridz.precision(prec_point_cloud=pcp1_path, out_raster=pcp1_out, resolution=1,
                            prec_dimension='z', epsg=epsg_code, bounds=dsm1.bounds, mask=mask_shp)
-    prras2 = precision_map(prec_point_cloud=pcp2_path, out_raster=pcp2_out, resolution=1,
+    prras2 = sfm_gridz.precision(prec_point_cloud=pcp2_path, out_raster=pcp2_out, resolution=1,
                            prec_dimension='z', epsg=epsg_code, bounds=dsm1.bounds, mask=mask_shp)
-    prras3 = precision_map(prec_point_cloud=pcp3_path, out_raster=pcp3_out, resolution=1,
+    prras3 = sfm_gridz.precision(prec_point_cloud=pcp3_path, out_raster=pcp3_out, resolution=1,
                            prec_dimension='z', epsg=epsg_code, bounds=dsm1.bounds, mask=mask_shp)
-    prras4 = precision_map(prec_point_cloud=pcp4_path, out_raster=pcp4_out, resolution=1,
+    prras4 = sfm_gridz.precision(prec_point_cloud=pcp4_path, out_raster=pcp4_out, resolution=1,
                            prec_dimension='z', epsg=epsg_code, bounds=dsm1.bounds, mask=mask_shp)
-    prras5 = precision_map(prec_point_cloud=pcp5_path, out_raster=pcp5_out, resolution=1,
+    prras5 = sfm_gridz.precision(prec_point_cloud=pcp5_path, out_raster=pcp5_out, resolution=1,
                            prec_dimension='z', epsg=epsg_code, bounds=dsm1.bounds, mask=mask_shp)
-    prras6 = precision_map(prec_point_cloud=pcp6_path, out_raster=pcp6_out, resolution=1,
+    prras6 = sfm_gridz.precision(prec_point_cloud=pcp6_path, out_raster=pcp6_out, resolution=1,
                            prec_dimension='z', epsg=epsg_code, bounds=dsm1.bounds, mask=mask_shp)
 
     print(prras6.pr_dim)

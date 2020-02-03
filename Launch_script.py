@@ -1,7 +1,7 @@
 # Placed outside of the module folder to make sure that metashape is running the version in the site packages
 # directory and not the version here
 
-import SFM_precision
+import sfm_precision
 import Metashape
 import os
 
@@ -28,13 +28,13 @@ def main():
     # if no list is provided in args then defaults are used.
     doc = Metashape.app.document
     doc.open(test_proj, read_only=False)
-    SFM_precision.Run(num_iterations=n_its)
+    sfm_precision.run(num_iterations=n_its)
     # for psx in psx_list:
     #     doc = Metashape.app.document
     #     doc.open(psx, read_only=False)
     #
-    #     # SFM_precision_Module.Run(num_iterations=n_its, shape_only_Prec=False, export_log=True, params_list=params)  # full options
-    #     # SFM_precision_Module.Run(num_iterations=n_its, params_list=params)  # just optimization params
+    #     # sfm_precision.Run(num_iterations=n_its, shape_only_Prec=False, export_log=True, params_list=params)  # full options
+    #     # sfm_precision.Run(num_iterations=n_its, params_list=params)  # just optimization params
     #     SFM_precision.Run(num_iterations=n_its)  # what we really need...
     #     # SFM_precision.Run
     #     doc.save()

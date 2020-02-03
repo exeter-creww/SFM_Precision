@@ -7,16 +7,12 @@ import tempfile
 from rasterio.crs import CRS
 import numpy as np
 import warnings
-from PointCloudStat.mask_AOI import mask_it
+from sfm_gridz.mask_AOI import mask_it
 
 
-def dem_of_diff(raster_1, raster_2, prec_point_cloud_1, prec_point_cloud_2, out_ras, **kwargs):
+def dem_of_diff(raster_1, raster_2, prec_point_cloud_1, prec_point_cloud_2, out_ras, epsg_code, reg_error, t_value,
+                handle_gaps, mask):
     print("calculating DEM of difference...")
-    epsg_code = kwargs.get('epsg', None)
-    reg_error = kwargs.get('reg_error', 0)
-    t_value = kwargs.get('t_value', 1)
-    handle_gaps = kwargs.get('handle_gaps', True)
-    mask = kwargs.get('mask', None)
 
     if epsg_code is not None:
         epsg_code = CRS.from_epsg(epsg_code)

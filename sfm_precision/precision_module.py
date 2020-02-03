@@ -7,6 +7,7 @@ from datetime import datetime  #
 import numpy as np  #
 from plyfile import PlyData  #
 from tqdm import tqdm  #
+import warnings
 import shutil  #
 
 
@@ -56,14 +57,10 @@ def Proj_SetUp():
     return docu, direc_path, file_name, orig_path
 
 
-def Run(num_iterations, **kwargs):
+def main(num_iterations, params_list, retrieve_shape_only_Prec, export_log):
     startTime = datetime.now()
 
     doc, dir_path, file_name, original_path = Proj_SetUp()
-
-    params_list = kwargs.get('params_list', None)
-    retrieve_shape_only_Prec = kwargs.get('shape_only_Prec', False)
-    export_log = kwargs.get('export_log', True)
 
     if isinstance(params_list, list) is True:
         print("optimization params provided - using user defined parameters")
@@ -72,7 +69,8 @@ def Run(num_iterations, **kwargs):
         optimise_k4, optimise_p1, optimise_p2, optimise_p3, \
         optimise_p4 = Set_Camera_Params(params_list)
     else:
-        print("no params provided - using default optimization params")
+        warnings.warn("No params provided or params are not in the correct list form\n"
+                      "Using default optimization params from James et al., 2017 ...")
         # these are the parameters described in James et al., 2017... use as defaults when no preference given.
         optimise_f = True
         optimise_cx = True

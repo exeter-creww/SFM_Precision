@@ -8,17 +8,13 @@ import math
 import rasterio
 import os
 import warnings
-from PointCloudStat.mask_AOI import mask_it
+from sfm_gridz.mask_AOI import mask_it
 
-def precision_map(prec_point_cloud, out_raster, resolution, **kwargs):
-    prec_dimension = kwargs.get('prec_dimension', 'z')
+def precision_map(prec_point_cloud, out_raster, resolution, prec_dimension, epsg, bounds, mask):
+    startTime = datetime.now()
     if prec_dimension not in ['x', 'y', 'z']:
         raise(InputError("prec_dimension must be: 'x', 'y' or 'z'"))
 
-    epsg = kwargs.get('epsg', None)
-    bounds = kwargs.get('bounds', None)
-    mask = kwargs.get('mask', None)
-    startTime = datetime.now()
 
     ppc_process = PrRas(prec_point_cloud, out_raster, resolution, prec_dimension, bounds, epsg, mask)
     ppc_process.readPC_xyzerr()

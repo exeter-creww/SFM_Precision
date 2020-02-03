@@ -157,7 +157,8 @@ for plotting specific raster maps and histograms.
 
 #### PointCloudStat.Plot.plot_dsm
 
-`plot_dsm(dsm_path, save_path=None, dpi=300, cmap='BrBG', title='Surface Elevation Map', v_range=None)`
+`plot_dsm(dsm_path, save_path=None, dpi=300, cmap='BrBG', title='Surface Elevation Map', v_range=None, 
+colmap_label='Elevation')`
 
 #### Parameters:
 **dsm_path**: *str, path object or file-like object*
@@ -180,12 +181,16 @@ A string value to add as a title of the plot. [Default:'Surface Elevation Map']
 **v_range**: *tuple, optional*
 Set limits to the vrtical range of the plot by providing a tuple such as (-5, 5). if None is provided then the 
  maximum and minumum z values will be used to define the colormap. [Default:None]
+ 
+**colmap_label**: *str, optional*
+A string value to add as colourmap label. [Default:'Elevation']
 
 add a map...
 
 #### PointCloudStat.Plot.plot_roughness
 
-`plot_roughness(dsm_path, save_path=None, dpi=300, cmap='magma', title='Rasterization-Roughness Map', v_range=None)`
+`plot_roughness(dsm_path, save_path=None, dpi=300, cmap='magma', title='Rasterization-Roughness Map', v_range=None,
+colmap_label='Rasterisation Uncertainty')`
 
 #### Parameters:
 **dsm_path**: *str, path object or file-like object*
@@ -208,11 +213,14 @@ A string value to add as a title of the plot. [Default:'Rasterization-Roughness 
 **v_range**: *tuple, optional*
 Set limits to the vrtical range of the plot by providing a tuple such as (-5, 5). if None is provided then the 
  maximum and minumum z values will be used to define the colormap. [Default:None]
+ 
+**colmap_label**: *str, optional*
+A string value to add as colourmap label. [Default:'Rasterisation Uncertainty']
 
 #### PointCloudStat.Plot.plot_precision
 
 `plot_precision(prec_map_path, save_path=None, dpi=300, cmap='cividis', fill_gaps=True, title='SFM Precision Map', 
-v_range=None)`
+v_range=None, colmap_label='SFM Precision')`
 
 #### Parameters:
 **prec_map_path**: *str, path object or file-like object*
@@ -237,8 +245,136 @@ are plotted as no data. [Default:True]
 A string value to add as a title of the plot. [Default:'SFM Precision Map']
 
 **v_range**: *tuple, optional*
+Set limits to the vertical range of the plot by providing a tuple such as (-5, 5). if None is provided then the 
+ maximum and minumum z values will be used to define the colormap. [Default:None]
+ 
+**colmap_label**: *str, optional*
+A string value to add as colourmap label. [Default:'SFM Precision']
+
+#### PointCloudStat.Plot.plot_dem_of_diff
+
+`plot_dem_of_diff(dem_o_diff_path, save_path =None, dpi =300, cmap ='RdBu', title ='Elevation Change Map', v_range=None,
+colmap_label='Elevation Change')`
+
+#### Parameters:
+
+**dem_o_diff_path**: *str, path object or file-like object*
+The file path for the DEM of Difference raster. 
+
+**save_path**: *str, path object or file-like object, optional*
+If you want to save a copy of the map to disk then provide a file path including extension e.g. jpeg, png, etc. If None
+is provided then the plot will be displayed but not saved. [Default:None]
+
+**dpi**: *int, optional*
+The dpi value for the saved image. Only used if save_path is provided. [Default:300]
+
+**cmap**: *str, optional*
+A matplotlib colormap string - see here for info (https://matplotlib.org/tutorials/colors/colormaps.html)  
+[Default:'RdBu']
+
+**title**: *str, optional*
+A string value to add as a title of the plot. [Default:'Elevation Change Map']
+
+**v_range**: *tuple, optional*
+Set limits to the vertical range of the plot by providing a tuple such as (-5, 5). if None is provided then the 
+ maximum and minumum z values will be used to define the colormap. [Default:None]
+ 
+**colmap_label**: *str, optional*
+A string value to add as colourmap label. [Default:'Elevation Change']
+
+#### PointCloudStat.Plot.plot_lod
+`plot_lod(dem_o_diff_path, save_path=None, dpi=300, cmap='summer', title='Limit of detection Map', v_range=None,
+colmap_label='Limit of Detection')`
+
+**dem_o_diff_path**: *str, path object or file-like object*
+The file path for the DEM of Difference raster. LOD data is contained in Band 2 and selected automatically.
+
+**save_path**: *str, path object or file-like object, optional*
+If you want to save a copy of the map to disk then provide a file path including extension e.g. jpeg, png, etc. If None
+is provided then the plot will be displayed but not saved. [Default:None]
+
+**dpi**: *int, optional*
+The dpi value for the saved image. Only used if save_path is provided. [Default:300]
+
+**cmap**: *str, optional*
+A matplotlib colormap string - see here for info (https://matplotlib.org/tutorials/colors/colormaps.html)  
+[Default:'summer']
+
+**title**: *str, optional*
+A string value to add as a title of the plot. [Default:'Limit of detection Map']
+
+**v_range**: *tuple, optional*
+Set limits to the vertical range of the plot by providing a tuple such as (-5, 5). if None is provided then the 
+ maximum and minumum z values will be used to define the colormap. [Default:None]
+ 
+ **colmap_label**: *str, optional*
+A string value to add as colourmap label. [Default:'Limit of Detection']
+
+
+#### PointCloudStat.Plot.hist_dsm
+
+`hist_dsm(dsm_path, save_path=None, dpi=300, colour='green', n_bins=None, density=False, 
+title='Digital Surface Model Histogram', xlabel='Elevation')`
+
+**dsm_path**: *str, path object or file-like object*
+The file path for the DSM raster to be plotted as histogram.
+
+**save_path**: *str, path object or file-like object, optional*
+If you want to save a copy of the map to disk then provide a file path including extension e.g. jpeg, png, etc. If None
+is provided then the plot will be displayed but not saved. [Default:None]
+
+**dpi**: *int, optional*
+The dpi value for the saved image. Only used if save_path is provided. [Default:300]
+
+**cmap**: *str, optional*
+A matplotlib colormap string - see here for info (https://matplotlib.org/tutorials/colors/colormaps.html)  
+[Default:'BrBG']
+
+**title**: *str, optional*
+A string value to add as a title of the plot. [Default:'Digital Surface Model Histogram']
+
+**v_range**: *tuple, optional*
 Set limits to the vrtical range of the plot by providing a tuple such as (-5, 5). if None is provided then the 
  maximum and minumum z values will be used to define the colormap. [Default:None]
+ 
+**xlabel**: *str, optional*
+A string value to add as x-axis label. [Default:'Elevation']
+
+#### PointCloudStat.Plot.hist_roughness
+
+`hist_roughness(dsm_path, save_path=None, dpi=300, colour='red', n_bins=None, density=False, 
+title='Surface roughness Histogram', xlabel='Rasterisation Uncertainty')`
+
+**dsm_path**: *str, path object or file-like object*
+The file path for the DSM raster to be plotted as histogram.
+
+**save_path**: *str, path object or file-like object, optional*
+If you want to save a copy of the map to disk then provide a file path including extension e.g. jpeg, png, etc. If None
+is provided then the plot will be displayed but not saved. [Default:None]
+
+**dpi**: *int, optional*
+The dpi value for the saved image. Only used if save_path is provided. [Default:300]
+
+**cmap**: *str, optional*
+A matplotlib colormap string - see here for info (https://matplotlib.org/tutorials/colors/colormaps.html)  
+[Default:'BrBG']
+
+**title**: *str, optional*
+A string value to add as a title of the plot. [Default:'Digital Surface Model Histogram']
+
+**v_range**: *tuple, optional*
+Set limits to the vrtical range of the plot by providing a tuple such as (-5, 5). if None is provided then the 
+ maximum and minumum z values will be used to define the colormap. [Default:None]
+ 
+**xlabel**: *str, optional*
+A string value to add as x-axis label. [Default:'Elevation']
+
+#### PointCloudStat.Plot.hist_precision
+
+#### PointCloudStat.Plot.hist_dem_of_diff
+
+#### PointCloudStat.Plot.hist_lod
+
 
 Have a map...
 ![CWC example](../Example_Images/dod_example.png)  

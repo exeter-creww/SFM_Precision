@@ -4,13 +4,10 @@ import pdal
 import rasterio
 import json
 from datetime import datetime
-from PointCloudStat.mask_AOI import mask_it
+from sfm_gridz.mask_AOI import mask_it
 
-def height_map(point_cloud, out_raster, resolution, **kwargs):
-    window_size = kwargs.get('window_size', 0)
-    epsg = kwargs.get('epsg', None)
-    bounds = kwargs.get('bounds', None)
-    mask = kwargs.get('mask', None)
+
+def height_map(point_cloud, out_raster, resolution, window_size, epsg, bounds, mask):
 
     startTime = datetime.now()
 

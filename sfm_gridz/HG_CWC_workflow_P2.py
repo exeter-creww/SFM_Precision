@@ -1,7 +1,7 @@
 import os
 import numpy as np
-from PointCloudStat.dem_of_diff import dem_of_diff
-import PointCloudStat.Plot as pcplot
+import sfm_gridz
+import sfm_gridz.plot_gridz as pcplot
 import rasterio
 from rasterio.plot import show_hist
 from matplotlib import pyplot as plt
@@ -35,14 +35,16 @@ mask_shp = os.path.abspath('C:/HG_Projects/CWC_Drone_work/shp_files/CWC_AOI.shp'
 def run_functions():
 
     # Start - Finish (WINTER)
-    Dec16_Mar18 = dem_of_diff(raster_1=dsm1612, raster_2=dsm1803,
-                              prec_point_cloud_1=pcp1612, prec_point_cloud_2=pcp1803,
-                              out_ras=DoD_Dec16_Mar18, epsg=epsg_code)
+    Dec16_Mar18 = sfm_gridz.difference(raster_1=dsm1612, raster_2=dsm1803,
+                                       prec_point_cloud_1=pcp1612, prec_point_cloud_2=pcp1803,
+                                       out_ras=DoD_Dec16_Mar18, epsg=epsg_code, mask=mask_shp)
 
-    # pcplot.plot_dsm(dsm_path=dsm1612, dpi=200, save_path=os.path.join(out_ras_home, "test_dsm1.jpg"))
+    pcplot.plot_dsm(dsm_path=dsm1612, dpi=200, save_path=os.path.join(out_ras_home, "test_dsm1.jpg"))
 
     pcplot.plot_dem_of_diff(Dec16_Mar18.ras_out_path, save_path=os.path.join(out_ras_home, "Dec16_Mar18_DOD.jpg"),
-                            v_range=(-5, 5), title="Dec16 - Mar18 Elevation Change")
+                            v_range=(-5, 5), title="Dec16 - Mar18")
+
+
     pcplot.plot_lod(Dec16_Mar18.ras_out_path, save_path=os.path.join(out_ras_home, "Dec16_Mar18_LOD.jpg"))
 
     pcplot.hist_dem_of_diff(Dec16_Mar18.ras_out_path, range=(-2, 2), n_bins=50,
@@ -51,14 +53,13 @@ def run_functions():
     pcplot.hist_lod(Dec16_Mar18.ras_out_path, n_bins=50, save_path=os.path.join(out_ras_home, "Dec16_Mar18_LOD_hist.jpg"))
 
     # Start - Finish (SUMMER)
-    Sep17_Sep18 = dem_of_diff(raster_1=dsm1709, raster_2=dsm1809,
-                              prec_point_cloud_1=pcp1709, prec_point_cloud_2=pcp1809,
-                              out_ras=DoD_Sep17_Sep18, epsg=epsg_code, mask=mask_shp)
+    Sep17_Sep18 = sfm_gridz.difference(raster_1=dsm1709, raster_2=dsm1809,
+                                       prec_point_cloud_1=pcp1709, prec_point_cloud_2=pcp1809,
+                                       out_ras=DoD_Sep17_Sep18, epsg=epsg_code, mask=mask_shp)
 
     pcplot.plot_dem_of_diff(Sep17_Sep18.ras_out_path, save_path=os.path.join(out_ras_home, "Sep17_Sep18_DOD.jpg"),
-                            v_range=(-5, 5), title="Sep17 - Sep18 Elevation Change")
+                            v_range=(-5, 5), title="Sep17 - Sep18")
     pcplot.plot_lod(Sep17_Sep18.ras_out_path, save_path=os.path.join(out_ras_home, "Sep17_Sep18_LOD.jpg"))
-
 
 
 if __name__ == '__main__':
