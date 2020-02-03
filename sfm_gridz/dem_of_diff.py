@@ -7,20 +7,18 @@ import tempfile
 from rasterio.crs import CRS
 import numpy as np
 import warnings
+from sfm_gridz.mask_AOI import mask_it
 
 
-def dem_of_diff(raster_1, raster_2, prec_point_cloud_1, prec_point_cloud_2, out_ras, **kwargs):
+def dem_of_diff(raster_1, raster_2, prec_point_cloud_1, prec_point_cloud_2, out_ras, epsg_code, reg_error, t_value,
+                handle_gaps, mask):
     print("calculating DEM of difference...")
-    epsg_code = kwargs.get('epsg', None)
-    reg_error = kwargs.get('reg_error', 0)
-    t_value = kwargs.get('t_value', 1)
-    handle_gaps = kwargs.get('handle_gaps', True)
 
     if epsg_code is not None:
         epsg_code = CRS.from_epsg(epsg_code)
 
     dem_od_process = deom_od(raster_1, raster_2, epsg_code, prec_point_cloud_1, prec_point_cloud_2, out_ras, reg_error,
-                             t_value, handle_gaps)
+                             t_value, handle_gaps, mask)
 
     dem_od_process.load_rasters()
     dem_od_process.resample_rasters()
@@ -32,12 +30,12 @@ def dem_of_diff(raster_1, raster_2, prec_point_cloud_1, prec_point_cloud_2, out_
 
 
 class deom_od:
-    def __init__(self, rast1, rast2, epsg_c, prec_ras1, prec_ras2, out_ras_p, r_err, t_val, gap_handle):
+    def __init__(self, rast1, rast2, epsg_c, prec_ras1, prec_ras2, out_ras_p, r_err, t_val, gap_handle, maskit):
         self.raster_pths = [rast1, rast2, prec_ras1, prec_ras2]
         self.rasters = [None, None, None, None]
         self.ras_out_path = out_ras_p
         self.epsg = epsg_c
-
+        self.mask = maskit
         self.temp_log = []
         self.out_meta_data = None
 
@@ -155,20 +153,10 @@ class deom_od:
                     self.rasters[idx] = rasterio.open(temp_ras)
                     self.temp_log.append(temp_ras)
 
-
-                    # from rasterio.plot import show
-                    # for ras in self.rasters:
-                    #     print(ras.shape)
-                    #     print(ras.bounds)
-                    #     for i in range(1, 3):
-                    #         arr = ras.read(i)
-                    #         arr[arr == -999] = np.nan
-                    #         show(arr, cmap='viridis')
-
     def run_raster_calcs(self):
 
-        """The Definitions of values are given below"""
-        """
+        """The Definitions of values are given below
+
         a – CLOUD1 SfM Precision
         b – DEM1 
         c – DEM1 roughness
@@ -218,7 +206,8 @@ class deom_od:
             dest.write(dod, 1)
             dest.write(lod, 2)
 
-
+        if self.mask is not None:
+            mask_it(raster=self.ras_out_path, shp_path=self.mask, epsg=self.epsg)
 
     def close_rasterios(self):
         for ras in self.rasters:
@@ -231,13 +220,3 @@ class deom_od:
                 os.remove(i)
             except OSError as e:
                 print(e)
-
-        # with rasterio.open(self.ras_out_path) as test_plot:
-        #     from rasterio.plot import show
-        #     show(test_plot)
-
-
-
-
-
-

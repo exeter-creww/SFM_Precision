@@ -4,16 +4,14 @@ import pdal
 import rasterio
 import json
 from datetime import datetime
+from sfm_gridz.mask_AOI import mask_it
 
 
-def height_map(point_cloud, out_raster, resolution, **kwargs):
-    window_size = kwargs.get('window_size', 0)
-    epsg = kwargs.get('epsg', None)
-    bounds = kwargs.get('bounds', None)
+def height_map(point_cloud, out_raster, resolution, window_size, epsg, bounds, mask):
 
     startTime = datetime.now()
 
-    dsm_process = Dsm(point_cloud, out_raster, resolution, window_size, epsg, bounds)
+    dsm_process = Dsm(point_cloud, out_raster, resolution, window_size, epsg, bounds, mask)
     # dsm_process.readPC_xyerr()
     dsm_process.get_reader()
     dsm_process.Run()
@@ -24,12 +22,13 @@ def height_map(point_cloud, out_raster, resolution, **kwargs):
 
 class Dsm:
 
-    def __init__(self, real_pc, ras_path, ras_res, window, epsg, bbox):
+    def __init__(self, real_pc, ras_path, ras_res, window, epsg, bbox, maskit):
         self.rpc = real_pc
         self.res = ras_res
         self.path = ras_path
         self.wind = window
         self.bounds = bbox
+        self.mask = maskit
         if epsg is None:
             self.epsg_code = []
         else:
@@ -51,7 +50,7 @@ class Dsm:
 
     def Run(self):
 
-        print("starting pipeline")
+        print("Generating DSM raster...")
         if self.bounds is not None:
             dtm_gen = {
                 "pipeline": [
@@ -100,6 +99,10 @@ class Dsm:
         pipeline = pdal.Pipeline(json.dumps(dtm_gen)) # define the pdal pipeline
         pipeline.validate()  # validate the pipeline
         pipeline.execute()   #  run the pipeline
+
+
+        if self.mask is not None:
+            mask_it(raster=self.path, shp_path=self.mask, epsg=self.epsg_code)
 
         if self.bounds is None:
             with rasterio.open(self.path) as src:
