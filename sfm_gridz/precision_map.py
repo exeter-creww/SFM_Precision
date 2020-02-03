@@ -62,8 +62,6 @@ class PrRas:
 
 
     def Run(self):
-        print(self.ppc)
-
         print("Generating Precision Raster...")
 
         if self.res < self.min_res:

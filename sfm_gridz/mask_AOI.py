@@ -1,6 +1,5 @@
 import rasterio
 from rasterio.mask import mask
-from rasterio.plot import show
 import json
 import geopandas as gpd
 
@@ -13,7 +12,7 @@ def mask_it(raster, shp_path, epsg):
     geom = getFeatures(gdf=aoi)
 
     with rasterio.open(raster, 'r') as src:
-        out_image, out_transform = mask(src, geom, crop=True, invert=False, nodata=-999)
+        out_image, out_transform = mask(src, geom, crop=True, invert=False, nodata=-999, all_touched=True, pad=True)
 
         out_meta = src.meta
 
@@ -21,9 +20,6 @@ def mask_it(raster, shp_path, epsg):
 
     with rasterio.open(raster, "w", **out_meta) as dest:
         dest.write(out_image)
-
-    # with rasterio.open(raster, 'r') as src:
-    #     show(src)
 
 def getFeatures(gdf):
     """Function to parse features from GeoDataFrame in such a manner that rasterio wants them"""

@@ -77,10 +77,10 @@ Cloud generation.
 #### Example Results
 Here are some examples of z precision maps produced using the point cloud output from this module:  
 
-![CWC example](sfm_precision/Examples/CWC_example.png)  
+![CWC example](Examples/CWC_example.png)  
 &nbsp;
 &nbsp;
-![Experimental Plot example](sfm_precision/Examples/Prec_Pia_NEW1000it.png)
+![Experimental Plot example](Examples/Prec_Pia_NEW1000it.png)
 &nbsp;
 
 #
@@ -89,4 +89,5 @@ James, M., Robson, S., and Smith M (2017) ‘3-D Uncertainty-Based Topographic C
 Structure-from-Motion Photogrammetry: Precision Maps for Ground Control and Directly Georeferenced Surveys’.  
 Earth Surface Processes and Landforms 42(12):1769–88. https://doi.org/10.1002/esp.4125).
 
-Welford, B. P. (1962) 'Note on a method for calculating corrected sums of squares and products'. Technometrics. 4 (3): 419–420. doi:10.2307/1266577. JSTOR 1266577.
+Welford, B. P. (1962) 'Note on a method for calculating corrected sums of squares and products'. Technometrics. 4 (3): 
+419–420. doi:10.2307/1266577. JSTOR 1266577.

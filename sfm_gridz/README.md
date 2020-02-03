@@ -21,13 +21,13 @@ For the time being... copy the sfm_precision package to the Lib\site-packages di
 
 `import sfm_gridz`
 
-### DSM module
+### Create a Digital Surface Model (DSM) raster
 
 The DSM module has one function called'height_map' which allows for the derivation of a Digital Surface Model (DSM) from 
 a point cloud. It uses the mean point height (z) within each grid square to define the elevation of the raster cells 
 (Band 1). The standard deviation of point elevations is calculated for each grid cell and returned in Band 2.
 
-#### The height_map function is exectued as follows:
+#### The 'dsm' function is exectued as follows:
 
 `sfm_gridz.dsm(point_cloud, out_raster, resolution, window_size=0, epsg=None, bounds=None, mask=None)`
 
@@ -66,12 +66,12 @@ then all data is presented. [Default:None]
 * bounds - the bounds of the raster - can be used to match other rasters.  
 * mask - a geopandas readable polygon file to mask an area of interest. (If used)  
 
-### PrecisionMap module
+### Create and SFM precision raster
 The precision_map module has the function precision_map which creates a precision raster from a precision point cloud 
 generated with the SFM_Precision module in Metashape. One can make precision rasters of x, y or z dimensions but the
 main purpose is to create a z precision raster so we can determine height change maps with accurate limits of detection.
 
-#### The precision_map function is exectued as follows:
+#### The 'precision' function is exectued as follows:
 
 `sfm_gridz.precision(prec_point_cloud, out_raster, resolution, prec_dimension=None, epsg=None, bounds=None, 
 mask=None)`
@@ -112,16 +112,16 @@ then all data is presented. [Default:None]
 * mask - a geopandas readable polygon file to mask an area of interest. (If used)  
 
 
-### DEMofDiff module
+### Create a Digital Elevation Model (DEM) of difference raster
 
 This module enables the creation of a height change map i.e. Digital Elevation Model(DEM) of difference. Critically,
 this module facilitates the use of SFM precision maps and Roughness maps to accurately caluclate the Limit of Detection
 (LOD) and therefore if the confidence of any observered changes (insert references).
 
-#### The DEMofDiff function is exectued as follows:
+#### The 'difference' function is exectued as follows:
 
 `sfm_gridz.difference(raster_1, raster_2, prec_point_cloud_1, prec_point_cloud_2, out_ras, epsg=None, reg_error=0, t_value=1,
-handle_gaps=True ,mask=None)`
+handle_gaps=True)`
 
 #### Parameters:
 **raster_1**: *str, path object or file-like object*  
@@ -153,11 +153,7 @@ The desired t value to be used in the LOD calculation. [Default:1]
  If True the Band 1 of the precision raster will be used, in which all no data values are replaced with the maximum 
  recorded precision value. If False then Band 2 is used which forces No data values to be returned in the 
  DEM of difference where gaps in the Precision raster exist. [Default:True]
-
-**mask**: *str, path object or file-like object, optional*  
-A geopandas-readable polygon (http://geopandas.org/io.html). Masks areas as No Data outside the polygon area. If None 
-then all data is presented. [Default:None]
-
+ 
 
 ## sfm_gridz.plot_gridz - plotting module
 
@@ -165,7 +161,8 @@ then all data is presented. [Default:None]
 
 The sfm_gridz.Plot module contains a number of functions which serve as wrappers for matplotlib. The core functions
 are plot_raster and plot_hist. These are generic and can be used but the following functions provide a simpler approach
-for plotting specific raster maps and histograms.
+for plotting specific raster maps and histograms. This module is a bit restrictive and doesn't provide a full list of 
+options to adjust plot attributes.
 
 
 #### plot_gridz.plot_dsm

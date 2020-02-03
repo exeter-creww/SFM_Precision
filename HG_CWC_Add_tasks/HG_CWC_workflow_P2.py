@@ -37,7 +37,7 @@ def run_functions():
     # Start - Finish (WINTER)
     Dec16_Mar18 = sfm_gridz.difference(raster_1=dsm1612, raster_2=dsm1803,
                                        prec_point_cloud_1=pcp1612, prec_point_cloud_2=pcp1803,
-                                       out_ras=DoD_Dec16_Mar18, epsg=epsg_code, mask=mask_shp)
+                                       out_ras=DoD_Dec16_Mar18, epsg=epsg_code)
 
     pcplot.plot_dsm(dsm_path=dsm1809, dpi=300, save_path=os.path.join(out_ras_home, "test_dsm1.jpg"))
 
@@ -59,7 +59,7 @@ def run_functions():
     # Start - Finish (SUMMER)
     Sep17_Sep18 = sfm_gridz.difference(raster_1=dsm1709, raster_2=dsm1809,
                                        prec_point_cloud_1=pcp1709, prec_point_cloud_2=pcp1809,
-                                       out_ras=DoD_Sep17_Sep18, epsg=epsg_code, mask=mask_shp)
+                                       out_ras=DoD_Sep17_Sep18, epsg=epsg_code)
 
     pcplot.plot_dem_of_diff(Sep17_Sep18.ras_out_path, save_path=os.path.join(out_ras_home, "DOD_example1.jpg"),
                             v_range=(-5, 5))
