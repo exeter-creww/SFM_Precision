@@ -6,6 +6,18 @@ from an Agisoft Metashape project. Digital Surface Models, Precision maps and He
 ensuring that spatially explicit sfm-precision and rasterisation error are considered.
 
 # 
+### Things to Note:
+to obtain the finest resolution uncertanty map, precision map = and roughness raster resolution
+
+preciison raster cannot be finer than the xy error of xxx
+
+raster common area...
+
+The limit of detection (LOD), used in the calculation of height change in this package, can be described as follows:
+
+![LOD equation](https://latex.codecogs.com/gif.latex?LoD&space;=&space;t&space;(\sqrt{\sigma&space;N_1^2&space;&plus;&space;\sigma&space;N_2^2&space;&plus;&space;reg^2}))
+
+
 ### Dependencies
 
 *pdal* (2.2.1): https://pdal.io/  
