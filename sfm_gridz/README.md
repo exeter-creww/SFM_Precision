@@ -8,10 +8,10 @@ ensuring that spatially explicit sfm-precision and rasterisation error are consi
 # 
 ### Dependencies
 
-*pdal* (2.2.1): https://pdal.io/
-*rasterio* (1.1.1): https://rasterio.readthedocs.io/en/latest/index.html
-*numpy* (1.17.3): https://numpy.org/  
-*geopandas* (0.6.2): http://geopandas.org/index.html
+*pdal* (2.2.1): https://pdal.io/  
+*rasterio* (1.1.1): https://rasterio.readthedocs.io/en/latest/index.html  
+*numpy* (1.17.3): https://numpy.org/   
+*geopandas* (0.6.2): http://geopandas.org/index.html  
 
 ### Installation
 
@@ -198,7 +198,7 @@ Set limits to the vrtical range of the plot by providing a tuple such as (-5, 5)
 **colmap_label**: *str, optional*
 A string value to add as colourmap label. [Default:'Elevation']
 
-![DSM_example](sfm_gridz/Examples/test_dsm1.jpg)  
+![DSM_example](Examples/test_dsm1.jpg)  
 
 #### plot_gridz.plot_roughness
 
@@ -230,7 +230,7 @@ Set limits to the vrtical range of the plot by providing a tuple such as (-5, 5)
 **colmap_label**: *str, optional*
 A string value to add as colourmap label. [Default:'Rasterisation Uncertainty']
 
-![Ras_Roughness_example](sfm_gridz/Examples/test_roughness1.jpg)  
+![Ras_Roughness_example](Examples/test_roughness1.jpg)  
 
 #### plot_gridz.plot_precision
 
@@ -266,7 +266,7 @@ Set limits to the vertical range of the plot by providing a tuple such as (-5, 5
 **colmap_label**: *str, optional*
 A string value to add as colourmap label. [Default:'SFM Precision']
 
-![SFM_precision_example](sfm_gridz/Examples/test_precmap1.jpg)
+![SFM_precision_example](Examples/test_precmap1.jpg)
 
 #### plot_gridz.plot_dem_of_diff
 
@@ -299,7 +299,7 @@ Set limits to the vertical range of the plot by providing a tuple such as (-5, 5
 **colmap_label**: *str, optional*
 A string value to add as colourmap label. [Default:'Elevation Change']
 
-![DEM of diff example](sfm_gridz/Examples/Sep17_Sep18_DOD.jpg)
+![DEM of diff example](Examples/Sep17_Sep18_DOD.jpg)
 
 #### plot_gridz.plot_lod
 `plot_gridz.plot_lod(dem_o_diff_path, save_path=None, dpi=300, cmap='summer', title='Limit of detection Map', v_range=None,
@@ -329,7 +329,7 @@ Set limits to the vertical range of the plot by providing a tuple such as (-5, 5
  **colmap_label**: *str, optional*
 A string value to add as colourmap label. [Default:'Limit of Detection']
 
-![LOD example](sfm_gridz/Examples/Sep17_Sep18_LOD.jpg)
+![LOD example](sfm_gridz/Sep17_Sep18_LOD.jpg)
 
 #### plot_gridz.hist_dsm
 
