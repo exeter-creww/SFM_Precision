@@ -6,8 +6,10 @@ Structure-from-Motion Photogrammetry: Precision Maps for Ground Control and Dire
 Earth Surface Processes and Landforms 42(12):1769–88. https://doi.org/10.1002/esp.4125).
 
 This module uses an online algorithm to calculate rolling standard deviation of point locations of a sparse cloud  
-in Metashape (Welford, 1962). The point cloud is produced entirely in Metshape/python, simplifying the workflow. This approach is
-space efficient as it does not require the storage of all point clouds. 
+in Metashape (Welford, 1962). The point cloud is produced entirely in Metshape/python, simplifying the workflow. This 
+approach is space efficient as it does not require the storage of all point clouds. 
+
+![Welford's Algorithm](https://latex.codecogs.com/gif.latex?\sum_{i=1}^{n}({X_i-&space;\overline{x}_n)^2})
 
 # 
 ### Dependencies
