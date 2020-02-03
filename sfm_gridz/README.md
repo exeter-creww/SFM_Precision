@@ -329,7 +329,7 @@ Set limits to the vertical range of the plot by providing a tuple such as (-5, 5
  **colmap_label**: *str, optional*  
 A string value to add as colourmap label. [Default:'Limit of Detection']
 
-![LOD example](sfm_gridz/Sep17_Sep18_LOD.jpg)
+![LOD example](Examples/Sep17_Sep18_LOD.jpg)
 
 #### plot_gridz.hist_dsm
 
