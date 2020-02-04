@@ -30,7 +30,7 @@ The LOD used in the calculation of height change in this package, can be describ
 
 where: *t* = scale factor, *R<sub>1</sub>* = DEM<sub>1</sub> roughness, 
 *P<sub>1</sub>* = Cloud<sub>1</sub> SfM Precision, *R<sub>2</sub>* = DEM<sub>2</sub> roughness, 
-*P<sub>2</sub>** = Cloud<sub>2</sub> SfM Precision, *reg* = Registration/Alignment RMSE. Values of t and reg can 
+*P<sub>2</sub>* = Cloud<sub>2</sub> SfM Precision, *reg* = Registration/Alignment RMSE. Values of t and reg can 
 be user defined in the sfm_gridz.difference() function.  
 
 ### Dependencies
