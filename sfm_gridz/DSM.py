@@ -5,6 +5,8 @@ import rasterio
 import json
 from datetime import datetime
 from sfm_gridz.mask_AOI import mask_it
+# import sfm_gridz.create_temp_aoi as create_temp
+
 
 
 def height_map(point_cloud, out_raster, resolution, window_size, epsg, bounds, mask):
@@ -50,56 +52,64 @@ class Dsm:
 
     def Run(self):
 
-        print("Generating DSM raster...")
-        if self.bounds is not None:
-            dtm_gen = {
-                "pipeline": [
-                    {
-                        "type": self.reader,
-                        "filename":  self.rpc,
-                        "override_srs": self.epsg_code
-                    },
+        # if self.mask is None:
+        #     mask_section = {}
+        #     range_filter = {}
+        # else:
+        #     aoi = create_temp.temp_gpkg(self.mask, self.epsg_code)
+        #     mask_section = {
+        #         "column": "key",
+        #         "datasource": aoi,
+        #         "dimension": "Classification",
+        #         "type": "filters.overlay"}
+        #     range_filter = {
+        #         "limits": "Classification[8:8]",
+        #         "type": "filters.range"}
 
-                    {
-                        "type": "writers.gdal",
-                        "filename": self.path,  # output file name
-                        "resolution": self.res,
-                        "dimension": 'Z',  # raster resolution
-                        "nodata": -999,
-                        "bounds": str(self.bounds),
-                        "output_type": "{0}, stdev".format(self.statval),
-                        "window_size": self.wind  # changes search area around an empty cell - second stage of algorithm
-                    },
+        if self.bounds is None:
+            writers_section = {
+                "type": "writers.gdal",
+                "filename": self.path,  # output file name
+                "resolution": self.res,
+                "dimension": 'Z',  # raster resolution
+                "nodata": -999,
+                "output_type": "{0}, stdev".format(self.statval),
+                "window_size": self.wind}
 
-                ]
-            }
         else:
-            dtm_gen = {
-                "pipeline": [
-                    {
-                        "type": self.reader,
-                        "filename": self.rpc,
-                        "override_srs": self.epsg_code
-                    },
+            writers_section = {
+                "type": "writers.gdal",
+                "filename": self.path,  # output file name
+                "resolution": self.res,
+                "dimension": 'Z',  # raster resolution
+                "nodata": -999,
+                "bounds": str(self.bounds),
+                "output_type": "{0}, stdev".format(self.statval),
+                "window_size": self.wind},
 
-                    {
-                        "type": "writers.gdal",
-                        "filename": self.path,  # output file name
-                        "resolution": self.res,
-                        "dimension": 'Z',  # raster resolution
-                        "nodata": -999,
-                        "output_type": "{0}, stdev".format(self.statval),
-                        "window_size": self.wind
 
-                    },
+        print("Generating DSM raster...")
 
-                ]
-            }
+        dtm_gen = {
+            "pipeline": [
+                {
+                    "type": self.reader,
+                    "filename":  self.rpc,
+                    "override_srs": self.epsg_code
+                },
+                # mask_section,
+                # range_filter,
+                writers_section,
+
+            ]
+        }
 
         pipeline = pdal.Pipeline(json.dumps(dtm_gen)) # define the pdal pipeline
         pipeline.validate()  # validate the pipeline
         pipeline.execute()   #  run the pipeline
 
+        metadata = pipeline.metadata
+        print(metadata)
 
         if self.mask is not None:
             mask_it(raster=self.path, shp_path=self.mask, epsg=self.epsg_code)
@@ -107,6 +117,9 @@ class Dsm:
         if self.bounds is None:
             with rasterio.open(self.path) as src:
                 self.bounds = ([src.bounds[0], src.bounds[2]], [src.bounds[1], src.bounds[3]])
+
+        # from sfm_gridz.create_temp_aoi import temp_gpkg
+
 
 
 class Error(Exception):

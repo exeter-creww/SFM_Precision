@@ -30,7 +30,7 @@ The LOD used in the calculation of height change in this package, can be describ
 
 where: *t* = scale factor, *R<sub>1</sub>* = DEM<sub>1</sub> roughness, 
 *P<sub>1</sub>* = Cloud<sub>1</sub> SfM Precision, *R<sub>2</sub>* = DEM<sub>2</sub> roughness, 
-*P<sub>2</sub>** = Cloud<sub>2</sub> SfM Precision, *reg* = Registration/Alignment RMSE. Values of t and reg can 
+*P<sub>2</sub>* = Cloud<sub>2</sub> SfM Precision, *reg* = Registration/Alignment RMSE. Values of t and reg can 
 be user defined in the sfm_gridz.difference() function.  
 
 ### Dependencies
@@ -148,7 +148,7 @@ this module facilitates the use of SFM precision maps and Roughness maps to accu
 #### The 'difference' function is exectued as follows:
 
 `sfm_gridz.difference(raster_1, raster_2, prec_point_cloud_1, prec_point_cloud_2, out_ras, epsg=None, reg_error=0, t_value=1,
-handle_gaps=True)`
+handle_gaps=True, mask=None)`
 
 #### Parameters:
 **raster_1**: *str, path object or file-like object*  
@@ -181,6 +181,10 @@ The desired t value to be used in the LOD calculation. [Default:1]
  recorded precision value. If False then Band 2 is used which forces No data values to be returned in the 
  DEM of difference where gaps in the Precision raster exist. [Default:True]
  
+**mask**: *str, path object or file-like object, optional*  
+A geopandas-readable polygon (http://geopandas.org/io.html). Masks areas as No Data outside the polygon area. If None 
+then all data is presented. [Default:None]
+
 
 ## sfm_gridz.plot_gridz - plotting module
 

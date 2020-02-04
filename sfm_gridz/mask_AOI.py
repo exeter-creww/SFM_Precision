@@ -2,13 +2,18 @@ import rasterio
 from rasterio.mask import mask
 import json
 import geopandas as gpd
-
+import warnings
+# from rasterio.features import geometry_mask
 
 def mask_it(raster, shp_path, epsg):
 
     aoi = gpd.read_file(shp_path)
-    if epsg is not None:
-        aoi.crs = {'init': 'epsg:{0}'.format(epsg)}
+
+    if epsg is None:
+        warnings.warn("No CRS set for mask - if alignment issues occur set a CRS to the feature")
+    elif aoi.crs['init'] != 'epsg:{0}'.format(epsg):
+        aoi = aoi.to_crs({'init': 'epsg:{0}'.format(epsg)})
+
     geom = getFeatures(gdf=aoi)
 
     with rasterio.open(raster, 'r') as src:
@@ -16,7 +21,9 @@ def mask_it(raster, shp_path, epsg):
 
         out_meta = src.meta
 
-    out_meta.update({"transform": out_transform})
+    out_meta.update({"height": out_image.shape[1],
+                     "width": out_image.shape[2],
+                     "transform": out_transform})
 
     with rasterio.open(raster, "w", **out_meta) as dest:
         dest.write(out_image)

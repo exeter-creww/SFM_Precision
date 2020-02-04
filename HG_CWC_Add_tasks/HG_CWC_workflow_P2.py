@@ -6,7 +6,7 @@ import rasterio
 from rasterio.plot import show_hist
 from matplotlib import pyplot as plt
 
-out_ras_home = os.path.abspath("C:/HG_Projects/CWC_Drone_work/Prec_Anal_Exports/Rasters_v2")
+out_ras_home = os.path.abspath("C:/HG_Projects/CWC_Drone_work/Prec_Anal_Exports/Rasters_v1")
 
 dsm1612 = os.path.join(out_ras_home, "dsm1.tif")
 dsm1702 = os.path.join(out_ras_home, "dsm2.tif")
@@ -37,7 +37,7 @@ def run_functions():
     # Start - Finish (WINTER)
     Dec16_Mar18 = sfm_gridz.difference(raster_1=dsm1612, raster_2=dsm1803,
                                        prec_point_cloud_1=pcp1612, prec_point_cloud_2=pcp1803,
-                                       out_ras=DoD_Dec16_Mar18, epsg=epsg_code)
+                                       out_ras=DoD_Dec16_Mar18, epsg=epsg_code, mask=mask_shp)
 
     pcplot.plot_dsm(dsm_path=dsm1809, dpi=300, save_path=os.path.join(out_ras_home, "test_dsm1.jpg"))
 
