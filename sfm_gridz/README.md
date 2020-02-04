@@ -7,20 +7,32 @@ ensuring that spatially explicit sfm-precision and rasterisation error are consi
 
 # 
 ### Things to Note:
-To obtain the finest resolution uncertanty map, precision map = and roughness raster resolution
 
-precisison raster cannot be finer than the xy error of xxx
+*Precisison raster resolution*:  
+The resolution of the precision raster cannot be finer than the mean + stdev of the xy precision values of the 
+precision point cloud. If a user-specified value is provided which is lower than this value, then it will be increased
+to the minimum and a warning is issued. To obtain the finest resolution uncertanty map, the user should enter a very 
+low value (i.e. 0.000001 m) for the resolution which will be ignored and the minimum value used. This value can be 
+accessed for subsequent raster generation by calling the returned class object attribute 'res'.
 
-raster common area...
+*Common Area*:  
+When calculating change across rasters it is important to compare aligned grids of the same region. To ensure this we
+encourage the use of the 'bounds' argument when running sfm_gridz.dsm() and sfm.gridz.precision() functions. It is
+useful to use the extent of one of your datasets by first running either sfm_gridz.dsm() or sfm.gridz.precision() and 
+using the returned class object property 'bounds' to set the extent of subsequent raters. This will ensure exact 
+alignment. Also, if precision and DSM rasters are of different resolutions - ensure that the resolution of one is a 
+multiple of the other to ensure alignment.
 
-The limit of detection (LOD), used in the calculation of height change in this package, can be described as follows:
+*The limit of detection (LOD)*  
+The LOD used in the calculation of height change in this package, can be described as follows:
 
 ![LOD equation](https://latex.codecogs.com/gif.latex?LoD&space;=&space;t&space;\sqrt{&space;R_1^{\2}&space;&plus;&space;P_1^{\2}&space;&plus;&space;R_2^{\2}&space;&plus;&space;P_2^{\2}&space;&plus;&space;Reg^{\2}})
 
-where: t = scale factor, R<sub>1</sub> = DEM<sub>1</sub> roughness, P<sub>1</sub> = Cloud<sub>1</sub> SfM Precision, 
-R<sub>2</sub> = DEM<sub>2</sub> roughness, P<sub>2</sub> = Cloud<sub>2</sub> SfM Precision,  
-reg = Registration/Alignment RMSE.  
-Values of t and reg can be user defined in the sfm_gridz.difference() function. 
+where: **t** = scale factor, **R<sub>1</sub>** = DEM<sub>1</sub> roughness, 
+**P<sub>1</sub>** = Cloud<sub>1</sub> SfM Precision, **R<sub>2</sub>** = DEM<sub>2</sub> roughness, 
+**P<sub>2</sub>** = Cloud<sub>2</sub> SfM Precision, **reg** = Registration/Alignment RMSE. Values of t and reg can 
+be user defined in the sfm_gridz.difference() function.  
+
 ### Dependencies
 
 *pdal* (2.2.1): https://pdal.io/  
