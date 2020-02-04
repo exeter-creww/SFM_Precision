@@ -93,7 +93,7 @@ then all data is presented. [Default:None]
 * bounds - the bounds of the raster - can be used to match other rasters.  
 * mask - a geopandas readable polygon file to mask an area of interest. (If used)  
 
-### Create and SFM precision raster
+### Create an SFM precision raster
 The precision_map module has the function precision_map which creates a precision raster from a precision point cloud 
 generated with the SFM_Precision module in Metashape. One can make precision rasters of x, y or z dimensions but the
 main purpose is to create a z precision raster so we can determine height change maps with accurate limits of detection.
@@ -143,7 +143,7 @@ then all data is presented. [Default:None]
 
 This module enables the creation of a height change map i.e. Digital Elevation Model(DEM) of difference. Critically,
 this module facilitates the use of SFM precision maps and Roughness maps to accurately caluclate the Limit of Detection
-(LOD) and therefore if the confidence of any observered changes (insert references).
+(LOD) and therefore confidence in any observered changes (insert references).
 
 #### The 'difference' function is exectued as follows:
 
