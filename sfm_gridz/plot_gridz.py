@@ -25,7 +25,7 @@ def plot_raster(raster, band, cmap, save_path, dpi, v_range, title, obs):
             v_range = (np.nanmin(arr), np.nanmax(arr))
 
 
-        fig, ax = plt.subplots(figsize=(6, 8))
+        fig, ax = plt.subplots(figsize=(5, 8))
 
         img = ax.imshow(arr, vmin=v_range[0], vmax=v_range[1], cmap=cmap,
                         extent=(ras.bounds[0], ras.bounds[2], ras.bounds[1], ras.bounds[3]))

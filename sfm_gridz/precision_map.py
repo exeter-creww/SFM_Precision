@@ -58,7 +58,7 @@ class PrRas:
 
         self.min_res = math.ceil(min_val * 10000) / 10000
 
-        # self.max_prec = math.ceil(np.nanmax(pcdata['zerr'], 95) * 10000) / 10000
+        self.max_prec = math.ceil(np.nanmax(pcdata['zerr']) * 10000) / 10000
 
 
     def Run(self):
@@ -129,7 +129,7 @@ class PrRas:
             arr = src.read(1)
 
         arr_fill = np.copy(arr)
-        self.max_prec = np.nanmax(arr_fill)
+        # self.max_prec = np.nanmax(arr_fill)
         arr_fill[arr_fill == -999] = self.max_prec
         meta.update(count=2)
 

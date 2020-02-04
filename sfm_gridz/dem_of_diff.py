@@ -7,17 +7,17 @@ import tempfile
 from rasterio.crs import CRS
 import numpy as np
 import warnings
-
+from sfm_gridz.mask_AOI import mask_it
 
 def dem_of_diff(raster_1, raster_2, prec_point_cloud_1, prec_point_cloud_2, out_ras, epsg_code, reg_error, t_value,
-                handle_gaps):
+                handle_gaps, mask):
     print("calculating DEM of difference...")
 
     if epsg_code is not None:
         epsg_code = CRS.from_epsg(epsg_code)
 
     dem_od_process = deom_od(raster_1, raster_2, epsg_code, prec_point_cloud_1, prec_point_cloud_2, out_ras, reg_error,
-                             t_value, handle_gaps)
+                             t_value, handle_gaps, mask)
 
     dem_od_process.load_rasters()
     dem_od_process.resample_rasters()
@@ -29,14 +29,14 @@ def dem_of_diff(raster_1, raster_2, prec_point_cloud_1, prec_point_cloud_2, out_
 
 
 class deom_od:
-    def __init__(self, rast1, rast2, epsg_c, prec_ras1, prec_ras2, out_ras_p, r_err, t_val, gap_handle):
+    def __init__(self, rast1, rast2, epsg_c, prec_ras1, prec_ras2, out_ras_p, r_err, t_val, gap_handle, maskit):
         self.raster_pths = [rast1, rast2, prec_ras1, prec_ras2]
         self.rasters = [None, None, None, None]
         self.ras_out_path = out_ras_p
         self.epsg = epsg_c
         self.temp_log = []
         self.out_meta_data = None
-
+        self.mask = maskit
         self.reg_error = r_err
         self.t_value = t_val
 
@@ -203,6 +203,9 @@ class deom_od:
         with rasterio.open(self.ras_out_path, "w", **self.out_meta_data) as dest:
             dest.write(dod, 1)
             dest.write(lod, 2)
+
+        if self.mask is not None:
+            mask_it(raster=self.ras_out_path, shp_path=self.mask, epsg=self.epsg)
 
 
     def close_rasterios(self):
