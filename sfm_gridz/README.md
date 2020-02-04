@@ -7,18 +7,20 @@ ensuring that spatially explicit sfm-precision and rasterisation error are consi
 
 # 
 ### Things to Note:
-to obtain the finest resolution uncertanty map, precision map = and roughness raster resolution
+To obtain the finest resolution uncertanty map, precision map = and roughness raster resolution
 
-preciison raster cannot be finer than the xy error of xxx
+precisison raster cannot be finer than the xy error of xxx
 
 raster common area...
 
 The limit of detection (LOD), used in the calculation of height change in this package, can be described as follows:
 
-![LOD equation](https://latex.codecogs.com/gif.latex?LoD&space;=&space;t&space;\sqrt{&space;N_1^2&space;&plus;&space;P_1^2&space;&plus;&space;N_2^2&space;&plus;&space;P_2^2&space;&plus;&space;Reg^2})
+![LOD equation](https://latex.codecogs.com/gif.latex?LoD&space;=&space;t&space;\sqrt{&space;R_1^{\2}&space;&plus;&space;P_1^{\2}&space;&plus;&space;R_2^{\2}&space;&plus;&space;P_2^{\2}&space;&plus;&space;Reg^{\2}})
 
-where: P1 – CLOUD1 SfM Precision, R1 – DEM1 roughness, P2 – CLOUD2 SfM Precision, R2 – DEM2 roughness, 
-reg – Registration/Alignment RMSE, t - scalar term
+where: t = scale factor, R<sub>1</sub> = DEM<sub>1</sub> roughness, P<sub>1</sub> = Cloud<sub>1</sub> SfM Precision, 
+R<sub>2</sub> = DEM<sub>2</sub> roughness, P<sub>2</sub> = Cloud<sub>2</sub> SfM Precision,  
+reg = Registration/Alignment RMSE.  
+Values of t and reg can be user defined in the sfm_gridz.difference() function. 
 ### Dependencies
 
 *pdal* (2.2.1): https://pdal.io/  
