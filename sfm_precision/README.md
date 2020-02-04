@@ -5,9 +5,13 @@ A python package that creates precision point clouds with Agisoft MetaShape.
 Structure-from-Motion Photogrammetry: Precision Maps for Ground Control and Directly Georeferenced Surveys’.  
 Earth Surface Processes and Landforms 42(12):1769–88. https://doi.org/10.1002/esp.4125).
 
-This module uses an online algorithm to calculate rolling standard deviation of point locations of a sparse cloud  
-in Metashape (Welford, 1962). The point cloud is produced entirely in Metshape/python, simplifying the workflow. This approach is
-space efficient as it does not require the storage of all point clouds. 
+This module uses an online algorithm, as described by the equation below, to calculate rolling standard deviation of 
+point locations of a sparse cloud in Metashape (Welford, 1962).  
+
+![Welford's Algorithm](https://latex.codecogs.com/gif.latex?\sum_{i=1}^{n}({X_i-&space;\overline{x}_n)^2})
+
+The point cloud is produced entirely in Metshape/python, simplifying the workflow. This 
+approach is space efficient as it does not require the storage of all point clouds.  
 
 # 
 ### Dependencies

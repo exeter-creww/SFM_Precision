@@ -6,6 +6,33 @@ from an Agisoft Metashape project. Digital Surface Models, Precision maps and He
 ensuring that spatially explicit sfm-precision and rasterisation error are considered.
 
 # 
+### Things to Note:
+
+**Precisison raster resolution**:  
+The resolution of the precision raster cannot be finer than the mean + stdev of the xy precision values of the 
+precision point cloud. If a user-specified value is provided which is lower than this value, then it will be increased
+to the minimum and a warning is issued. To obtain the finest resolution uncertanty map, the user should enter a very 
+low value (i.e. 0.000001 m) for the resolution which will be ignored and the minimum value used. This value can be 
+accessed for subsequent raster generation by calling the returned class object attribute 'res'.
+
+**Common Area**:  
+When calculating change across rasters it is important to compare aligned grids of the same region. To ensure this we
+encourage the use of the 'bounds' argument when running sfm_gridz.dsm() and sfm.gridz.precision() functions. It is
+useful to use the extent of one of your datasets by first running either sfm_gridz.dsm() or sfm.gridz.precision() and 
+using the returned class object property 'bounds' to set the extent of subsequent raters. This will ensure exact 
+alignment. Also, if precision and DSM rasters are of different resolutions - ensure that the resolution of one is a 
+multiple of the other to ensure alignment.
+
+**The limit of detection (LOD)**:  
+The LOD used in the calculation of height change in this package, can be described as follows:
+
+![LOD equation](https://latex.codecogs.com/gif.latex?LoD&space;=&space;t&space;\sqrt{&space;R_1^{\2}&space;&plus;&space;P_1^{\2}&space;&plus;&space;R_2^{\2}&space;&plus;&space;P_2^{\2}&space;&plus;&space;Reg^{\2}})
+
+where: *t* = scale factor, *R<sub>1</sub>* = DEM<sub>1</sub> roughness, 
+*P<sub>1</sub>* = Cloud<sub>1</sub> SfM Precision, *R<sub>2</sub>* = DEM<sub>2</sub> roughness, 
+*P<sub>2</sub>** = Cloud<sub>2</sub> SfM Precision, *reg* = Registration/Alignment RMSE. Values of t and reg can 
+be user defined in the sfm_gridz.difference() function.  
+
 ### Dependencies
 
 *pdal* (2.2.1): https://pdal.io/  
@@ -66,7 +93,7 @@ then all data is presented. [Default:None]
 * bounds - the bounds of the raster - can be used to match other rasters.  
 * mask - a geopandas readable polygon file to mask an area of interest. (If used)  
 
-### Create and SFM precision raster
+### Create an SFM precision raster
 The precision_map module has the function precision_map which creates a precision raster from a precision point cloud 
 generated with the SFM_Precision module in Metashape. One can make precision rasters of x, y or z dimensions but the
 main purpose is to create a z precision raster so we can determine height change maps with accurate limits of detection.
@@ -116,7 +143,7 @@ then all data is presented. [Default:None]
 
 This module enables the creation of a height change map i.e. Digital Elevation Model(DEM) of difference. Critically,
 this module facilitates the use of SFM precision maps and Roughness maps to accurately caluclate the Limit of Detection
-(LOD) and therefore if the confidence of any observered changes (insert references).
+(LOD) and therefore confidence in any observered changes (insert references).
 
 #### The 'difference' function is exectued as follows:
 
