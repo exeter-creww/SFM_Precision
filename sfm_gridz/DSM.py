@@ -50,39 +50,50 @@ class Dsm:
 
     def Run(self):
 
-        if self.bounds is None:
-            writers_section = {
-                "type": "writers.gdal",
-                "filename": self.path,  # output file name
-                "resolution": self.res,
-                "dimension": 'Z',  # raster resolution
-                "nodata": -999,
-                "output_type": "{0}, stdev".format(self.statval),
-                "window_size": self.wind}
-
-        else:
-            writers_section = {
-                "type": "writers.gdal",
-                "filename": self.path,  # output file name
-                "resolution": self.res,
-                "dimension": 'Z',  # raster resolution
-                "nodata": -999,
-                "bounds": str(self.bounds),
-                "output_type": "{0}, stdev".format(self.statval),
-                "window_size": self.wind},
-
         print("Generating DSM raster...")
 
-        dtm_gen = {
-            "pipeline": [
-                {
-                    "type": self.reader,
-                    "filename":  self.rpc,
-                    "override_srs": str(self.epsg_code)
-                },
-                writers_section
-            ]
-        }
+        if self.bounds is None:
+
+
+
+            dtm_gen = {
+                "pipeline": [
+                    {
+                        "type": self.reader,
+                        "filename": self.rpc,
+                        "override_srs": str(self.epsg_code)
+                    },
+                    {
+                        "type": "writers.gdal",
+                        "filename": self.path,  # output file name
+                        "resolution": self.res,
+                        "dimension": 'Z',  # raster resolution
+                        "nodata": -999,
+                        "output_type": "mean, stdev",
+                        "window_size": self.wind
+                    }
+                ]
+            }
+
+        else:
+            dtm_gen = {
+                "pipeline": [
+                    {
+                        "type": self.reader,
+                        "filename": self.rpc,
+                        "override_srs": str(self.epsg_code)
+                    },
+                    {
+                        "type": "writers.gdal",
+                        "filename": self.path,  # output file name
+                        "resolution": self.res,
+                        "dimension": 'Z',  # raster resolution
+                        "nodata": -999,
+                        "output_type": "mean, stdev",
+                        "window_size": self.wind
+                    }
+                ]
+            }
 
         pipeline = pdal.Pipeline(json.dumps(dtm_gen)) # define the pdal pipeline
         pipeline.validate()  # validate the pipeline
