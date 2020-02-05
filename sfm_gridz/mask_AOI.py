@@ -3,6 +3,7 @@ from rasterio.mask import mask
 import json
 import geopandas as gpd
 import warnings
+import os
 
 
 def mask_it(raster, shp_path, epsg):
@@ -27,6 +28,8 @@ def mask_it(raster, shp_path, epsg):
                      "width": out_image.shape[2],
                      "transform": out_transform})
 
+    if os.path.exists(raster):
+        os.remove(raster)
     with rasterio.open(raster, "w", **out_meta) as dest:
         dest.write(out_image)
 
