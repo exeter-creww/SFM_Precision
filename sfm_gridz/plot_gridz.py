@@ -9,7 +9,7 @@ def set_style():
     plt.style.use('bmh')
     font = {'family': 'Tahoma',
             'weight': 'ultralight',
-            'size': 11}
+            'size': 10}
     rc('font', **font)
 
 def plot_raster(raster, band, cmap, save_path, dpi, v_range, title, obs):
@@ -24,8 +24,10 @@ def plot_raster(raster, band, cmap, save_path, dpi, v_range, title, obs):
         if v_range is None:
             v_range = (np.nanmin(arr), np.nanmax(arr))
 
+        sh = np.shape(arr)
+        fig_w = round(8/(sh[0]/sh[1]))*1.5
 
-        fig, ax = plt.subplots(figsize=(5, 8))
+        fig, ax = plt.subplots(figsize=(fig_w, 8))
 
         img = ax.imshow(arr, vmin=v_range[0], vmax=v_range[1], cmap=cmap,
                         extent=(ras.bounds[0], ras.bounds[2], ras.bounds[1], ras.bounds[3]))

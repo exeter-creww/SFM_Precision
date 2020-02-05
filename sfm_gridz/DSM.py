@@ -5,6 +5,7 @@ import rasterio
 import json
 from datetime import datetime
 from sfm_gridz.mask_AOI import mask_it
+from rasterio.crs import CRS
 # import sfm_gridz.create_temp_aoi as create_temp
 
 
@@ -34,7 +35,7 @@ class Dsm:
         if epsg is None:
             self.epsg_code = []
         else:
-            self.epsg_code = "EPSG:{0}".format(epsg)
+            self.epsg_code = CRS.from_epsg(epsg)
 
         self.statval = 'mean'  # we could add the string to the pdal pipline but in case we decide to later add other
                                # stats it will be more strightforward.
@@ -112,7 +113,10 @@ class Dsm:
         print(metadata)
 
         if self.mask is not None:
-            mask_it(raster=self.path, shp_path=self.mask, epsg=self.epsg_code)
+            if len(self.epsg_code) == 0:
+                mask_it(raster=self.path, shp_path=self.mask, epsg=None)
+            else:
+                mask_it(raster=self.path, shp_path=self.mask, epsg=self.epsg_code.data)
 
         if self.bounds is None:
             with rasterio.open(self.path) as src:

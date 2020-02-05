@@ -35,7 +35,7 @@ def precision(prec_point_cloud, out_raster, resolution, **kwargs):
     return prec_class
 
 
-def difference(raster_1, raster_2,prec_point_cloud_1, prec_point_cloud_2, out_ras,**kwargs):
+def difference(raster_1, raster_2,prec_point_cloud_1, prec_point_cloud_2, out_ras, **kwargs):
     """ Function to run the dem of difference module"""
 
     epsg_code = kwargs.get('epsg', None)

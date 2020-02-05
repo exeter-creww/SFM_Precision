@@ -11,8 +11,8 @@ def mask_it(raster, shp_path, epsg):
 
     if epsg is None:
         warnings.warn("No CRS set for mask - if alignment issues occur set a CRS to the feature")
-    elif aoi.crs['init'] != 'epsg:{0}'.format(epsg):
-        aoi = aoi.to_crs({'init': 'epsg:{0}'.format(epsg)})
+    elif aoi.crs != epsg:
+        aoi = aoi.to_crs(epsg)
 
     geom = getFeatures(gdf=aoi)
 

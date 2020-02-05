@@ -205,7 +205,7 @@ class deom_od:
             dest.write(lod, 2)
 
         if self.mask is not None:
-            mask_it(raster=self.ras_out_path, shp_path=self.mask, epsg=self.epsg)
+            mask_it(raster=self.ras_out_path, shp_path=self.mask, epsg=self.epsg.data)
 
 
     def close_rasterios(self):
