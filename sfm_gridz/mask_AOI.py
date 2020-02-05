@@ -3,7 +3,7 @@ from rasterio.mask import mask
 import json
 import geopandas as gpd
 import warnings
-# from rasterio.features import geometry_mask
+
 
 def mask_it(raster, shp_path, epsg):
 
@@ -27,6 +27,7 @@ def mask_it(raster, shp_path, epsg):
 
     with rasterio.open(raster, "w", **out_meta) as dest:
         dest.write(out_image)
+
 
 def getFeatures(gdf):
     """Function to parse features from GeoDataFrame in such a manner that rasterio wants them"""

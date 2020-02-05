@@ -75,52 +75,37 @@ class PrRas:
         if os.path.exists(self.path):
             os.remove(self.path)
 
-        if self.bounds is not None:
-            dtm_gen = {
-                "pipeline": [
-                    {
-                        "type": "readers.text",
-                        "filename":  self.ppc,
-                        "override_srs": self.epsg_code
-                    },
+        if self.bounds is None:
+            writers_section = {"type": "writers.gdal",
+                               "filename": self.path,  # output file name
+                               "resolution": self.res,
+                               "dimension": self.pr_dim,  # raster resolution
+                               "nodata": -999,
+                               "bounds": str(self.bounds),
+                               "output_type": "mean",
+                               "window_size": 0  # changes the search area around an empty cell - second stage of algorithm
+                               }
 
-                    {
-                        "type": "writers.gdal",
-                        "filename": self.path,  # output file name
-                        "resolution": self.res,
-                        "dimension": self.pr_dim,  # raster resolution
-                        "nodata": -999,
-                        "bounds": str(self.bounds),
-                        "output_type": "mean",
-                        "window_size": 0  # changes the search area around an empty cell - second stage of algorithm
-
-                    },
-
-                ]
-            }
         else:
-            dtm_gen = {
-                "pipeline": [
-                    {
-                        "type": "readers.text",
-                        "filename":  self.ppc,
-                        "override_srs": self.epsg_code
-                    },
+            writers_section = {"type": "writers.gdal",
+                               "filename": self.path,  # output file name
+                               "resolution": self.res,
+                               "dimension": self.pr_dim,  # raster resolution
+                               "nodata": -999,
+                               "output_type": "mean",
+                               "window_size": 0  # changes the search area around an empty cell - second stage of algorithm
+                               }
 
-                    {
-                        "type": "writers.gdal",
-                        "filename": self.path,  # output file name
-                        "resolution": self.res,
-                        "dimension": self.pr_dim,  # raster resolution
-                        "nodata": -999,
-                        "output_type": "mean",
-                        "window_size": 0  # changes the search area around an empty cell - second stage of algorithm
-
-                    },
-
-                ]
-            }
-
+        dtm_gen = {
+            "pipeline": [
+                {
+                    "type": "readers.text",
+                    "filename": self.ppc,
+                    "override_srs": str(self.epsg_code)
+                },
+                writers_section
+            ]
+        }
 
         pipeline = pdal.Pipeline(json.dumps(dtm_gen)) # define the pdal pipeline
         pipeline.validate()  # validate the pipeline
@@ -156,9 +141,11 @@ class PrRas:
         if self.pr_dim == 'yerr':
             self.pr_dim = 'y'
 
+
 class Error(Exception):
     """Base class for exceptions in this module."""
     pass
+
 
 class InputError(Error):
     """Exception raised for errors in the input.

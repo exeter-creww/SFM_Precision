@@ -6,8 +6,6 @@ import json
 from datetime import datetime
 from sfm_gridz.mask_AOI import mask_it
 from rasterio.crs import CRS
-# import sfm_gridz.create_temp_aoi as create_temp
-
 
 
 def height_map(point_cloud, out_raster, resolution, window_size, epsg, bounds, mask):
@@ -15,7 +13,6 @@ def height_map(point_cloud, out_raster, resolution, window_size, epsg, bounds, m
     startTime = datetime.now()
 
     dsm_process = Dsm(point_cloud, out_raster, resolution, window_size, epsg, bounds, mask)
-    # dsm_process.readPC_xyerr()
     dsm_process.get_reader()
     dsm_process.Run()
 
@@ -53,20 +50,6 @@ class Dsm:
 
     def Run(self):
 
-        # if self.mask is None:
-        #     mask_section = {}
-        #     range_filter = {}
-        # else:
-        #     aoi = create_temp.temp_gpkg(self.mask, self.epsg_code)
-        #     mask_section = {
-        #         "column": "key",
-        #         "datasource": aoi,
-        #         "dimension": "Classification",
-        #         "type": "filters.overlay"}
-        #     range_filter = {
-        #         "limits": "Classification[8:8]",
-        #         "type": "filters.range"}
-
         if self.bounds is None:
             writers_section = {
                 "type": "writers.gdal",
@@ -88,7 +71,6 @@ class Dsm:
                 "output_type": "{0}, stdev".format(self.statval),
                 "window_size": self.wind},
 
-
         print("Generating DSM raster...")
 
         dtm_gen = {
@@ -96,12 +78,9 @@ class Dsm:
                 {
                     "type": self.reader,
                     "filename":  self.rpc,
-                    "override_srs": self.epsg_code
+                    "override_srs": str(self.epsg_code)
                 },
-                # mask_section,
-                # range_filter,
-                writers_section,
-
+                writers_section
             ]
         }
 
@@ -109,8 +88,6 @@ class Dsm:
         pipeline.validate()  # validate the pipeline
         pipeline.execute()   #  run the pipeline
 
-        metadata = pipeline.metadata
-        print(metadata)
 
         if self.mask is not None:
             if len(self.epsg_code) == 0:
@@ -121,9 +98,6 @@ class Dsm:
         if self.bounds is None:
             with rasterio.open(self.path) as src:
                 self.bounds = ([src.bounds[0], src.bounds[2]], [src.bounds[1], src.bounds[3]])
-
-        # from sfm_gridz.create_temp_aoi import temp_gpkg
-
 
 
 class Error(Exception):
