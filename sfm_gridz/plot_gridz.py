@@ -44,6 +44,8 @@ def plot_raster(raster, band, cmap, save_path, dpi, v_range, title, obs):
         fig.colorbar(img, ax=ax, label='{0} ({1})'.format(obs, units))
         plt.title(title)
 
+        ax.set_facecolor('0.8')
+
         # steps = (ras.bounds[2] - ras.bounds[0])/3.5
         # plt.xticks(np.arange(ras.bounds[0], ras.bounds[2], step=steps))
         plt.show()
