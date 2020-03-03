@@ -100,6 +100,18 @@ def plot_dsm(dsm_path, **kwargs ):
                 obs=colmap_label)
 
 
+def plot_chm(chm_path, **kwargs ):
+    save_path = kwargs.get('save_path', None)
+    dpi = kwargs.get('dpi', 300)
+    cmap = kwargs.get('cmap', 'ocean_r')
+    title = kwargs.get('title', 'Canopy Height Model')
+    v_range = kwargs.get('v_range', None)
+    colmap_label = kwargs.get('colmap_label', 'Canopy Height')
+
+    plot_raster(raster=chm_path, band=1, cmap=cmap, save_path=save_path, dpi=dpi, v_range=v_range, title=title,
+                obs=colmap_label)
+
+
 def plot_roughness(dsm_path, **kwargs ):
     save_path = kwargs.get('save_path', None)
     dpi = kwargs.get('dpi', 300)
@@ -109,6 +121,18 @@ def plot_roughness(dsm_path, **kwargs ):
     colmap_label = kwargs.get('colmap_label', 'Rasterisation Uncertainty')
 
     plot_raster(raster=dsm_path, band=2, cmap=cmap, save_path=save_path, dpi=dpi, v_range=v_range, title=title,
+                obs=colmap_label)
+
+
+def plot_dtm(chm_path, **kwargs ):
+    save_path = kwargs.get('save_path', None)
+    dpi = kwargs.get('dpi', 300)
+    cmap = kwargs.get('cmap', 'terrain')
+    title = kwargs.get('title', 'Digital Terrain Model')
+    v_range = kwargs.get('v_range', None)
+    colmap_label = kwargs.get('colmap_label', 'Rasterisation Uncertainty')
+
+    plot_raster(raster=chm_path, band=3, cmap=cmap, save_path=save_path, dpi=dpi, v_range=v_range, title=title,
                 obs=colmap_label)
 
 def plot_precision(prec_map_path, **kwargs ):

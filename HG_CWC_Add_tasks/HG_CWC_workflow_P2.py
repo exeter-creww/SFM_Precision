@@ -6,7 +6,7 @@ import rasterio
 from rasterio.plot import show_hist
 from matplotlib import pyplot as plt
 
-out_ras_home = os.path.abspath("C:/HG_Projects/CWC_Drone_work/Prec_Anal_Exports/Rasters_v2")
+out_ras_home = os.path.abspath("C:/HG_Projects/CWC_Drone_work/Prec_Anal_Exports/Rasters_v3")
 
 dsm1612 = os.path.join(out_ras_home, "dsm1.tif")
 dsm1702 = os.path.join(out_ras_home, "dsm2.tif")
@@ -37,7 +37,7 @@ for i in [DoD_Dec16_Mar18, DoD_Sep17_Sep18]:
         os.remove(i)
 
 epsg_code = 27700
-mask_shp = os.path.abspath('C:/HG_Projects/CWC_Drone_work/shp_files/CWC_AOI.shp')
+mask_shp = os.path.abspath('C:/HG_Projects/CWC_Drone_work/shp_files/CWC_AOI_V2.shp')
 def run_functions():
 
     # Start - Finish (SUMMER)

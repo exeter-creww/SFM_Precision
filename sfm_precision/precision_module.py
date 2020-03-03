@@ -132,6 +132,7 @@ def main(num_iterations, params_list, retrieve_shape_only_Prec, export_log):
                           fit_p1=optimise_p1, fit_p2=optimise_p2, fit_p3=optimise_p3, fit_p4=optimise_p4)
 
     sparse_ref = os.path.join(dir_path, 'start_pts_temp.ply')
+
     chunk.exportPoints(sparse_ref, source_data='PointCloudData', save_normals=False, save_colors=False,
                        format=Metashape.PointsFormatPLY, crs=crs, shift=pts_offset)
 

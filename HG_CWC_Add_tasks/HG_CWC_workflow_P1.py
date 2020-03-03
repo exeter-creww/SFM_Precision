@@ -42,14 +42,16 @@ pcp5_path = os.path.abspath("C:/HG_Projects/CWC_Drone_work/18_03_27_Danes_Mill/"
 pcp6_path = os.path.abspath("C:/HG_Projects/CWC_Drone_work/18_09_25_Danes_Mill/"
                             "18_09_25_DanesCroft_SFM_PREC/18_09_25_DanesCroft_Prec_Cloud.txt")
 
+dtm_path = os.path.abspath('C:/HG_Projects/CWC_Drone_work/DTM/Lidar_mosaic/CWC_Lidar_DTM.tif')
+
 for i in [dpc1_path, dpc2_path, dpc3_path, dpc4_path, dpc5_path, dpc6_path,
-          pcp1_path, pcp2_path, pcp3_path, pcp4_path, pcp5_path, pcp6_path]:
+          pcp1_path, pcp2_path, pcp3_path, pcp4_path, pcp5_path, pcp6_path, dtm_path]:
     if os.path.isfile(i) is False:
         print(i)
         sys.exit("One of the paths is wrong - fix it...")
 
 
-out_ras_home = os.path.abspath("C:/HG_Projects/CWC_Drone_work/Prec_Anal_Exports/Rasters_v2")
+out_ras_home = os.path.abspath("C:/HG_Projects/CWC_Drone_work/Prec_Anal_Exports/Rasters_v4")
 if os.path.isdir(out_ras_home) is False:
     os.mkdir(out_ras_home)
 
@@ -60,6 +62,13 @@ dsm4_out = os.path.join(out_ras_home, "dsm4.tif")
 dsm5_out = os.path.join(out_ras_home, "dsm5.tif")
 dsm6_out = os.path.join(out_ras_home, "dsm6.tif")
 
+chm1_out = os.path.join(out_ras_home, "chm1.tif")
+chm2_out = os.path.join(out_ras_home, "chm2.tif")
+chm3_out = os.path.join(out_ras_home, "chm3.tif")
+chm4_out = os.path.join(out_ras_home, "chm4.tif")
+chm5_out = os.path.join(out_ras_home, "chm5.tif")
+chm6_out = os.path.join(out_ras_home, "chm6.tif")
+
 pcp1_out = os.path.join(out_ras_home, "pcc1.tif")
 pcp2_out = os.path.join(out_ras_home, "pcc2.tif")
 pcp3_out = os.path.join(out_ras_home, "pcc3.tif")
@@ -67,7 +76,7 @@ pcp4_out = os.path.join(out_ras_home, "pcc4.tif")
 pcp5_out = os.path.join(out_ras_home, "pcc5.tif")
 pcp6_out = os.path.join(out_ras_home, "pcc6.tif")
 
-mask_shp = os.path.abspath('C:/HG_Projects/CWC_Drone_work/shp_files/CWC_AOI.shp')
+mask_shp = os.path.abspath('C:/HG_Projects/CWC_Drone_work/shp_files/CWC_AOI_V2.shp')
 epsg_code = 27700
 
 def main():
@@ -89,6 +98,18 @@ def main():
 
         pcplot.plot_dsm(dsm_path=i.path)
         pcplot.plot_roughness(dsm_path=i.path)
+
+    chm1 = sfm_gridz.chm(dsm_file=dsm1_out, dtm_file=dtm_path, chm_save_name=chm1_out)
+    chm2 = sfm_gridz.chm(dsm_file=dsm2_out, dtm_file=dtm_path, chm_save_name=chm2_out)
+    chm3 = sfm_gridz.chm(dsm_file=dsm3_out, dtm_file=dtm_path, chm_save_name=chm3_out)
+    chm4 = sfm_gridz.chm(dsm_file=dsm4_out, dtm_file=dtm_path, chm_save_name=chm4_out)
+    chm5 = sfm_gridz.chm(dsm_file=dsm5_out, dtm_file=dtm_path, chm_save_name=chm5_out)
+    chm6 = sfm_gridz.chm(dsm_file=dsm6_out, dtm_file=dtm_path, chm_save_name=chm6_out)
+
+    for i in [chm1, chm2, chm3, chm4, chm5, chm6]:
+        pcplot.plot_chm(chm_path=i.path)
+        pcplot.plot_roughness(dsm_path=i.path)
+        pcplot.plot_dtm(chm_path=i.path)
 
     prras1 = sfm_gridz.precision(prec_point_cloud=pcp1_path, out_raster=pcp1_out, resolution=1,
                            prec_dimension='z', epsg=epsg_code, bounds=dsm1.bounds, mask=mask_shp)

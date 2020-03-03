@@ -125,14 +125,15 @@ class deom_od:
 
                     def reshape_arr(b_arr, difference):
                         if difference[0] > 0:
-                            b_arr = b_arr[difference[0]:]
+                            b_arr = np.delete(b_arr, (range(0, difference[0])), axis=0)
                         else:
                             ins_list = []
                             for i in range(0, abs(difference[0])):
                                 ins_list.append(0)
                             b_arr = np.insert(b_arr, ins_list, -999, axis=0)
                         if difference[1] > 0:
-                            b_arr = b_arr[:-difference[1]]
+                            b_arr = np.delete(b_arr, (range(b_arr.shape[-1] - (difference[1]), b_arr.shape[-1])),
+                                              axis=1)
                         else:
                             ind = b_arr.shape[1]
                             ins_list = []

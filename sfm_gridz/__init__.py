@@ -6,7 +6,7 @@ from sfm_gridz import DSM
 from sfm_gridz import precision_map
 from sfm_gridz import dem_of_diff
 from sfm_gridz import plot_gridz
-
+from sfm_gridz import CHM
 
 def dsm(point_cloud, out_raster, resolution, **kwargs):
     """ Function to run the height map module"""
@@ -50,3 +50,9 @@ def difference(raster_1, raster_2,prec_point_cloud_1, prec_point_cloud_2, out_ra
     return demod_class
 
 
+def chm(dsm_file, dtm_file, chm_save_name):
+    """ Function to run Canopy height map module"""
+
+    chm_class = CHM.canopy_height(dsm_file,dtm_file, chm_save_name)
+
+    return(chm_class)
