@@ -141,7 +141,7 @@ class deom_od:
                                 ins_list.append(ind)
                             b_arr = np.insert(b_arr, ins_list, -999, axis=1)
 
-                        return b_arr
+                        return b_arr.astype('float32')
 
                     temp_ras = tempfile.NamedTemporaryFile(suffix=".tif").name
 
@@ -202,8 +202,8 @@ class deom_od:
         # dod = np.nan_to_num(dod, nan=-999)
 
         with rasterio.open(self.ras_out_path, "w", **self.out_meta_data) as dest:
-            dest.write(dod, 1)
-            dest.write(lod, 2)
+            dest.write(dod.astype('float32'), 1)
+            dest.write(lod.astype('float32'), 2)
 
         if self.mask is not None:
             mask_it(raster=self.ras_out_path, shp_path=self.mask, epsg=self.epsg.data)
