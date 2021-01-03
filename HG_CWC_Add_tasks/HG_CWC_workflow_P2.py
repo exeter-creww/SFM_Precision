@@ -67,20 +67,18 @@ def run_functions():
     # Combined DEM of Diff plots - Winter & summer
     pcplot.set_style()
 
-    # beaver_z_cmap = LinearSegmentedColormap.from_list(
-    #     'mycmap', [(0, '#ff7f00'), (1, '#377eb8')])
     beaver_z_cmap = LinearSegmentedColormap.from_list(
             'mycmap', [(0, '#60C84E'), (1, '#AC4EC8')])
-    fig, axs = plt.subplots(1, 2, sharey=True, figsize=(7, 7))
-    plt.tight_layout()
+    fig, axs = plt.subplots(1, 2, sharey=True, figsize=(9, 9))
+
+    plt.tight_layout(rect=[0.02, 0.02, 0.98, 0.98])
     pcplot.plot_dem_of_diff(Dec16_Jan18.ras_out_path, v_range=(-5, 5), title="Dec 2016 - Jan 2018",
                             mpl_fig=fig, mpl_ax=axs[0], legend=False, gpd_gdf=gdf, gdf_column='Beaver_Zone',
-                            gdf_cmap=beaver_z_cmap, gdf_legend_kwds=({'loc': 'upper left'}), gdf_alpha=0.8,
-                            cmap='coolwarm_r')
+                            gdf_cmap=beaver_z_cmap, gdf_legend_kwds=({'loc': 'upper left'}), cmap='coolwarm_r')
 
     pcplot.plot_dem_of_diff(Sep17_Sep18.ras_out_path, v_range=(-5, 5), title="Sep 2017 - Sep 2018",
                             mpl_fig=fig, mpl_ax=axs[1], gpd_gdf=gdf, gdf_column='Beaver_Zone',
-                            gdf_cmap=beaver_z_cmap, gdf_legend=False, gdf_alpha=0.8, cmap='coolwarm_r')
+                            gdf_cmap=beaver_z_cmap, gdf_legend=False, cmap='coolwarm_r')
 
 
     plt.show()
@@ -90,8 +88,8 @@ def run_functions():
 
     # LOD plots
 
-    fig, axs = plt.subplots(1, 2, sharey=True, figsize=(7, 7))
-    plt.tight_layout()
+    fig, axs = plt.subplots(1, 2, sharey=True, figsize=(9, 9))
+    plt.tight_layout(rect=[0.02, 0.02, 0.98, 0.98])
 
     pcplot.plot_lod(Dec16_Jan18.ras_out_path, title="Dec 2016 - Jan 2018", v_range=(0, 15),
                             mpl_fig=fig, mpl_ax=axs[0], legend=False)
@@ -101,10 +99,10 @@ def run_functions():
 
     plt.show()
 
-    # fig.savefig(fname='C:/HG_Projects/CWC_Drone_work/maps/LoD.jpg', dpi=300, format='jpg')
+    fig.savefig(fname='C:/HG_Projects/CWC_Drone_work/maps/LoD.jpg', dpi=300, format='jpg')
 
-    fig, axs = plt.subplots(2, 4, sharey=True, sharex=True, figsize=(15, 17.5))
-    plt.tight_layout()
+    fig, axs = plt.subplots(2, 4, sharey=True, sharex=True, figsize=(13, 13))
+    plt.tight_layout(rect=[0.02, 0.02, 0.98, 0.98])
 
     ts_names = ['Dec 16', 'Jan 18', 'Sep 17', 'Sep 18']
     dsm_list = [dsm1612, dsm1801, dsm1709, dsm1809]
@@ -127,10 +125,10 @@ def run_functions():
                             mpl_fig=fig, mpl_ax=axs[1, idx])
 
     plt.show()
-    # fig.savefig(fname='C:/HG_Projects/CWC_Drone_work/maps/DSM_CHM.jpg', dpi=300, format='jpg')
+    fig.savefig(fname='C:/HG_Projects/CWC_Drone_work/maps/DSM_CHM.jpg', dpi=300, format='jpg')
 
-    fig, axs = plt.subplots(2, 4, sharey=True, sharex=True, figsize=(15, 17.5))
-    plt.tight_layout()
+    fig, axs = plt.subplots(2, 4, sharey=True, sharex=True, figsize=(13, 13))
+    plt.tight_layout(rect=[0.02, 0.02, 0.98, 0.98])
 
 
     for idx, path in enumerate(pcp_list):
@@ -151,10 +149,14 @@ def run_functions():
 
     plt.show()
 
-    # fig.savefig(fname='C:/HG_Projects/CWC_Drone_work/maps/PREC_ROUGH.jpg', dpi=300, format='jpg')
+    fig.savefig(fname='C:/HG_Projects/CWC_Drone_work/maps/PREC_ROUGH.jpg', dpi=300, format='jpg')
 
     # Plot Terrain Model
-    pcplot.plot_dtm(chm_path=chm1809, title=None, save_path='C:/HG_Projects/CWC_Drone_work/maps/DTM.jpg')
+    fig, ax = plt.subplots(1, 1, sharey=True, sharex=True, figsize=(4.5, 9))
+    plt.tight_layout(rect=[0.02, 0.02, 0.98, 0.98])
+    pcplot.plot_dtm(chm_path=chm1809, title=None, save_path='C:/HG_Projects/CWC_Drone_work/maps/DTM.jpg',
+                    mpl_fig=fig, mpl_ax=ax)
+    plt.show()
 
 
 if __name__ == '__main__':
