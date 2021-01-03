@@ -130,13 +130,13 @@ def run_functions():
     fig, axs = plt.subplots(2, 4, sharey=True, sharex=True, figsize=(13, 13))
     plt.tight_layout(rect=[0.02, 0.02, 0.98, 0.98])
 
-
-    for idx, path in enumerate(pcp_list):
+    for idx, path, name in zip(range(0, 4), pcp_list, ts_names):
+    # for idx, path in enumerate(pcp_list):
         if idx == 3:
-            pcplot.plot_precision(prec_map_path=path, title=None, v_range=(0, 0.1),
+            pcplot.plot_precision(prec_map_path=path, title=name, v_range=(0, 0.1),
                              mpl_fig=fig, mpl_ax=axs[0, idx])
         else:
-            pcplot.plot_precision(prec_map_path=path, title=None, legend=None, v_range=(0, 0.1),
+            pcplot.plot_precision(prec_map_path=path, title=name, legend=None, v_range=(0, 0.1),
                             mpl_fig=fig, mpl_ax=axs[0, idx])
 
     for idx, path in enumerate(dsm_list):
