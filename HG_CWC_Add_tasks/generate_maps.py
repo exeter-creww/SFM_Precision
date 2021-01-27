@@ -55,11 +55,11 @@ def run_functions():
                                 gdf_cmap=beaver_z_cmap, gdf_legend_kwds=({'loc': 'upper left'}), cmap='seismic_r',
                                 method='basic', linestyle=['-', ':'])
 
-        pcplot.plot_dem_of_diff(dod1, v_range=(-4, 4), title="LoDmin threshold",
+        pcplot.plot_dem_of_diff(dod2, v_range=(-4, 4), title="LoD95 weighting",
                                 mpl_fig=fig, mpl_ax=axs[1], legend=False, gpd_gdf=gdf, gdf_column='Beaver_Zone',
                                 gdf_cmap=beaver_z_cmap, gdf_legend=False, cmap='seismic_r', linestyle=['-', ':'])
 
-        pcplot.plot_dem_of_diff(dod2, v_range=(-4, 4), title="LoD95 weighting",
+        pcplot.plot_dem_of_diff(dod1, v_range=(-4, 4), title="LoDmin threshold",
                                 mpl_fig=fig, mpl_ax=axs[2], gpd_gdf=gdf, gdf_column='Beaver_Zone',
                                 gdf_cmap=beaver_z_cmap, gdf_legend=False, cmap='seismic_r', linestyle=['-', ':'])
 
