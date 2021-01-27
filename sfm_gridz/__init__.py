@@ -43,9 +43,10 @@ def difference(raster_1, raster_2,prec_point_cloud_1, prec_point_cloud_2, out_ra
     t_value = kwargs.get('t_value', 1)
     handle_gaps = kwargs.get('handle_gaps', True)
     mask = kwargs.get('mask', None)
+    lod_method = kwargs.get('lod_method', 'threshold')
 
     demod_class = dem_of_diff.dem_of_diff(raster_1, raster_2, prec_point_cloud_1, prec_point_cloud_2, out_ras,
-                                          epsg_code, reg_error, t_value, handle_gaps, mask)
+                                          epsg_code, reg_error, t_value, handle_gaps, mask, lod_method)
 
     return demod_class
 

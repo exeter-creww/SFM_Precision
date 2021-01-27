@@ -6,6 +6,7 @@ import rasterio
 from rasterio.plot import show_hist
 from matplotlib import pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
+import geopandas as gpd
 
 out_ras_home = os.path.abspath("C:/HG_Projects/CWC_Drone_work/Prec_Anal_Exports/Rasters_v4")
 
@@ -50,7 +51,7 @@ for i in [DoD_Dec16_Mar18, DoD_Sep17_Sep18]:
 epsg_code = 27700
 mask_shp = os.path.abspath('C:/HG_Projects/CWC_Drone_work/shp_files/CWC_AOI_V2.shp')
 beaver_zones = os.path.abspath('C:/HG_Projects/CWC_Drone_work/CHM/Beaver_Zones20m.gpkg')
-import geopandas as gpd
+
 gdf = gpd.read_file(beaver_zones)
 gdf['Beaver_Zone'] = ['Foraging Observed' if x == 1 else 'No Foraging' for x in gdf['signs_YN']]
 def run_functions():

@@ -1,5 +1,5 @@
 # Module to calculate a DEM of difference with the consideration of a a lOD95 based on precision maps and roughness.
-
+import sys
 import os
 import rasterio
 from rasterio.enums import Resampling
@@ -10,14 +10,14 @@ import warnings
 from sfm_gridz.mask_AOI import mask_it
 
 def dem_of_diff(raster_1, raster_2, prec_point_cloud_1, prec_point_cloud_2, out_ras, epsg_code, reg_error, t_value,
-                handle_gaps, mask):
+                handle_gaps, mask, lod_method):
     print("calculating DEM of difference...")
 
     if epsg_code is not None:
         epsg_code = CRS.from_epsg(epsg_code)
 
     dem_od_process = deom_od(raster_1, raster_2, epsg_code, prec_point_cloud_1, prec_point_cloud_2, out_ras, reg_error,
-                             t_value, handle_gaps, mask)
+                             t_value, handle_gaps, mask, lod_method)
 
     dem_od_process.load_rasters()
     dem_od_process.resample_rasters()
@@ -29,7 +29,7 @@ def dem_of_diff(raster_1, raster_2, prec_point_cloud_1, prec_point_cloud_2, out_
 
 
 class deom_od:
-    def __init__(self, rast1, rast2, epsg_c, prec_ras1, prec_ras2, out_ras_p, r_err, t_val, gap_handle, maskit):
+    def __init__(self, rast1, rast2, epsg_c, prec_ras1, prec_ras2, out_ras_p, r_err, t_val, gap_handle, maskit, method):
         self.raster_pths = [rast1, rast2, prec_ras1, prec_ras2]
         self.rasters = [None, None, None, None]
         self.ras_out_path = out_ras_p
@@ -44,6 +44,8 @@ class deom_od:
             self.prec_band = 2
         else:
             self.prec_band = 1
+
+        self.lod_method = method
 
     def load_rasters(self):
 
@@ -177,33 +179,74 @@ class deom_od:
         e[e == -999] = np.nan
         f = self.rasters[1].read(2)
         f[f == -999] = np.nan
-        g = self.reg_error  # waiting on Pia for confirmation of what this is...
-        # g[g == -999] = np.nan
+        g = self.reg_error
+
         t = self.t_value  # could also use 1.96
 
-        # set the t value to 1 and then allow for user o alter if needed... same for g
-        lod = t * (a**2 + c**2 + d**2 + f**2 + g**2)**0.5 # do we need to sq and sqrt? All these numbers will be positive?
+        # Classic LoD - most robust appraoch
+        rob_lod = t * (a**2 + c**2 + d**2 + f**2 + g**2)**0.5
 
+        # Lod with Precision only
+        # prec_lod = t * (a**2 + d**2 + g**2)**0.5  # NOT USED FOR NOW POTENTIALLY USEFUL FOR OTHER APPLICATIONS?
         # rand_noise = np.random.normal(2, 0.5, (a.shape)) #  for testing
-
         diff_arr = e - b  # dem of difference
-        dod = np.zeros(diff_arr.shape)
 
-        warnings.filterwarnings('ignore')
-        mask1 = (abs(diff_arr) > lod) & (diff_arr < 0)
-        dod[mask1] = diff_arr[mask1] + lod[mask1]
+        def get_dod(lod):
+            dod = np.zeros(diff_arr.shape)
 
-        mask2 = (abs(diff_arr) > lod) & (diff_arr > 0)
-        dod[mask2] = diff_arr[mask2] - lod[mask2]
+            warnings.filterwarnings('ignore')
+            mask1 = (abs(diff_arr) > lod) & (diff_arr < 0)
+            dod[mask1] = diff_arr[mask1] + lod[mask1]
 
-        mask3 = (np.isnan(b)) | (np.isnan(e)) | (np.isnan(a)) | (np.isnan(d))
-        dod[mask3] = -999
+            mask2 = (abs(diff_arr) > lod) & (diff_arr > 0)
+            dod[mask2] = diff_arr[mask2] - lod[mask2]
 
-        # dod = np.nan_to_num(dod, nan=-999)
+            mask3 = (np.isnan(b)) | (np.isnan(e)) | (np.isnan(a)) | (np.isnan(d))
+            dod[mask3] = -999
+
+            return dod
+
+        def get_weight_dod(lod):
+
+            """=IF(OC < 95%LoD, OC * (OC / 95%LoD) * 0.5, OC - 95%LoD + 95%LoD * 0.5)"""
+            dod = np.zeros(diff_arr.shape)
+
+            warnings.filterwarnings('ignore')
+
+            # weight elevation loss
+            mask1 = (abs(diff_arr) < (lod * 1.96)) & (diff_arr < 0)
+            dod[mask1] = ((diff_arr[mask1] * (diff_arr[mask1] / (lod[mask1]*1.96))) * 0.5) * -1
+
+            mask1b = (abs(diff_arr) > (lod * 1.96)) & (diff_arr < 0)
+            dod[mask1b] = diff_arr[mask1b] + (lod[mask1b] * 1.96) - ((lod[mask1b] * 1.96) * 0.5)
+
+            # weight elevation gain
+
+            mask2 = (abs(diff_arr) < (lod * 1.96)) & (diff_arr > 0)
+            dod[mask2] = ((diff_arr[mask2] * (diff_arr[mask2] / (lod[mask2] * 1.96))) * 0.5)
+
+            mask2b = (abs(diff_arr) > (lod * 1.96)) & (diff_arr > 0)
+            dod[mask2b] = diff_arr[mask2b] - (lod[mask2b] * 1.96) + ((lod[mask2b] * 1.96) * 0.5)
+
+            mask3 = (np.isnan(b)) | (np.isnan(e)) | (np.isnan(a)) | (np.isnan(d))
+            dod[mask3] = -999
+
+            return dod
+
+        # prec_dod = get_dod(lod=prec_lod) # NOT USED FOR NOW.
+
+        if self.lod_method == "threshold":
+            rob_dod = get_dod(lod=rob_lod)
+        elif self.lod_method == "weighted":
+            rob_dod = get_weight_dod(lod=rob_lod)
+        else:
+            sys.exit("Error: The requested LoD method is not supported use either 'threshold' or 'weighted'.")
 
         with rasterio.open(self.ras_out_path, "w", **self.out_meta_data) as dest:
-            dest.write(dod.astype('float32'), 1)
-            dest.write(lod.astype('float32'), 2)
+            dest.write(rob_dod.astype('float32'), 1)
+            dest.write(rob_lod.astype('float32'), 2)
+            dest.write(diff_arr.astype('float32'), 3)
+            # dest.write(diff_arr.astype('float32'), 3)
 
         if self.mask is not None:
             mask_it(raster=self.ras_out_path, shp_path=self.mask, epsg=self.epsg.data)

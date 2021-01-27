@@ -1,5 +1,4 @@
-# Issues: Trying to return something so that multiplots can be made with the value from these functions but I'm struggling...
-
+import warnings
 import numpy as np
 import rasterio
 from matplotlib import pyplot as plt
@@ -14,7 +13,7 @@ def set_style():
 
 
 def plot_raster(raster, band, cmap, save_path, dpi, v_range, title, obs, mpl_fig, mpl_ax,
-                legend, gdf, gdf_column, gdf_cmap, gdf_legend, gdf_legend_kwds, gdf_alpha):
+                legend, gdf, gdf_column, gdf_cmap, gdf_legend, gdf_legend_kwds, gdf_alpha, linestyle):
     set_style()
 
     with rasterio.open(raster) as ras:
@@ -41,15 +40,17 @@ def plot_raster(raster, band, cmap, save_path, dpi, v_range, title, obs, mpl_fig
 
         if gdf is not None:
             if gdf_column is None:
-                gdf.plot(ax=ax)
+                gdf.plot(ax=ax, linestyle=linestyle)
             else:
 
                 if gdf_cmap is None:
                     gdf.plot(column=gdf_column, ax=ax, facecolor='none', edgecolor="face",
-                             legend=gdf_legend, legend_kwds=gdf_legend_kwds, alpha=gdf_alpha)
+                             legend=gdf_legend, legend_kwds=gdf_legend_kwds, alpha=gdf_alpha, linewidth=1.5,
+                             linestyle=linestyle)
                 else:
                     gdf.plot(column=gdf_column, ax=ax, cmap=gdf_cmap, facecolor='none', edgecolor="face",
-                              legend=gdf_legend, legend_kwds=gdf_legend_kwds, alpha=gdf_alpha)
+                              legend=gdf_legend, legend_kwds=gdf_legend_kwds, alpha=gdf_alpha, linewidth=1.5,
+                             linestyle=linestyle)
 
         if ras.crs.linear_units == 'metre':
             units = 'm'
@@ -130,10 +131,12 @@ def plot_dsm(dsm_path, **kwargs ):
     gdf_legend = kwargs.get('gdf_legend', True)
     gdf_legend_kwds = kwargs.get('gdf_legend_kwds', None)
     gdf_alpha = kwargs.get('gdf_alpha', 1)
+    linestyle = kwargs.get('linestyle', ['-'])
 
     plot_raster(raster=dsm_path, band=1, cmap=cmap, save_path=save_path, dpi=dpi, v_range=v_range, title=title,
                 obs=colmap_label, mpl_fig=mpl_fig, mpl_ax=mpl_ax, legend=legend, gdf=gdf, gdf_column=gdf_column,
-                gdf_cmap=gdf_cmap, gdf_legend=gdf_legend, gdf_legend_kwds=gdf_legend_kwds, gdf_alpha=gdf_alpha)
+                gdf_cmap=gdf_cmap, gdf_legend=gdf_legend, gdf_legend_kwds=gdf_legend_kwds, gdf_alpha=gdf_alpha,
+                linestyle=linestyle)
 
 
 def plot_chm(chm_path, **kwargs ):
@@ -152,10 +155,12 @@ def plot_chm(chm_path, **kwargs ):
     gdf_legend = kwargs.get('gdf_legend', True)
     gdf_legend_kwds = kwargs.get('gdf_legend_kwds', None)
     gdf_alpha = kwargs.get('gdf_alpha', 1)
+    linestyle = kwargs.get('linestyle', ['-'])
 
     plot_raster(raster=chm_path, band=1, cmap=cmap, save_path=save_path, dpi=dpi, v_range=v_range, title=title,
                 obs=colmap_label, mpl_fig=mpl_fig, mpl_ax=mpl_ax, legend=legend, gdf=gdf, gdf_column=gdf_column,
-                gdf_cmap=gdf_cmap, gdf_legend=gdf_legend, gdf_legend_kwds=gdf_legend_kwds, gdf_alpha=gdf_alpha)
+                gdf_cmap=gdf_cmap, gdf_legend=gdf_legend, gdf_legend_kwds=gdf_legend_kwds, gdf_alpha=gdf_alpha,
+                linestyle=linestyle)
 
 
 def plot_roughness(dsm_path, **kwargs ):
@@ -174,10 +179,12 @@ def plot_roughness(dsm_path, **kwargs ):
     gdf_legend = kwargs.get('gdf_legend', True)
     gdf_legend_kwds = kwargs.get('gdf_legend_kwds', None)
     gdf_alpha = kwargs.get('gdf_alpha', 1)
+    linestyle = kwargs.get('linestyle', ['-'])
 
     plot_raster(raster=dsm_path, band=2, cmap=cmap, save_path=save_path, dpi=dpi, v_range=v_range, title=title,
                 obs=colmap_label, mpl_fig=mpl_fig, mpl_ax=mpl_ax, legend=legend, gdf=gdf, gdf_column=gdf_column,
-                gdf_cmap=gdf_cmap, gdf_legend=gdf_legend, gdf_legend_kwds=gdf_legend_kwds, gdf_alpha=gdf_alpha)
+                gdf_cmap=gdf_cmap, gdf_legend=gdf_legend, gdf_legend_kwds=gdf_legend_kwds, gdf_alpha=gdf_alpha,
+                linestyle=linestyle)
 
 
 def plot_dtm(chm_path, **kwargs ):
@@ -196,10 +203,12 @@ def plot_dtm(chm_path, **kwargs ):
     gdf_legend = kwargs.get('gdf_legend', True)
     gdf_legend_kwds = kwargs.get('gdf_legend_kwds', None)
     gdf_alpha = kwargs.get('gdf_alpha', 1)
+    linestyle = kwargs.get('linestyle', ['-'])
 
     plot_raster(raster=chm_path, band=3, cmap=cmap, save_path=save_path, dpi=dpi, v_range=v_range, title=title,
                 obs=colmap_label, mpl_fig=mpl_fig, mpl_ax=mpl_ax, legend=legend, gdf=gdf, gdf_column=gdf_column,
-                gdf_cmap=gdf_cmap, gdf_legend=gdf_legend, gdf_legend_kwds=gdf_legend_kwds, gdf_alpha=gdf_alpha)
+                gdf_cmap=gdf_cmap, gdf_legend=gdf_legend, gdf_legend_kwds=gdf_legend_kwds, gdf_alpha=gdf_alpha,
+                linestyle=linestyle)
 
 
 def plot_precision(prec_map_path, **kwargs ):
@@ -218,7 +227,8 @@ def plot_precision(prec_map_path, **kwargs ):
     gdf_cmap = kwargs.get('gdf_cmap', None)
     gdf_legend = kwargs.get('gdf_legend', True)
     gdf_legend_kwds = kwargs.get('gdf_legend_kwds', None)
-    gdf_alpha = kwargs.get('gdf_alpha', 1)
+    gdf_alpha = kwargs.get('gdf_alpha', 1),
+    linestyle = kwargs.get('linestyle', ['-'])
 
 
     if fill_gaps is not True or False:
@@ -230,13 +240,14 @@ def plot_precision(prec_map_path, **kwargs ):
 
     plot_raster(raster=prec_map_path, band=rband, cmap=cmap, save_path=save_path, dpi=dpi, v_range=v_range, title=title,
                 obs=colmap_label, mpl_fig=mpl_fig, mpl_ax=mpl_ax, legend=legend, gdf=gdf, gdf_column=gdf_column,
-                gdf_cmap=gdf_cmap, gdf_legend=gdf_legend, gdf_legend_kwds=gdf_legend_kwds, gdf_alpha=gdf_alpha)
+                gdf_cmap=gdf_cmap, gdf_legend=gdf_legend, gdf_legend_kwds=gdf_legend_kwds, gdf_alpha=gdf_alpha,
+                linestyle=linestyle)
 
 
 def plot_dem_of_diff(dem_o_diff_path, **kwargs ):
     save_path = kwargs.get('save_path', None)
     dpi = kwargs.get('dpi', 300)
-    cmap = kwargs.get('cmap', 'RdBu')
+    cmap = kwargs.get('cmap', 'coolwarm_r')
     title = kwargs.get('title', 'Elevation Change Map')
     v_range = kwargs.get('v_range', None)
     colmap_label = kwargs.get('colmap_label', 'Elevation Change')
@@ -249,10 +260,23 @@ def plot_dem_of_diff(dem_o_diff_path, **kwargs ):
     gdf_legend = kwargs.get('gdf_legend', True)
     gdf_legend_kwds = kwargs.get('gdf_legend_kwds', None)
     gdf_alpha = kwargs.get('gdf_alpha', 1)
+    method = kwargs.get('method', 'robust')
+    linestyle = kwargs.get('linestyle', ['-'])
 
-    plot_raster(raster=dem_o_diff_path, band=1, cmap=cmap, save_path=save_path, dpi=dpi, v_range=v_range, title=title,
+    if method == 'robust':
+        b = 1
+    # elif method == 'prec_only':
+    #     b = 3
+    elif method == 'basic':
+        b = 3
+    else:
+        warnings.warn("Method Not supported. Defaulting to robust approach")
+        b = 1
+
+    plot_raster(raster=dem_o_diff_path, band=b, cmap=cmap, save_path=save_path, dpi=dpi, v_range=v_range, title=title,
                 obs=colmap_label, mpl_fig=mpl_fig, mpl_ax=mpl_ax, legend=legend, gdf=gdf, gdf_column=gdf_column,
-                gdf_cmap=gdf_cmap, gdf_legend=gdf_legend, gdf_legend_kwds=gdf_legend_kwds, gdf_alpha=gdf_alpha)
+                gdf_cmap=gdf_cmap, gdf_legend=gdf_legend, gdf_legend_kwds=gdf_legend_kwds, gdf_alpha=gdf_alpha,
+                linestyle=linestyle)
 
 
 def plot_lod(dem_o_diff_path, **kwargs ):
@@ -271,11 +295,13 @@ def plot_lod(dem_o_diff_path, **kwargs ):
     gdf_legend = kwargs.get('gdf_legend', True)
     gdf_legend_kwds = kwargs.get('gdf_legend_kwds', None)
     gdf_alpha = kwargs.get('gdf_alpha', 1)
+    linestyle = kwargs.get('linestyle', ['-'])
 
 
     plot_raster(raster=dem_o_diff_path, band=2, cmap=cmap, save_path=save_path, dpi=dpi, v_range=v_range, title=title,
                 obs=colmap_label, mpl_fig=mpl_fig, mpl_ax=mpl_ax, legend=legend, gdf=gdf, gdf_column=gdf_column,
-                gdf_cmap=gdf_cmap, gdf_legend=gdf_legend, gdf_legend_kwds=gdf_legend_kwds, gdf_alpha=gdf_alpha)
+                gdf_cmap=gdf_cmap, gdf_legend=gdf_legend, gdf_legend_kwds=gdf_legend_kwds, gdf_alpha=gdf_alpha,
+                linestyle=linestyle)
 
 
 def hist_dsm(dsm_path, **kwargs ):
