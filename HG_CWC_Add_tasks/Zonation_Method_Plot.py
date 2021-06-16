@@ -27,21 +27,26 @@ def create_plot(BeaverZones_out, site_grid, feed_signs, figure_save):
     feed_signs['Name'] = 'Feeding signs'
     feed_signs= feed_signs[['geometry', 'Name']]
 
-    merge_gdf = pd.concat([BeaverZones_out, site_grid, feed_signs, ])
+    feed_buff = gpd.GeoDataFrame(geometry=feed_signs.buffer(10))
+    feed_buff['Name'] = 'Feeding buffer'
+    # feed_buff = feed_buff.dissolve(by='Name')
+    # feed_buff = gpd.GeoDataFrame(geometry=feed_buff.geometry)
+
+    merge_gdf = pd.concat([site_grid, BeaverZones_out, feed_signs, feed_buff])
 
     # set matplotlib style...
     set_style()
 
     # build plot
-    beaver_z_cmap = colors.ListedColormap(['none', '#C70039', '#60C84E', '#AC4EC8'])
+    beaver_z_cmap = colors.ListedColormap(['white','white', '#e7298a', '#d95f02', '#1b9e77'])
 
     fig, ax = plt.subplots(1, 1, sharey=True, sharex=True, figsize=(4.5, 9))
     ax.grid(False)
-    ax.set_facecolor('none')
+    # ax.set_facecolor('none')
     plt.tight_layout(rect=[0.02, 0.02, 0.98, 0.98])
 
     merge_gdf.plot(ax=ax, cmap=beaver_z_cmap, column='Name', legend=True,
-                   edgecolor='black')
+                   edgecolor='black', markersize=20, alpha=0.6)
 
     plt.show()
 
