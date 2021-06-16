@@ -102,34 +102,43 @@ def run_functions():
     pcp_list_wint = [pcp1612, pcp1801]
     pcp_list_summ = [pcp1709, pcp1809]
 
-    def dsm_chm_panel(dsm_list, chm_list, ts_names, save_path):
+    def dem_panel(dem_list, ts_names, save_path, map_type):
 
-        fig, axs = plt.subplots(2, 2, sharey=True, sharex=True, figsize=(6, 12))
+        if map_type == 'dsm':
+            cp = 'bone'
+            scale_range = (75, 100)
+            method = pcplot.plot_dsms
+        else:
+            cp = 'cubehelix_r'
+            scale_range = (0, 20)
+            method = pcplot.plot_chm
+
+        fig, axs = plt.subplots(1, 2, sharey=True, sharex=True,  figsize=(7, 7))
         plt.tight_layout(rect=[0.02, 0.02, 0.96, 0.98])
 
-        for idx, path, name in zip(range(0,2), dsm_list, ts_names):
+        for idx, path, name in zip(range(0,2), dem_list, ts_names):
             if idx == 1:
-                pcplot.plot_dsm(dsm_path=path, title=name, v_range=(75, 100), mpl_fig=fig, mpl_ax=axs[0, idx],
-                                cmap='bone')
+                method(path, title=name, v_range=scale_range, mpl_fig=fig, mpl_ax=axs[1],
+                                cmap=cp)
             else:
-                pcplot.plot_dsm(dsm_path=path, title=name, legend=None, v_range=(75, 100),
-                                mpl_fig=fig, mpl_ax=axs[0, idx], cmap='bone')
-
-        for idx, path in enumerate(chm_list):
-            if idx == 1:
-                pcplot.plot_chm(chm_path=path, title=None, v_range=(0, 20),
-                                 mpl_fig=fig, mpl_ax=axs[1, idx], cmap='cubehelix_r')
-            else:
-                pcplot.plot_chm(chm_path=path, title=None, legend=None,v_range=(0, 20),
-                                mpl_fig=fig, mpl_ax=axs[1, idx], cmap='cubehelix_r')
+                method(path, title=name, legend=None, v_range=scale_range,
+                                mpl_fig=fig, mpl_ax=axs[0], cmap=cp)
 
         plt.show()
         fig.savefig(fname=save_path, dpi=300, format='jpg')
 
-    # winter dsm/chm
-    dsm_chm_panel(dsm_list_wint, chm_list_wint, ts_names_wint, 'C:/HG_Projects/CWC_Drone_work/maps/DSM_CHM_winter.jpg')
+        # winter dsm/chm
+
+    dem_panel(dsm_list_wint, ts_names_wint, 'C:/HG_Projects/CWC_Drone_work/maps/DSM_winter.jpg', map_type='dsm')
     # summer dsm/chm
-    dsm_chm_panel(dsm_list_summ, chm_list_summ, ts_names_summ, 'C:/HG_Projects/CWC_Drone_work/maps/DSM_CHM_summer.jpg')
+    dem_panel(dsm_list_summ, ts_names_summ, 'C:/HG_Projects/CWC_Drone_work/maps/DSM_summer.jpg', map_type='dsm')
+
+    dem_panel(chm_list_wint, ts_names_wint, 'C:/HG_Projects/CWC_Drone_work/maps/CHM_winter.jpg', map_type='chm')
+    # summer dsm/chm
+    dem_panel(chm_list_summ, ts_names_summ, 'C:/HG_Projects/CWC_Drone_work/maps/CHM_summer.jpg', map_type='chm')
+
+
+
 
     def prec_rough_panel(pcp_list, dsm_list, ts_names, save_path):
 
