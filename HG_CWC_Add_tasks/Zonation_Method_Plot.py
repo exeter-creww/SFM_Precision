@@ -29,8 +29,7 @@ def create_plot(BeaverZones_out, site_grid, feed_signs, figure_save):
 
     feed_buff = gpd.GeoDataFrame(geometry=feed_signs.buffer(10))
     feed_buff['Name'] = 'Feeding buffer'
-    # feed_buff = feed_buff.dissolve(by='Name')
-    # feed_buff = gpd.GeoDataFrame(geometry=feed_buff.geometry)
+    feed_buff = feed_buff.dissolve(by='Name', as_index=False)
 
     merge_gdf = pd.concat([site_grid, BeaverZones_out, feed_signs, feed_buff])
 
@@ -40,17 +39,17 @@ def create_plot(BeaverZones_out, site_grid, feed_signs, figure_save):
     # build plot
     beaver_z_cmap = colors.ListedColormap(['white','white', '#e7298a', '#d95f02', '#1b9e77'])
 
-    fig, ax = plt.subplots(1, 1, sharey=True, sharex=True, figsize=(4.5, 9))
+    ax = merge_gdf.plot( cmap=beaver_z_cmap, column='Name', legend=True,
+                        legend_kwds={'facecolor': 'white', 'ncol': 2},
+                        edgecolor='black', markersize=20, alpha=0.6,figsize=(5, 9))
+    ax.set_facecolor('white')
     ax.grid(False)
-    # ax.set_facecolor('none')
+    leg = ax.get_legend()
+    leg.set_bbox_to_anchor((0.6, -0.03, 0.6, 0.))
     plt.tight_layout(rect=[0.02, 0.02, 0.98, 0.98])
 
-    merge_gdf.plot(ax=ax, cmap=beaver_z_cmap, column='Name', legend=True,
-                   edgecolor='black', markersize=20, alpha=0.6)
-
+    plt.savefig(fname=figure_save, dpi=300, format='jpg')
     plt.show()
-
-    fig.savefig(fname=figure_save, dpi=300, format='jpg')
 
 
 if __name__ == '__main__':
