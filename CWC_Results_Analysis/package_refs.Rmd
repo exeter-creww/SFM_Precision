@@ -1,0 +1,16 @@
+---
+title: "package_refs"
+author: "Hugh Graham"
+date: "08/02/2021"
+output: html_document
+---
+
+## Citations:
+```{r citations}
+citation('tidyverse')
+citation('broom')
+citation('quantreg')
+citation('ggfortify')
+citation('gt')
+citation('here')
+```
