@@ -57,5 +57,5 @@ if __name__ == '__main__':
                 site_grid=os.path.abspath('C:/HG_Projects/CWC_Drone_work/ZoneMethodPlot_data/'
                                           'grid_20m.gpkg'),
                 feed_signs=os.path.abspath('C:/HG_Projects/CWC_Drone_work/shp_files/Feed_signs_All.gpkg'),
-                figure_save=os.path.abspath('C:/HG_Projects/CWC_Drone_work/maps/Zone_method.jpg')
+                figure_save=os.path.abspath('C:/HG_Projects/CWC_Drone_work/maps/Zone_method.png')
                 )

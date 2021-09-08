@@ -55,7 +55,7 @@ def run_functions():
                                 gdf_cmap=beaver_z_cmap, gdf_legend_kwds=({'loc': 'upper left'}), cmap='seismic_r',
                                 method='basic', linestyle=['-', ':'])
 
-        pcplot.plot_dem_of_diff(dod2, v_range=(-4, 4), title="LoD95 weighting",
+        pcplot.plot_dem_of_diff(dod2, v_range=(-4, 4), title="Weighted LoD95",
                                 mpl_fig=fig, mpl_ax=axs[1], legend=False, gpd_gdf=gdf, gdf_column='Beaver_Zone',
                                 gdf_cmap=beaver_z_cmap, gdf_legend=False, cmap='seismic_r', linestyle=['-', ':'])
 
@@ -65,13 +65,13 @@ def run_functions():
 
         plt.show()
 
-        fig.savefig(fname=save_path, dpi=300, format='jpg')
+        fig.savefig(fname=save_path, dpi=300, format='png')
 
     # winter DoD maps
-    dod_multiplot(dod_winter_thresh, dod_winter_weight, 'C:/HG_Projects/CWC_Drone_work/maps/DEMofDiff_winter.jpg')
+    dod_multiplot(dod_winter_thresh, dod_winter_weight, 'C:/HG_Projects/CWC_Drone_work/maps/DEMofDiff_winter.png')
 
     # summer DoD maps
-    dod_multiplot(dod_summer_thresh, dod_summer_weight, 'C:/HG_Projects/CWC_Drone_work/maps/DEMofDiff_summer.jpg')
+    dod_multiplot(dod_summer_thresh, dod_summer_weight, 'C:/HG_Projects/CWC_Drone_work/maps/DEMofDiff_summer.png')
 
     # LOD plots
 
@@ -84,11 +84,11 @@ def run_functions():
 
         plt.show()
 
-        fig.savefig(fname=save_path, dpi=300, format='jpg')
+        fig.savefig(fname=save_path, dpi=300, format='png')
 
     # winter LoD
-    gen_lod_map(dod_winter_thresh, 'C:/HG_Projects/CWC_Drone_work/maps/WinterLoD.jpg')
-    gen_lod_map(dod_summer_thresh, 'C:/HG_Projects/CWC_Drone_work/maps/SummerLoD.jpg')
+    gen_lod_map(dod_winter_thresh, 'C:/HG_Projects/CWC_Drone_work/maps/WinterLoD.png')
+    gen_lod_map(dod_summer_thresh, 'C:/HG_Projects/CWC_Drone_work/maps/SummerLoD.png')
 
 
     # define lists for multiplots.
@@ -107,7 +107,7 @@ def run_functions():
         if map_type == 'dsm':
             cp = 'bone'
             scale_range = (75, 100)
-            method = pcplot.plot_dsms
+            method = pcplot.plot_dsm
         else:
             cp = 'cubehelix_r'
             scale_range = (0, 20)
@@ -125,58 +125,61 @@ def run_functions():
                                 mpl_fig=fig, mpl_ax=axs[0], cmap=cp)
 
         plt.show()
-        fig.savefig(fname=save_path, dpi=300, format='jpg')
+        fig.savefig(fname=save_path, dpi=300, format='png')
 
         # winter dsm/chm
 
-    dem_panel(dsm_list_wint, ts_names_wint, 'C:/HG_Projects/CWC_Drone_work/maps/DSM_winter.jpg', map_type='dsm')
+    dem_panel(dsm_list_wint, ts_names_wint, 'C:/HG_Projects/CWC_Drone_work/maps/DSM_winter.png', map_type='dsm')
     # summer dsm/chm
-    dem_panel(dsm_list_summ, ts_names_summ, 'C:/HG_Projects/CWC_Drone_work/maps/DSM_summer.jpg', map_type='dsm')
+    dem_panel(dsm_list_summ, ts_names_summ, 'C:/HG_Projects/CWC_Drone_work/maps/DSM_summer.png', map_type='dsm')
 
-    dem_panel(chm_list_wint, ts_names_wint, 'C:/HG_Projects/CWC_Drone_work/maps/CHM_winter.jpg', map_type='chm')
+    dem_panel(chm_list_wint, ts_names_wint, 'C:/HG_Projects/CWC_Drone_work/maps/CHM_winter.png', map_type='chm')
     # summer dsm/chm
-    dem_panel(chm_list_summ, ts_names_summ, 'C:/HG_Projects/CWC_Drone_work/maps/CHM_summer.jpg', map_type='chm')
+    dem_panel(chm_list_summ, ts_names_summ, 'C:/HG_Projects/CWC_Drone_work/maps/CHM_summer.png', map_type='chm')
 
 
 
 
     def prec_rough_panel(pcp_list, dsm_list, ts_names, save_path):
 
-        fig, axs = plt.subplots(2, 2, sharey=True, sharex=True, figsize=(6, 12))
-        plt.tight_layout(rect=[0.02, 0.02, 0.96, 0.98])
+        fig, axs = plt.subplots(2, 2, sharey=True, sharex=True, figsize=(5, 12))
+        plt.tight_layout(rect=[0.09, 0.02, 1, 0.98])
 
         for idx, path, name in zip(range(0, 4), pcp_list, ts_names):
 
             if idx == 1:
                 pcplot.plot_precision(prec_map_path=path, title=name, v_range=(0, 0.1),
-                                 mpl_fig=fig, mpl_ax=axs[0, idx], cmap='viridis')
+                                 mpl_fig=fig, mpl_ax=axs[1, 0], cmap='viridis',
+                                      leg_orient='horizontal',leg_pos='bottom', title_pos='left')
             else:
                 pcplot.plot_precision(prec_map_path=path, title=name, legend=None, v_range=(0, 0.1),
-                                mpl_fig=fig, mpl_ax=axs[0, idx], cmap='viridis')
+                                mpl_fig=fig, mpl_ax=axs[0, 0], cmap='viridis', title_pos='left')
 
         for idx, path in enumerate(dsm_list):
             if idx == 1:
                 pcplot.plot_roughness(dsm_path=path, title=None, v_range=(0, 10),
-                                 mpl_fig=fig, mpl_ax=axs[1, idx], cmap='RdPu')
+                                 mpl_fig=fig, mpl_ax=axs[1, 1], cmap='RdPu',
+                                      leg_orient='horizontal', leg_pos='bottom')
             else:
                 pcplot.plot_roughness(dsm_path=path, title=None, legend=None, v_range=(0, 10),
-                                mpl_fig=fig, mpl_ax=axs[1, idx], cmap='RdPu')
+                                mpl_fig=fig, mpl_ax=axs[0, 1], cmap='RdPu')
+        plt.setp(plt.gcf().get_axes(), xticks=[], yticks=[])
 
         plt.show()
 
-        fig.savefig(fname=save_path, dpi=300, format='jpg')
+        fig.savefig(fname=save_path, dpi=300, format='png')
 
     # winter prec/rough panel
     prec_rough_panel(pcp_list_wint, dsm_list_wint, ts_names_wint,
-                     'C:/HG_Projects/CWC_Drone_work/maps/PREC_ROUGH_winter.jpg')
+                     'C:/HG_Projects/CWC_Drone_work/maps/PREC_ROUGH_winter.png')
     # summer prec/rough panel
     prec_rough_panel(pcp_list_summ, dsm_list_summ, ts_names_summ,
-                     'C:/HG_Projects/CWC_Drone_work/maps/PREC_ROUGH_summer.jpg')
+                     'C:/HG_Projects/CWC_Drone_work/maps/PREC_ROUGH_summer.png')
 
     # Plot Terrain Model
     fig, ax = plt.subplots(1, 1, sharey=True, sharex=True, figsize=(3.5, 7))
     plt.tight_layout(rect=[0.05, 0, 0.97, 1])
-    pcplot.plot_dtm(chm_path=chm1809, title=None, save_path='C:/HG_Projects/CWC_Drone_work/maps/DTM.jpg',
+    pcplot.plot_dtm(chm_path=chm1809, title=None, save_path='C:/HG_Projects/CWC_Drone_work/maps/DTM.png',
                     mpl_fig=fig, mpl_ax=ax)
     plt.show()
 

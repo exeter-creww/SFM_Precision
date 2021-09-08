@@ -3,6 +3,7 @@ import numpy as np
 import rasterio
 from matplotlib import pyplot as plt
 from matplotlib import rc
+from mpl_toolkits.axes_grid1.axes_divider import make_axes_locatable
 
 def set_style():
     plt.style.use('bmh')
@@ -13,7 +14,10 @@ def set_style():
 
 
 def plot_raster(raster, band, cmap, save_path, dpi, v_range, title, obs, mpl_fig, mpl_ax,
-                legend, gdf, gdf_column, gdf_cmap, gdf_legend, gdf_legend_kwds, gdf_alpha, linestyle):
+                legend, gdf, gdf_column, gdf_cmap, gdf_legend, gdf_legend_kwds, gdf_alpha,
+                linestyle, leg_orient, leg_pos, title_pos):
+    # ylabel = kwargs.get('ylabel', None)
+
     set_style()
 
     with rasterio.open(raster) as ras:
@@ -62,13 +66,25 @@ def plot_raster(raster, band, cmap, save_path, dpi, v_range, title, obs, mpl_fig
             units = ras.crs.linear_units
 
         if legend is True:
+            ax_divider = make_axes_locatable(ax)
+            cax = ax_divider.append_axes(leg_pos, size=0.1, pad="7%")
+
             if obs is None:
-                fig.colorbar(img, ax=ax)
+                fig.colorbar(img, cax=cax, orientation=leg_orient)
             else:
-                fig.colorbar(img, ax=ax, label='{0} ({1})'.format(obs, units))
+                fig.colorbar(img, cax=cax, label='{0} ({1})'.format(obs, units),
+                             orientation=leg_orient)
 
         if title is not None:
-            ax.set_title(title)
+            if title_pos == 'left':
+                plt.rc('axes', titlesize=12)
+                ax.set_ylabel(title, rotation=0)
+                ax.yaxis.set_label_coords(-0.3, 0.5)
+            else:
+                ax.set_title(title)
+
+        # if ylabel is not None:
+        #     ax.ylabel(ylabel)
 
         ax.set_facecolor('0.8')
 
@@ -132,14 +148,17 @@ def plot_dsm(dsm_path, **kwargs ):
     gdf_legend_kwds = kwargs.get('gdf_legend_kwds', None)
     gdf_alpha = kwargs.get('gdf_alpha', 1)
     linestyle = kwargs.get('linestyle', ['-'])
+    leg_orient = kwargs.get('leg_orient', 'vertical')
+    leg_pos = kwargs.get('leg_pos', 'right')
+    title_pos = kwargs.get('title_pos', 'top')
 
     plot_raster(raster=dsm_path, band=1, cmap=cmap, save_path=save_path, dpi=dpi, v_range=v_range, title=title,
                 obs=colmap_label, mpl_fig=mpl_fig, mpl_ax=mpl_ax, legend=legend, gdf=gdf, gdf_column=gdf_column,
                 gdf_cmap=gdf_cmap, gdf_legend=gdf_legend, gdf_legend_kwds=gdf_legend_kwds, gdf_alpha=gdf_alpha,
-                linestyle=linestyle)
+                linestyle=linestyle, leg_orient=leg_orient, leg_pos=leg_pos, title_pos=title_pos)
 
 
-def plot_chm(chm_path, **kwargs ):
+def plot_chm(chm_path, **kwargs):
     save_path = kwargs.get('save_path', None)
     dpi = kwargs.get('dpi', 300)
     cmap = kwargs.get('cmap', 'ocean_r')
@@ -156,11 +175,14 @@ def plot_chm(chm_path, **kwargs ):
     gdf_legend_kwds = kwargs.get('gdf_legend_kwds', None)
     gdf_alpha = kwargs.get('gdf_alpha', 1)
     linestyle = kwargs.get('linestyle', ['-'])
+    leg_orient = kwargs.get('leg_orient', 'vertical')
+    leg_pos = kwargs.get('leg_pos', 'right')
+    title_pos = kwargs.get('title_pos', 'top')
 
     plot_raster(raster=chm_path, band=1, cmap=cmap, save_path=save_path, dpi=dpi, v_range=v_range, title=title,
                 obs=colmap_label, mpl_fig=mpl_fig, mpl_ax=mpl_ax, legend=legend, gdf=gdf, gdf_column=gdf_column,
                 gdf_cmap=gdf_cmap, gdf_legend=gdf_legend, gdf_legend_kwds=gdf_legend_kwds, gdf_alpha=gdf_alpha,
-                linestyle=linestyle)
+                linestyle=linestyle, leg_orient=leg_orient, leg_pos=leg_pos, title_pos=title_pos)
 
 
 def plot_roughness(dsm_path, **kwargs ):
@@ -180,11 +202,14 @@ def plot_roughness(dsm_path, **kwargs ):
     gdf_legend_kwds = kwargs.get('gdf_legend_kwds', None)
     gdf_alpha = kwargs.get('gdf_alpha', 1)
     linestyle = kwargs.get('linestyle', ['-'])
+    leg_orient = kwargs.get('leg_orient', 'vertical')
+    leg_pos = kwargs.get('leg_pos', 'right')
+    title_pos = kwargs.get('title_pos', 'top')
 
     plot_raster(raster=dsm_path, band=2, cmap=cmap, save_path=save_path, dpi=dpi, v_range=v_range, title=title,
                 obs=colmap_label, mpl_fig=mpl_fig, mpl_ax=mpl_ax, legend=legend, gdf=gdf, gdf_column=gdf_column,
                 gdf_cmap=gdf_cmap, gdf_legend=gdf_legend, gdf_legend_kwds=gdf_legend_kwds, gdf_alpha=gdf_alpha,
-                linestyle=linestyle)
+                linestyle=linestyle, leg_orient=leg_orient, leg_pos=leg_pos, title_pos=title_pos)
 
 
 def plot_dtm(chm_path, **kwargs ):
@@ -204,11 +229,14 @@ def plot_dtm(chm_path, **kwargs ):
     gdf_legend_kwds = kwargs.get('gdf_legend_kwds', None)
     gdf_alpha = kwargs.get('gdf_alpha', 1)
     linestyle = kwargs.get('linestyle', ['-'])
+    leg_orient = kwargs.get('leg_orient', 'vertical')
+    leg_pos = kwargs.get('leg_pos', 'right')
+    title_pos = kwargs.get('title_pos', 'top')
 
     plot_raster(raster=chm_path, band=3, cmap=cmap, save_path=save_path, dpi=dpi, v_range=v_range, title=title,
                 obs=colmap_label, mpl_fig=mpl_fig, mpl_ax=mpl_ax, legend=legend, gdf=gdf, gdf_column=gdf_column,
                 gdf_cmap=gdf_cmap, gdf_legend=gdf_legend, gdf_legend_kwds=gdf_legend_kwds, gdf_alpha=gdf_alpha,
-                linestyle=linestyle)
+                linestyle=linestyle, leg_orient=leg_orient, leg_pos=leg_pos, title_pos=title_pos)
 
 
 def plot_precision(prec_map_path, **kwargs ):
@@ -229,6 +257,9 @@ def plot_precision(prec_map_path, **kwargs ):
     gdf_legend_kwds = kwargs.get('gdf_legend_kwds', None)
     gdf_alpha = kwargs.get('gdf_alpha', 1),
     linestyle = kwargs.get('linestyle', ['-'])
+    leg_orient = kwargs.get('leg_orient', 'vertical')
+    leg_pos = kwargs.get('leg_pos', 'right')
+    title_pos = kwargs.get('title_pos', 'top')
 
 
     if fill_gaps is not True or False:
@@ -241,7 +272,7 @@ def plot_precision(prec_map_path, **kwargs ):
     plot_raster(raster=prec_map_path, band=rband, cmap=cmap, save_path=save_path, dpi=dpi, v_range=v_range, title=title,
                 obs=colmap_label, mpl_fig=mpl_fig, mpl_ax=mpl_ax, legend=legend, gdf=gdf, gdf_column=gdf_column,
                 gdf_cmap=gdf_cmap, gdf_legend=gdf_legend, gdf_legend_kwds=gdf_legend_kwds, gdf_alpha=gdf_alpha,
-                linestyle=linestyle)
+                linestyle=linestyle, leg_orient=leg_orient, leg_pos=leg_pos, title_pos=title_pos)
 
 
 def plot_dem_of_diff(dem_o_diff_path, **kwargs ):
@@ -262,6 +293,9 @@ def plot_dem_of_diff(dem_o_diff_path, **kwargs ):
     gdf_alpha = kwargs.get('gdf_alpha', 1)
     method = kwargs.get('method', 'robust')
     linestyle = kwargs.get('linestyle', ['-'])
+    leg_orient = kwargs.get('leg_orient', 'vertical')
+    leg_pos = kwargs.get('leg_pos', 'right')
+    title_pos = kwargs.get('title_pos', 'top')
 
     if method == 'robust':
         b = 1
@@ -276,7 +310,7 @@ def plot_dem_of_diff(dem_o_diff_path, **kwargs ):
     plot_raster(raster=dem_o_diff_path, band=b, cmap=cmap, save_path=save_path, dpi=dpi, v_range=v_range, title=title,
                 obs=colmap_label, mpl_fig=mpl_fig, mpl_ax=mpl_ax, legend=legend, gdf=gdf, gdf_column=gdf_column,
                 gdf_cmap=gdf_cmap, gdf_legend=gdf_legend, gdf_legend_kwds=gdf_legend_kwds, gdf_alpha=gdf_alpha,
-                linestyle=linestyle)
+                linestyle=linestyle, leg_orient=leg_orient, leg_pos=leg_pos, title_pos=title_pos)
 
 
 def plot_lod(dem_o_diff_path, **kwargs ):
@@ -296,12 +330,15 @@ def plot_lod(dem_o_diff_path, **kwargs ):
     gdf_legend_kwds = kwargs.get('gdf_legend_kwds', None)
     gdf_alpha = kwargs.get('gdf_alpha', 1)
     linestyle = kwargs.get('linestyle', ['-'])
+    leg_orient = kwargs.get('leg_orient', 'vertical')
+    leg_pos = kwargs.get('leg_pos', 'right')
+    title_pos = kwargs.get('title_pos', 'top')
 
 
     plot_raster(raster=dem_o_diff_path, band=2, cmap=cmap, save_path=save_path, dpi=dpi, v_range=v_range, title=title,
                 obs=colmap_label, mpl_fig=mpl_fig, mpl_ax=mpl_ax, legend=legend, gdf=gdf, gdf_column=gdf_column,
                 gdf_cmap=gdf_cmap, gdf_legend=gdf_legend, gdf_legend_kwds=gdf_legend_kwds, gdf_alpha=gdf_alpha,
-                linestyle=linestyle)
+                linestyle=linestyle, leg_orient=leg_orient, leg_pos=leg_pos, title_pos=title_pos)
 
 
 def hist_dsm(dsm_path, **kwargs ):
