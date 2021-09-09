@@ -1,11 +1,12 @@
-***This Directory contains two packages (sfm_precision and sfm_gridz). More detailed readme is presented within 
-subfolders and the code for our in-review paper "Using aerial photogrammetry to detect significant canopy height change 
-resulting from beaver foraging"***
+***This Directory contains two packages (sfm_precision and sfm_gridz). A more detailed readme is provided 
+in the subfolders. The code for our in-review paper "Using aerial photogrammetry to detect significant canopy height change 
+resulting from beaver foraging" is given in GRAHAM_ET_AL_2021_PROCESSING/Analysis folders. ***
 
 **Scope of Project/Packages**  
 This project supports the calculation of precision maps to quantify uncertainty in structure-from-motion photogrammetric 
 reconstructions, and the propagation of these uncertainties to robustly inform change detection analyses 
-(after James et al., 2017).
+(after James et al., 2017). The method is a robust, raster based approach which allows for the propogation of both SfM 
+precision and rasterisation uncertainty (aka. roughness)
 
 
 **[sfm_precision](sfm_precision)**  
