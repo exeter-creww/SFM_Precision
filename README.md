@@ -1,5 +1,4 @@
-<a href="https://zenodo.org/badge/latestdoi/222968925"><img src="https://zenodo.org/badge/222968925.svg" alt="DOI"></a>
-
+[![DOI](https://zenodo.org/badge/222968925.svg)](https://zenodo.org/badge/latestdoi/222968925)
 ***This Directory contains two packages (sfm_precision and sfm_gridz). A more detailed readme is provided 
 in the subfolders. The code for our in-review paper "Using aerial photogrammetry to detect significant canopy height change 
 resulting from beaver foraging" is given in GRAHAM_ET_AL_2021_PROCESSING/Analysis folders. ***
@@ -34,3 +33,5 @@ DEM of difference maps produced using The [GRAHAM_ET_AL_2021_PROCESSING](GRAHAM_
 James, M., Robson, S., and Smith M (2017) ‘3-D Uncertainty-Based Topographic Change Detection with  
 Structure-from-Motion Photogrammetry: Precision Maps for Ground Control and Directly Georeferenced Surveys’.  
 Earth Surface Processes and Landforms 42(12):1769–88. https://doi.org/10.1002/esp.4125).
+
+![DSM_example](GRAHAM_ET_AL_2021_PROCESSING/int_files/DEMofDiff_summerEDIT.png)  
