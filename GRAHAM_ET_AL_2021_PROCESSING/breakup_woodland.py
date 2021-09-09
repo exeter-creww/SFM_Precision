@@ -9,10 +9,9 @@ import os
 from matplotlib import pyplot as plt
 import pandas as pd
 
-zones_out = os.path.abspath('C:/HG_Projects/CWC_Drone_work/CHM/Woodland_Zones20m.gpkg')
-grid_out = os.path.abspath('C:/HG_Projects/CWC_Drone_work/CWC_Results_Analysis/ZoneMethodPlot_data/'
-                           'grid_20m.gpkg')
-trees_vec = os.path.abspath('C:/HG_Projects/CWC_Drone_work/CHM/Rip_Vec_Sep17.gpkg')
+zones_out = os.path.relpath('int_files/Woodland_Zones20m.gpkg')
+grid_out = os.path.relpath('int_files/grid_20m.gpkg')
+trees_vec = os.path.relpath('Rip_Area_vec/Rip_Vec_Sep17.gpkg')
 
 def main():
     trees_gdf = gpd.read_file(trees_vec)

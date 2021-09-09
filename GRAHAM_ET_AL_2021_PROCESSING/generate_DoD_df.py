@@ -11,9 +11,9 @@ import pandas as pd
 import warnings
 warnings.filterwarnings("ignore")
 
-home = os.path.abspath("C:/HG_Projects/CWC_Drone_work/Prec_Anal_Exports/Rasters_v5")
-shps_root = os.path.abspath("C:/HG_Projects/CWC_Drone_work/shp_files")
-shrub_zones = os.path.abspath('C:/HG_Projects/CWC_Drone_work/CHM/Woodland_Zones20m.gpkg')
+home = os.path.abspath("C:/HG_Projects/CWC_Drone_work/Prec_Anal_Exports/Rasters_v5") # where rasters have been stored.
+shps_root = os.path.relpath("feed_data")
+shrub_zones = os.path.relpath('int_files/Woodland_Zones20m.gpkg')
 
 # Define DoD paths
 
@@ -32,8 +32,10 @@ chm6_Sep18 = os.path.join(home, "chm6.tif")
 # define feeding signs
 feed_signs = os.path.join(shps_root, 'FS_1618.shp')
 
-CWC_CanChange_df = os.path.abspath("C:/HG_Projects/CWC_Drone_work/CWC_Results_Analysis/data/CWC_can_change_df.csv")
-CWC_CanHeight_df = os.path.abspath("C:/HG_Projects/CWC_Drone_work/CWC_Results_Analysis/data/CWC_can_height_df.csv")
+CWC_CanChange_df = os.path.join(os.path.dirname(os.path.dirname(__file__)),
+                                "CWC_Results_Analysis/data/CWC_can_change_df.csv")
+CWC_CanHeight_df = os.path.join(os.path.dirname(os.path.dirname(__file__)),
+                                "CWC_Results_Analysis/data/CWC_can_height_df.csv")
 # BeaverZones_out = os.path.abspath('C:/HG_Projects/CWC_Drone_work/CHM/Beaver_Zones20m.gpkg')
 
 def main():

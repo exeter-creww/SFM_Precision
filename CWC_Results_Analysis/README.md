@@ -1,6 +1,6 @@
 # Beaver Impacts on Riparian Vegetation Structure
 
-This workflow details the analysis of canopy height change data, derived from drone-based SFM surveys. Comparison of three different methods for change detection...
+This workflow details the analysis of canopy height change data, derived from drone-based SFM surveys. Comparison of three different methods for change detection.
 
 ### Area of change detected for each method
 

@@ -7,14 +7,18 @@ reconstructions, and the propagation of these uncertainties to robustly inform c
 (after James et al., 2017).
 
 
-**sfm_precision**  
+**[sfm_precision](sfm_precision)**  
 Package to be used with Agisoft Metashape (> 1.6). Methods used align with James, et al. (2017)
 
-**sfm_gridz**  
+**[sfm_gridz](sfm_gridz)**  
 Create Digital Surface Models (DSM), SFM Precision Raster, Height Change Maps (with consideration of Precision and 
 Roughness to determine limit of detection(LOD))
 
-
+**[CWC_Results_Analysis](CWC_Results_Analysis)**
+The Data Analysis for our in-review paper "Using aerial photogrammetry to detect significant canopy height change 
+resulting from beaver foraging". The workflow consists of an R project and contains the workflow we used to analyse the 
+DEM of difference maps produced using The [sfm_precision](sfm_precision) and [sfm_gridz](sfm_gridz) python modules
+**References**
 James, M., Robson, S., and Smith M (2017) ‘3-D Uncertainty-Based Topographic Change Detection with  
 Structure-from-Motion Photogrammetry: Precision Maps for Ground Control and Directly Georeferenced Surveys’.  
 Earth Surface Processes and Landforms 42(12):1769–88. https://doi.org/10.1002/esp.4125).
