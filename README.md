@@ -14,10 +14,16 @@ Package to be used with Agisoft Metashape (> 1.6). Methods used align with James
 Create Digital Surface Models (DSM), SFM Precision Raster, Height Change Maps (with consideration of Precision and 
 Roughness to determine limit of detection(LOD))
 
-**[CWC_Results_Analysis](CWC_Results_Analysis)**
+**[GRAHAM_ET_AL_2021_PROCESSING](GRAHAM_ET_AL_2021_PROCESSING)**
+The processing workflow for point cloud data - mainly uses the sfm_griz module to covert point clouds to rasters e.g.
+DSMs, CHMs, etc. 
+
+**[GRAHAM_ET_AL_2021_Analysis](GRAHAM_ET_AL_2021_Analysis)**
 The Data Analysis for our in-review paper "Using aerial photogrammetry to detect significant canopy height change 
 resulting from beaver foraging". The workflow consists of an R project and contains the workflow we used to analyse the 
 DEM of difference maps produced using The [sfm_precision](sfm_precision) and [sfm_gridz](sfm_gridz) python modules
+
+
 **References**
 James, M., Robson, S., and Smith M (2017) ‘3-D Uncertainty-Based Topographic Change Detection with  
 Structure-from-Motion Photogrammetry: Precision Maps for Ground Control and Directly Georeferenced Surveys’.  

@@ -33,9 +33,9 @@ chm6_Sep18 = os.path.join(home, "chm6.tif")
 feed_signs = os.path.join(shps_root, 'FS_1618.shp')
 
 CWC_CanChange_df = os.path.join(os.path.dirname(os.path.dirname(__file__)),
-                                "CWC_Results_Analysis/data/CWC_can_change_df.csv")
+                                "GRAHAM_ET_AL_2021_Analysis/data/CWC_can_change_df.csv")
 CWC_CanHeight_df = os.path.join(os.path.dirname(os.path.dirname(__file__)),
-                                "CWC_Results_Analysis/data/CWC_can_height_df.csv")
+                                "GRAHAM_ET_AL_2021_Analysis/data/CWC_can_height_df.csv")
 # BeaverZones_out = os.path.abspath('C:/HG_Projects/CWC_Drone_work/CHM/Beaver_Zones20m.gpkg')
 
 def main():
