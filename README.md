@@ -15,13 +15,15 @@ Create Digital Surface Models (DSM), SFM Precision Raster, Height Change Maps (w
 Roughness to determine limit of detection(LOD))
 
 **[GRAHAM_ET_AL_2021_PROCESSING](GRAHAM_ET_AL_2021_PROCESSING)**
-The processing workflow for point cloud data - mainly uses the sfm_griz module to covert point clouds to rasters e.g.
-DSMs, CHMs, etc. 
+The processing workflow for point cloud data for our in-review paper "Using aerial photogrammetry to detect significant canopy height change 
+resulting from beaver foraging". Mainly uses the sfm_griz module to covert point clouds to rasters e.g.
+DSMs, CHMs. ALso includes plotting of maps for the publication. generates the dataframes required for  
+[GRAHAM_ET_AL_2021_Analysis](GRAHAM_ET_AL_2021_Analysis)
 
 **[GRAHAM_ET_AL_2021_Analysis](GRAHAM_ET_AL_2021_Analysis)**
 The Data Analysis for our in-review paper "Using aerial photogrammetry to detect significant canopy height change 
 resulting from beaver foraging". The workflow consists of an R project and contains the workflow we used to analyse the 
-DEM of difference maps produced using The [sfm_precision](sfm_precision) and [sfm_gridz](sfm_gridz) python modules
+DEM of difference maps produced using The [GRAHAM_ET_AL_2021_PROCESSING](GRAHAM_ET_AL_2021_PROCESSING).
 
 
 **References**
