@@ -2,7 +2,7 @@
 
 ***This Directory contains two packages (sfm_precision and sfm_gridz). A more detailed readme is provided 
 in the subfolders. The code for our in-review paper "Using aerial photogrammetry to detect significant canopy height change 
-resulting from beaver foraging" is given in GRAHAM_ET_AL_2021_PROCESSING/Analysis folders. ***
+resulting from beaver foraging" is given in GRAHAM_ET_AL_2021_PROCESSING/Analysis folders.***
 
 **Scope of Project/Packages**  
 This project supports the calculation of precision maps to quantify uncertainty in structure-from-motion photogrammetric 
