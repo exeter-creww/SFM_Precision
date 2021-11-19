@@ -64,7 +64,7 @@ Area_change_plot <- function(.data) {
     geom_bar(width=0.8, stat="identity", position=position_dodge(width=0.9), colour='black', alpha=0.5, lwd=0.1)+
     geom_text(aes(label=paste(round(Area_m2*0.0001, 2), "ha")),position=position_dodge(width=0.95), vjust=-1, size=2.5) +
     facet_wrap(~LoD_method) +
-    labs(y=bquote('Area With Elevation Change %'), x= 'Direction of Elevation Change') +
+    labs(y=bquote('Area With Canopy Height Change (%)'), x= 'Direction of Elevation Change') +
     scale_fill_manual("Foraging Observed", values=c('#1b9e77','#d95f02')) 
   
 }
@@ -72,12 +72,12 @@ Area_change_plot <- function(.data) {
 Prop_change %>% 
   filter(time_step == 'Sep17 - Sep18') %>%
   Area_change_plot() %>%
-  ggsave('Plots/Area_of_changeSep17_sep18.jpg', dpi=600, width=6, height = 6,.)
+  ggsave('Plots/Area_of_changeSep17_sep18.png', dpi=600, width=6, height = 6,.)
 
 Prop_change %>% 
   filter(time_step == 'Dec16 - Jan18') %>%
   Area_change_plot()%>%
-  ggsave('SI/Area_of_changeJan16_Dec18.jpg', dpi=600, width=6, height = 6,.)
+  ggsave('SI/Area_of_changeJan16_Dec18.png', dpi=600, width=6, height = 6,.)
 
 
 # --------- Create summary table of areas with gain loss and no change for each group. ------------------- 

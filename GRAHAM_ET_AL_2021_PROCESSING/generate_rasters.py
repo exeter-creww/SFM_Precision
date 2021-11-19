@@ -37,7 +37,7 @@ for i in [dpc1_path, dpc3_path, dpc4_path, dpc6_path,
         sys.exit("One of the paths is wrong - fix it...")
 
 # --- SET AND CREATE OUT FOLDER ---
-out_ras_home = os.path.abspath("C:/HG_Projects/CWC_Drone_work/Prec_Anal_Exports/Rasters_v5")
+out_ras_home = os.path.abspath("C:/HG_Projects/CWC_Drone_work/Prec_Anal_Exports/Rasters_v6")
 if os.path.isdir(out_ras_home) is False:
     os.mkdir(out_ras_home)
 

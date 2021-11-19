@@ -184,7 +184,7 @@ class deom_od:
         t = self.t_value  # could also use 1.96
 
         # Classic LoD - most robust appraoch
-        rob_lod = t * (a**2 + c**2 + d**2 + f**2 + g**2)**0.5
+        rob_lod = t * ((a + c)**2 + (d + f)**2)**0.5 + g
 
         # Lod with Precision only
         # prec_lod = t * (a**2 + d**2 + g**2)**0.5  # NOT USED FOR NOW POTENTIALLY USEFUL FOR OTHER APPLICATIONS?

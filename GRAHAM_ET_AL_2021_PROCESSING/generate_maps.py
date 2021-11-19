@@ -8,7 +8,7 @@ from matplotlib import pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 import geopandas as gpd
 
-out_ras_home = os.path.abspath("C:/HG_Projects/CWC_Drone_work/Prec_Anal_Exports/Rasters_v5")
+out_ras_home = os.path.abspath("C:/HG_Projects/CWC_Drone_work/Prec_Anal_Exports/Rasters_v6")
 
 dsm1612 = os.path.join(out_ras_home, "dsm1.tif")
 dsm1709 = os.path.join(out_ras_home, "dsm3.tif")

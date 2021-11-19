@@ -11,7 +11,7 @@ import pandas as pd
 import warnings
 warnings.filterwarnings("ignore")
 
-home = os.path.abspath("C:/HG_Projects/CWC_Drone_work/Prec_Anal_Exports/Rasters_v5") # where rasters have been stored.
+home = os.path.abspath("C:/HG_Projects/CWC_Drone_work/Prec_Anal_Exports/Rasters_v6") # where rasters have been stored.
 shps_root = os.path.relpath("feed_data")
 shrub_zones = os.path.relpath('int_files/Woodland_Zones20m.gpkg')
 

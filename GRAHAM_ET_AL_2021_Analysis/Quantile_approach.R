@@ -5,7 +5,7 @@ library(tidyverse)
 library(gt)
 library(grid)
 library(gridExtra)
-library(png)s
+library(png)
 library(broom)
 library(ggfortify)
 library(quantreg)
@@ -49,18 +49,18 @@ can_change_density <- function(.data){
     facet_wrap(~LoD_method)+
     # scale_colour_manual("", values=c('#60C84E', '#AC4EC8')) +
     scale_fill_manual("Foraging Observed", values=c('#76C4AE','#E79E67'), breaks=c('No', 'Yes')) +
-    labs(x='Canopy Change (m)', y='Density')
+    labs(x='Canopy Height Change (m)', y='Density')
 }
 
 change_df %>%
   filter(time_step == 'Sep17 - Sep18') %>%
   can_change_density(.) %>%
-  ggsave('Plots/DoD_density_Sep17_Sep18.jpg', width=6, height=6,.)
+  ggsave('Plots/DoD_density_Sep17_Sep18.png', width=6, height=6,.)
 
 change_df %>%
   filter(time_step == 'Dec16 - Jan18') %>%
   can_change_density(.) %>%
-  ggsave('SI/DoD_density_Dec16_Jan18.jpg', width=6, height=6,.)
+  ggsave('SI/DoD_density_Dec16_Jan18.png', width=6, height=6,.)
 
 # ------ Quantile regression -------------------
 
@@ -80,15 +80,16 @@ Sep17Sep18_Quan_df <- Quantile_df %>% filter(time_step == 'Sep17 - Sep18')
 Dec16Jan18_Quan_df <- Quantile_df %>% filter(time_step == 'Dec16 - Jan18')
 
 # Fit regression models
-Qreg <- function(.data){
+Qreg <- function(.data, tlist=c(0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99)){
   .data %>%
   group_by(LoD_method) %>%
     group_split() %>%
-    purrr::map(., ~run_Qreg(., .tau_list=c(0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99)))
+    purrr::map(., ~run_Qreg(., .tau_list=tlist))
 }  
 
 Sep17Sep18_Qreg <- Qreg(Sep17Sep18_Quan_df)
-Dec16Jan18_Qreg <- Qreg(Dec16Jan18_Quan_df)
+Dec16Jan18_Qreg <- Qreg(Dec16Jan18_Quan_df,
+                        tlist=c(0.01, 0.1, 0.5, 0.9, 0.95, 0.99))
 
 # generate model summaries
 QR_summ <- function(.QregOut, tit, .filter=F){
@@ -160,13 +161,13 @@ Qreg_plot <- function(.all_data, .predicted, limits){
     facet_wrap(~LoD_method)+
     scale_colour_manual(name='Quantile', values= alpha(brew_cols,1)) +
     scale_fill_manual(name='Quantile', values= alpha(brew_cols,1)) +
-    labs(x='Foraging Observed', y= 'Canopy Change (m)') #+
+    labs(x='Foraging Observed', y= 'Canopy Height Change (m)') #+
     # theme(axis.text.x = element_text(size=8))
 }
 
  
 Quant_change_Sep17Sep18 <- Qreg_plot(Sep17Sep18_Quan_df, Sep17Sep18_QR_preds, c(-4, 3)) %>%
- ggsave('Plots/Quantile_Change_Sep17_Sep18.jpg', width = 6, height=6,.)
+ ggsave('Plots/Quantile_Change_Sep17_Sep18.png', width = 6, height=6,.)
 
 Quant_change_Dec16Jan18 <- Qreg_plot(Dec16Jan18_Quan_df, Dec16Jan18_QR_preds, c(-5, 4)) %>%
-  ggsave('SI/Quantile_Change_Dec16Jan18.jpg', width = 6, height=6,.)
+  ggsave('SI/Quantile_Change_Dec16Jan18.png', width = 6, height=6,.)
