@@ -24,13 +24,17 @@ theme_set(theme_bw() +
 # # ----------- Load Data -------------------------
 #
 
-zones_df <- read_csv('./data/CWC_can_change_df.csv') %>%
-  mutate(loss_gain = ifelse(canopy_change <0, "Decrease", ifelse(canopy_change > 0, "Increase", "No change"))) %>%
-  mutate(signs_YNf = fct_relevel(signs_YNf, "No Foraging", "Foraging Observed")) %>%
-  mutate(LoD_method = ifelse(LoD_method =='weighted', 'LoD95 weighting', 
-                             ifelse(LoD_method == 'no lod', 'No LoD',
-                                    ifelse(LoD_method == 'threshold', 'LoDmin threshold', NA)))) %>%
-  mutate(LoD_method = fct_relevel(LoD_method, 'No LoD', 'LoD95 weighting', 'LoDmin threshold' ))
+source('create_spatial_dataframe.R')
+
+zones_df <- rasters_to_spatdf()
+
+# zones_df <- read_csv('./data/CWC_can_change_df.csv') %>%
+#   mutate(loss_gain = ifelse(canopy_change <0, "Decrease", ifelse(canopy_change > 0, "Increase", "No change"))) %>%
+#   mutate(signs_YNf = fct_relevel(signs_YNf, "No Foraging", "Foraging Observed")) %>%
+#   mutate(LoD_method = ifelse(LoD_method =='weighted', 'LoD95 weighting', 
+#                              ifelse(LoD_method == 'no lod', 'No LoD',
+#                                     ifelse(LoD_method == 'threshold', 'LoDmin threshold', NA)))) %>%
+#   mutate(LoD_method = fct_relevel(LoD_method, 'No LoD', 'LoD95 weighting', 'LoDmin threshold' ))
 
 
 
@@ -111,74 +115,74 @@ Prop_change%>%
   # gtsave(., filename = normalizePath('NewPlots/Areas_Summary.html', mustWork=FALSE))
 
 # ------------ Logistic regression ------------------
-
-
-log_reg <- function(.data){
-  lodM <- pull(.data, var = LoD_method)[1]
-  
-  .mod1 <- tidy(glm(formula = lossTRUE ~ signs_YNf, data = .data, family = binomial(link = "logit")), conf.int=TRUE, exponentiate=TRUE) %>%
-    mutate(LoD_method = lodM) %>%
-    mutate(loss_gain = 'Decrease')
-  
-  # message(sprintf("GAIN: Logistic Regression Table for %s", ts ))
-  .mod2 <- tidy(glm(formula = gainTRUE ~ signs_YNf, data = .data, family = binomial(link = "logit")), conf.int=TRUE, exponentiate=TRUE)%>%
-    mutate(LoD_method = lodM) %>%
-    mutate(loss_gain = 'Increase')
-  
-  comb.tab <- bind_rows(.mod1, .mod2)
-  
-  return(comb.tab)
-  
-}
-
-gen_log_reg_summ <- function(.data){
-  
-  LR_zones_df <- .data %>%
-    mutate(signs_YNf = fct_relevel(signs_YNf, 'No Foraging')) %>%
-    mutate(lossTRUE = ifelse(canopy_change < 0, 1, 0)) %>%
-    mutate(gainTRUE = ifelse(canopy_change > 0, 1, 0)) %>%
-    group_by(LoD_method)%>%
-    group_split()%>%
-    purrr::map(., ~log_reg(.)) %>%
-    bind_rows() %>%
-    mutate(term = ifelse(term == 'signs_YNfForaging Observed', 'Foraging Observed', term)) 
-  
-}
-
-
-LR_zones_df_Sep17Sep18 <- zones_df %>%
-  filter(time_step == 'Sep17 - Sep18') %>%
-  gen_log_reg_summ()
-
-LR_zones_df_Dec16Jan18 <- zones_df %>%
-  filter(time_step == 'Dec16 - Jan18') %>%
-  gen_log_reg_summ()
-
-
-Gen_LogReg_table <- function(.table, tit){
-  .table %>%
-    mutate(p.value = ifelse(p.value < 0.001, '< 0.001 **', 
-                            ifelse(p.value < 0.05, paste(formatC(p.value,format = "f", 3), '*', sep = " "),
-                                   ifelse(p.value < 0.1, paste(formatC(p.value,format = "f", 3), '.', sep = " "),
-                                          formatC(p.value,format = "f", 3))))) %>%
-    mutate_if(is.numeric, round, 2)%>%
-    select(LoD_method, loss_gain, term, estimate,conf.low, conf.high, statistic, p.value) %>% 
-    group_by(LoD_method, loss_gain) %>%
-    gt() %>%
-    tab_header(title = md(sprintf('**<div style="text-align: left"> %s </div>**', tit))) %>%
-    tab_style(style = cell_fill('grey99'), locations = cells_title()) %>%
-    tab_style(style = list(cell_fill('grey95'), cell_text(weight = "bold")), locations = cells_column_labels(c(
-      'term', 'estimate', 'statistic','conf.low', 'conf.high', 'p.value'))) %>%
-    tab_style(style = list(cell_fill('grey98'), cell_text(weight = "bold")), locations = cells_row_groups())
-    
-}
-
-Gen_LogReg_table(LR_zones_df_Sep17Sep18, 'Logistic Regression Summary') %>%
-  gtsave(., filename = normalizePath('Plots/Sep17Sep18_log_reg_Area.html', mustWork=FALSE))
-
-Gen_LogReg_table(LR_zones_df_Dec16Jan18, 'Logistic Regression Summary: Dec16 - Jan18')%>%
-  gtsave(., filename = normalizePath('SI/Dec16Jan18_log_reg_Area.html', mustWork=FALSE))
-
+##  No longer used.
+# 
+# log_reg <- function(.data){
+#   lodM <- pull(.data, var = LoD_method)[1]
+#   
+#   .mod1 <- tidy(glm(formula = lossTRUE ~ signs_YNf, data = .data, family = binomial(link = "logit")), conf.int=TRUE, exponentiate=TRUE) %>%
+#     mutate(LoD_method = lodM) %>%
+#     mutate(loss_gain = 'Decrease')
+#   
+#   # message(sprintf("GAIN: Logistic Regression Table for %s", ts ))
+#   .mod2 <- tidy(glm(formula = gainTRUE ~ signs_YNf, data = .data, family = binomial(link = "logit")), conf.int=TRUE, exponentiate=TRUE)%>%
+#     mutate(LoD_method = lodM) %>%
+#     mutate(loss_gain = 'Increase')
+#   
+#   comb.tab <- bind_rows(.mod1, .mod2)
+#   
+#   return(comb.tab)
+#   
+# }
+# 
+# gen_log_reg_summ <- function(.data){
+#   
+#   LR_zones_df <- .data %>%
+#     mutate(signs_YNf = fct_relevel(signs_YNf, 'No Foraging')) %>%
+#     mutate(lossTRUE = ifelse(canopy_change < 0, 1, 0)) %>%
+#     mutate(gainTRUE = ifelse(canopy_change > 0, 1, 0)) %>%
+#     group_by(LoD_method)%>%
+#     group_split()%>%
+#     purrr::map(., ~log_reg(.)) %>%
+#     bind_rows() %>%
+#     mutate(term = ifelse(term == 'signs_YNfForaging Observed', 'Foraging Observed', term)) 
+#   
+# }
+# 
+# 
+# LR_zones_df_Sep17Sep18 <- zones_df %>%
+#   filter(time_step == 'Sep17 - Sep18') %>%
+#   gen_log_reg_summ()
+# 
+# LR_zones_df_Dec16Jan18 <- zones_df %>%
+#   filter(time_step == 'Dec16 - Jan18') %>%
+#   gen_log_reg_summ()
+# 
+# 
+# Gen_LogReg_table <- function(.table, tit){
+#   .table %>%
+#     mutate(p.value = ifelse(p.value < 0.001, '< 0.001 **', 
+#                             ifelse(p.value < 0.05, paste(formatC(p.value,format = "f", 3), '*', sep = " "),
+#                                    ifelse(p.value < 0.1, paste(formatC(p.value,format = "f", 3), '.', sep = " "),
+#                                           formatC(p.value,format = "f", 3))))) %>%
+#     mutate_if(is.numeric, round, 2)%>%
+#     select(LoD_method, loss_gain, term, estimate,conf.low, conf.high, statistic, p.value) %>% 
+#     group_by(LoD_method, loss_gain) %>%
+#     gt() %>%
+#     tab_header(title = md(sprintf('**<div style="text-align: left"> %s </div>**', tit))) %>%
+#     tab_style(style = cell_fill('grey99'), locations = cells_title()) %>%
+#     tab_style(style = list(cell_fill('grey95'), cell_text(weight = "bold")), locations = cells_column_labels(c(
+#       'term', 'estimate', 'statistic','conf.low', 'conf.high', 'p.value'))) %>%
+#     tab_style(style = list(cell_fill('grey98'), cell_text(weight = "bold")), locations = cells_row_groups())
+#     
+# }
+# 
+# Gen_LogReg_table(LR_zones_df_Sep17Sep18, 'Logistic Regression Summary') %>%
+#   gtsave(., filename = normalizePath('Plots/Sep17Sep18_log_reg_Area.html', mustWork=FALSE))
+# 
+# Gen_LogReg_table(LR_zones_df_Dec16Jan18, 'Logistic Regression Summary: Dec16 - Jan18')%>%
+#   gtsave(., filename = normalizePath('SI/Dec16Jan18_log_reg_Area.html', mustWork=FALSE))
+# 
 
 # ------------ Mean Change Table -------------
 

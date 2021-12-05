@@ -1,3 +1,4 @@
+## NOT USED - data frame creation is done from rasters in R 'create_spatial_dataframe.R'
 # Compare the relative change of the different woodland zones.
 
 import geopandas as gpd
@@ -11,7 +12,7 @@ import pandas as pd
 import warnings
 warnings.filterwarnings("ignore")
 
-home = os.path.abspath("C:/HG_Projects/CWC_Drone_work/Prec_Anal_Exports/Rasters_v6") # where rasters have been stored.
+home = os.path.abspath("C:/HG_Projects/CWC_Drone_work/Precision_Analysis/GRAHAM_ET_AL_2021_Analysis/data/rasters") # where rasters have been stored.
 shps_root = os.path.relpath("feed_data")
 shrub_zones = os.path.relpath('int_files/Woodland_Zones20m.gpkg')
 

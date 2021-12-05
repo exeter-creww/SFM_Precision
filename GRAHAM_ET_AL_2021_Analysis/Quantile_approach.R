@@ -11,6 +11,10 @@ library(ggfortify)
 library(quantreg)
 library(RColorBrewer)
 library(here)
+library(terra)
+library(sf)
+library(purrr)
+library(raster)
 #
 # #  ---------- set plotting themes -----------
 
@@ -27,14 +31,62 @@ theme_set(theme_bw() +
 # # ----------- Load Data -------------------------
 #
 
-change_df <- read_csv('./data/CWC_can_change_df.csv') %>%
-  mutate(loss_gain = ifelse(canopy_change <0, "LOSS", ifelse(canopy_change > 0, "GAIN", "NO_CHANGE"))) %>%
-  mutate(signs_YNf = fct_relevel(signs_YNf, "No Foraging", "Foraging Observed")) %>%
-  mutate(LoD_method = ifelse(LoD_method =='weighted', 'LoD95 weighting', 
-                             ifelse(LoD_method == 'no lod', 'No LoD',
-                                    ifelse(LoD_method == 'threshold', 'LoDmin threshold', NA)))) %>%
-  mutate(LoD_method = fct_relevel(LoD_method, 'No LoD', 'LoD95 weighting', 'LoDmin threshold')) %>%
-  drop_na()
+source('create_spatial_dataframe.R')
+
+change_df <- rasters_to_spatdf()
+
+change_df.test <- change_df %>%
+  filter(time_step == 'Sep17 - Sep18',
+         LoD_method == 'LoD95 weighting') %>%
+  mutate(signs_YN = as.factor(signs_YN)) %>%
+  drop_na() %>%
+  group_by(signs_YN) %>% group_split() %>%
+  map(., ~as.data.frame(.x))
+  #st_as_sf(coords=c('x', 'y'))
+
+# plot(st_geometry(st_make_grid(change_df.test, 0.5)))
+library(spmoran)
+library(tictoc)
+tic()
+# change values for each factor level
+y1 <- change_df.test[[1]][, "canopy_change"]
+y2 <- change_df.test[[2]][, "canopy_change"]
+
+#coordinates and approximate Moran eigenvectors for each factor level.
+coords1<- change_df.test[[1]][,c("x","y")]
+coords2<- change_df.test[[2]][,c("x","y")]
+meig1 <- meigen_f(coords=coords1)
+meig2 <- meigen_f(coords=coords2)
+
+# Run the models 
+resL1 <- resf_qr(y=y1,x=NULL,meig=meig1, tau <- c(0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99), boot=T)
+resL2 <- resf_qr(y=y2,x=NULL,meig=meig2, tau <- c(0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99), boot=T)
+resL1
+resL2
+toc()
+
+quantreg::rq(canopy_change~signs_YNf, tau= c(0.01, 0.05), data=change_df.test, method='fn') 
+
+plot_qr(res,2)
+
+y <- boston.c[, "CMEDV" ]
+x <- boston.c[,c("CRIM")]
+coords<- boston.c[,c("LON","LAT")]
+meig <- meigen(coords=coords)
+res <- resf_qr(y=y,x=x,meig=meig, boot=TRUE)
+
+
+require(spdep)
+data(boston)
+head(boston.c)
+# change_df <- read_csv('./data/CWC_can_change_df.csv') %>%
+#   mutate(loss_gain = ifelse(canopy_change <0, "LOSS", ifelse(canopy_change > 0, "GAIN", "NO_CHANGE"))) %>%
+#   mutate(signs_YNf = fct_relevel(signs_YNf, "No Foraging", "Foraging Observed")) %>%
+#   mutate(LoD_method = ifelse(LoD_method =='weighted', 'LoD95 weighting',
+#                              ifelse(LoD_method == 'no lod', 'No LoD',
+#                                     ifelse(LoD_method == 'threshold', 'LoDmin threshold', NA)))) %>%
+#   mutate(LoD_method = fct_relevel(LoD_method, 'No LoD', 'LoD95 weighting', 'LoDmin threshold')) %>%
+#   drop_na()
 
 
 # --------- density plot -----------------
