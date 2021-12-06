@@ -7,7 +7,7 @@ select_preds <- function(.data, .name){
 }
 
 
-spatial_Qreg <- function(.df, .tau, enum=200, iter=200){
+spatial_Qreg <- function(.df, .tau, enum=200, iter=200, model='exp'){
   .method <- .df$LoD_method[1]
   
   .df <- .df %>%
@@ -20,7 +20,7 @@ spatial_Qreg <- function(.df, .tau, enum=200, iter=200){
   zone_quant <- function(zone.df){
     y <- zone.df[, "canopy_change"]
     .coords <- zone.df[,c("x","y")]
-    meig <- meigen_f(coords=.coords, model = 'sph', enum=enum)
+    meig <- meigen_f(coords=.coords, model = model, enum=enum)
     resf_qr(y=y,x=NULL,meig=meig, tau=.tau, boot=TRUE, iter=iter)
   }
   

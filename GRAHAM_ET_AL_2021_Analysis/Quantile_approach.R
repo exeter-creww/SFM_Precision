@@ -93,10 +93,11 @@ Dec16Jan18_Quan_df <- Quantile_df %>% filter(time_step == 'Dec16 - Jan18')
 
 # Fit regression models
 Qreg <- function(.data, tlist=c(0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99),.enum=200,
-                 iter=200){
+                 iter=200, model='exp'){
   .data %>%
   group_by(LoD_method) %>%
-    group_map(., ~spatial_Qreg(., .tau=tlist, enum = .enum, iter=iter), .keep=T)
+    group_map(., ~spatial_Qreg(., .tau=tlist, enum = .enum, iter=iter, 
+                               model=model), .keep=T)
     # group_map(., ~run_Qreg(., .tau=tlist), .keep=T)
   
 }  
@@ -163,6 +164,7 @@ brew_cols <- brewer.pal(7, "Dark2")
 
 Qreg_plot <- function(.all_data, .predicted, limits){
   .all_data %>%
+    rename(`LoD Method` = LoD_method) %>%
     mutate(signs_YNf = ifelse(signs_YNf == 'No Foraging', 'No', 'Yes')) %>%
     ggplot(., aes(x=signs_YNf, y=canopy_change)) +
     geom_jitter(colour="grey60", alpha=0.1, width = 0.4, height = 0) +
