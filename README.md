@@ -1,4 +1,4 @@
-[![DOI](https://zenodo.org/badge/222968925.svg)](https://zenodo.org/badge/latestdoi/222968925)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5760603.svg)](https://doi.org/10.5281/zenodo.5760603)
 
 ***This Directory contains two packages (sfm_precision and sfm_gridz). A more detailed readme is provided 
 in the subfolders. The code for our in-review paper "Using aerial photogrammetry to detect significant canopy height change 
