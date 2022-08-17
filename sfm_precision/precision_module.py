@@ -133,7 +133,7 @@ def main(num_iterations, params_list, retrieve_shape_only_Prec, export_log):
 
     sparse_ref = os.path.join(dir_path, 'start_pts_temp.ply')
 
-    chunk.exportPoints(sparse_ref, source_data='PointCloudData', save_normals=False, save_colors=False,
+    chunk.exportPoints(sparse_ref, source_data=Metashape.PointCloudData, save_normals=False, save_colors=False,
                        format=Metashape.PointsFormatPLY, crs=crs, shift=pts_offset)
 
     # Read in reference cloud to get dimensions
@@ -336,7 +336,7 @@ def MonteCarloJam(num_act_cam_orients, chunk, original_chunk, point_proj,
         if os.path.exists(out_file):
             os.remove(out_file)
         # Export the sparse point cloud
-        chunk.exportPoints(out_file, source_data='PointCloudData', save_normals=False, save_colors=False,
+        chunk.exportPoints(out_file, source_data=Metashape.PointCloudData, save_normals=False, save_colors=False,
                            format=Metashape.PointsFormatPLY, crs=crs, shift=pts_offset)
 
         # Increment the file counter
